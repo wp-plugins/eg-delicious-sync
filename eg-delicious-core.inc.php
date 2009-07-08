@@ -8,6 +8,7 @@ if (! class_exists('EG_Delicious_Core')) {
 	define('EG_DELICIOUS_CORE_ERROR_NO_DATA',		3);
 	define('EG_DELICIOUS_CORE_ERROR_PARSING',		4);
 
+	define('EG_DELICIOUS_PASSWORD_SECRET_KEY',		'EG-Delicious');
 	/**
 	 * Class EG_Delicious_Core
 	 *
@@ -16,6 +17,8 @@ if (! class_exists('EG_Delicious_Core')) {
 	 * @package EG-Delicious
 	 */
 	Class EG_Delicious_Core {
+
+		// public static $password_secret_key = 'EG-Delicious';
 
 		var $cache_path;
 		var $use_cache;
@@ -28,15 +31,15 @@ if (! class_exists('EG_Delicious_Core')) {
 
 		var $cache_group      = EG_DELICIOUS_CACHE_GROUP;
 		var $cache_expiration = 900;
-
+		
 		var $parsed_data;
 
 		var $ERROR_MESSAGES = array(
-			EG_DELICIOUS_CORE_ERROR_NONE 			=> 'No error',
-			EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY	=> 'Unknown query',
-			EG_DELICIOUS_CORE_ERROR_READING			=> 'Error while querying Delicious',
-			EG_DELICIOUS_CORE_ERROR_NO_DATA			=> 'No data available from Delicious',
-			EG_DELICIOUS_CORE_ERROR_PARSING			=> 'Parse error'
+			EG_DELICIOUS_CORE_ERROR_NONE 			=> 'No error.',
+			EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY	=> 'Unknown query.',
+			EG_DELICIOUS_CORE_ERROR_READING			=> 'Error while querying Delicious.',
+			EG_DELICIOUS_CORE_ERROR_NO_DATA			=> 'No data available from Delicious.',
+			EG_DELICIOUS_CORE_ERROR_PARSING			=> 'Parse error.'
 		);
 
 		var $DELICIOUS_QUERY = array(
@@ -63,7 +66,7 @@ if (! class_exists('EG_Delicious_Core')) {
 			'badge'		=> array(
 				'type'		=> 'rss',
 				'parser'	=> 'parse_badge',
-				'url'		=> 'feeds.delicious.com/v2/fancy/userinfo/{username}'
+				'url'		=> 'http://feeds.delicious.com/v2/fancy/userinfo/{username}'
 			)
 		);
 
@@ -245,7 +248,7 @@ if (! class_exists('EG_Delicious_Core')) {
 		 */
 		function get_url($query) {
 			if (function_exists('wp_remote_request')) {
-				return wp_remote_request($query, array('sslverify' => false));
+				return ( wp_remote_request($query, array('sslverify' => false)) );
 			}
 			else {
 				return (@file_get_contents($query));
@@ -329,7 +332,8 @@ if (! class_exists('EG_Delicious_Core')) {
 					// Start querying and parsing
 					switch ($this->DELICIOUS_QUERY[$query]['type']) {
 						case 'rss' :
-							//
+							$badge_rss = fetch_feed($query_string);
+							var_dump($badge_rss);
 						break;
 
 						case 'http':
@@ -599,6 +603,59 @@ if (! class_exists('EG_Delicious_Core')) {
 			return (date('Y-m-dTH:i:sZ', $timestamp));
 		} // End of timestamp_to_iso
 
+		/**
+		 * Password_decode
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param	string 	str		String to decrypt
+		 * @return 	string			decrypted string
+		 */
+		function password_decode($str) {
+		   //$filter = md5(self::$password_secret_key);
+		   $filter = md5(EG_DELICIOUS_PASSWORD_SECRET_KEY);
+		   $letter = -1;
+		   $newstr = '';
+		   $str = base64_decode($str);
+		   $strlen = strlen($str);
+
+		   for ( $i = 0; $i < $strlen; $i++ ) {
+			  $letter++;
+			  if ( $letter > 31 ) $letter = 0;
+			  $neword = ord($str{$i}) - ord($filter{$letter});
+			  if ( $neword < 1 ) $neword += 256;
+			  $newstr .= chr($neword);
+		   }
+		   return $newstr;
+		} // End of password_decode
+
+		/**
+		 * Password_encode
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param	string 	str		String to encrypt
+		 * @return 	string			encrypted string
+		 */
+		function password_encode($str) {
+		   // $filter = md5(self::$password_secret_key);
+		   $filter = md5(EG_DELICIOUS_PASSWORD_SECRET_KEY);
+		   $letter = -1;
+		   $newpass = '';
+
+		   $strlen = strlen($str);
+
+		   for ( $i = 0; $i < $strlen; $i++ )
+		   {
+			  $letter++;
+			  if ( $letter > 31 ) $letter = 0;
+			  $neword = ord($str{$i}) + ord($filter{$letter});
+			  if ( $neword > 255 ) $neword -= 256;
+			  $newstr .= chr($neword);
+		   }
+		   return base64_encode($newstr);
+		} // End of password_encode
+		
 	} // End of class EG_Delicious_Core
 
 } // End of if class_exists

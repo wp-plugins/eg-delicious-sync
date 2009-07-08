@@ -432,7 +432,7 @@ if (!class_exists('EG_Forms_103')) {
 								  '<select name="'.$option_name.'" id="'.$option_name.'" >';
 						foreach ($field->values as $key => $value) {
 							$selected = ($default_values[$option_name]==$key?'selected':'');
-							$string .= '<option value="'.$key.'" '.$selected.'>'.__($value, $this->textdomain).'</option>';
+							$string .= '<option value="'.$key.'" '.$selected.'>'.($value==''?'':__($value, $this->textdomain)).'</option>';
 						}
 						$string .= '</select>'.($field->text_after== ''?'':__($field->text_after, $this->textdomain)).($group?'</label>':'');
 					break;

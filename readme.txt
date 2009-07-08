@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
-Tags: delicious
+Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
-Tested up to: 2.8.1 beta 2
-Stable tag: 0.6.1
+Tested up to: 2.8.1 RC1
+Stable tag: 0.6.5
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -33,7 +33,14 @@ Planned features for next version:
 
 = Requirements =
 
-**EG-Delicious-Sync** requires with WordPress 2.6 and later, and PHP 4.3 and later.
+**EG-Delicious-Sync** requires 
+
+* with WordPress 2.6.x:
+	* PHP 4.3 
+	* PHP option "allow_url_fopen=On" 
+* with WordPress 2.7.x
+	* PHP 4.3
+	* PHP curl module installed option (activated in most of PHP platforms)
 
 = Installation =
 * The plugin is available for download on the WordPress repository,
@@ -83,7 +90,15 @@ No, for the moment, because of constraints of the Delicious API:
 
 == Changelog ==
 
-= Version 1.0 - July 6th, 2009 =
+= Version 0.6.5 - July 8th, 2009 =
+* Buf fix:
+	* Must click twice on submit button after giving Delicious username and password,
+	* Error message "You do not have sufficient permissions to access this page." while installing plugin,
+* New feature:
+	* French translation
+	* Interface improvements
+
+= Version 0.6.0 - July 6th, 2009 =
 * Initiale release
 
 == Licence ==
