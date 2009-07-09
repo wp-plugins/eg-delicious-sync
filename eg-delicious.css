@@ -1,0 +1,29 @@
+
+.widget_eg_delicious li {
+	padding-left: 2em;
+	margin-left: -0.5em;
+}
+
+.widget_eg_delicious li.icon-m {
+	/* list-style-image: url(img/delicious-medium.gif); */
+	background: #FAFAFA url(img/delicious-medium.gif) no-repeat left;
+}
+
+.widget_eg_delicious li.icon-s {
+	/* list-style-image: url(img/delicious-small.gif); */
+	background: #FAFAFA url(img/delicious-small.gif) no-repeat left;
+}
+
+.widget_eg_delicious li.showadd {
+	/* list-style-image: url(img/add.gif); */
+	background: #FAFAFA url(img/add.gif) no-repeat left;
+}
+
+div.blogroll-block ul.blogroll-col {
+	float: left;
+	margin: 0.45%;
+	padding: 0.45%;
+	width: 48%;
+}
+
+div.blogroll-block:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
