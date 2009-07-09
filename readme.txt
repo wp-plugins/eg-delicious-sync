@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
 Tested up to: 2.8.1 RC1
-Stable tag: 0.6.5
+Stable tag: 0.7.0
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -24,10 +24,10 @@ You can customize the backup (or synchronization) with a number of options:
 * You can specify if you want a single categories per link, or allow several categories,
 * Specify if you want to keep the links already existing in the WordPress databases
 
-Planned features for next version:
+Other features:
 
-* Display Delicious network badge (widgets, or template tags),
-* Display Tagsroll,
+* An enhanced blogroll widget: display whay you want, where you want!
+* 
 
 == Installation ==
 
@@ -71,6 +71,18 @@ Then you can go to menu **Settings / EG-Delicious** to set plugin parameters
 1. When you click on the **Update changes** button, the plugin proceed with all links when the action, and categories fields are not empty
 1. The session is terminated, when you synchronize all links, or when you press the **Stop synchronization** button.
 
+= Widget =
+
+**EG-Delicious Blogroll widget**
+This widget allows you to display your blogroll, but it gives you more options than the standard widget.
+
+* You can display the blogroll, in 1, 2 or 3 colomns,
+* The option **Minimum number of links** is the limit under which the widget uses only one columns.
+* You can choose the categories you want to display
+* If you check **Group links by category**, the widget will display one "block" per category, each block starting by the name of category,
+* if you have a page or a post, displaying all your links, you can specify its ID in the field **Page/Post ID to see all links**. The widget will display an additional link named *All bookmarks*, linked to the specified page or post.
+* With the last fields, you can choose the page where you want to display your bookmarks: onyl homepage, a specific categories, or a specific language ...
+
 == Frequently Asked Questions ==
 
 = The plugin backups of Delicious links into the WordPress links database. To have a true synchronization, can we update the Delicious database with the WordPress links? =
@@ -90,8 +102,14 @@ No, for the moment, because of constraints of the Delicious API:
 
 == Changelog ==
 
+= Version 0.7.0 - July 09th, 2009 =
+* Bug fix:
+	* Securization in case of multi-user blog (cannot edit options during synchronization for example),
+	* Better support of http requests (didn't work with WP 2.7 !)
+	* Automatically stop the synchronization during logout	
+
 = Version 0.6.5 - July 8th, 2009 =
-* Buf fix:
+* Bug fix:
 	* Must click twice on submit button after giving Delicious username and password,
 	* Error message "You do not have sufficient permissions to access this page." while installing plugin,
 * New feature:

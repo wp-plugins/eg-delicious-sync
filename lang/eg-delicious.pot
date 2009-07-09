@@ -403,3 +403,143 @@ msgstr ""
 #: eg-delicious-admin.inc.php:197
 msgid "When a link exist in WordPress AND Delicious databases, do you want: "
 msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Enhanced blogroll for EG-Delicious"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "General options"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Title"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Columns"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Minimum number of links"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories options"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories to display:"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Group links by category"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Links options"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Page/Post ID to see all links"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Show description"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Hide Invisible"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order by"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Name"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Count"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Rating"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Random"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Ascending"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Descending"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Number of links to display"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Page/Post ID to see all links"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Blogroll"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Bookmarks"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Show widget on pages"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "All"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Home"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Categories"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Posts"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Tags"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, for"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, when"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Hide widget, when"
+msgstr ""

@@ -876,7 +876,8 @@ if (!class_exists('EG_Plugin_103')) {
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_management_page',
 								 'links'	=> 'add_management_page',
-								 'pages'	=> 'add_management_page');
+								 'pages'	=> 'add_management_page',
+								 'posts'	=> 'add_management_page');
 			}
 			else {
 				$page_list = array ( 'posts'	=> 'add_posts_page',
@@ -887,7 +888,8 @@ if (!class_exists('EG_Plugin_103')) {
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_media_page',
 								 'links'	=> 'add_links_page',
-								 'pages'	=> 'add_pages_page');
+								 'pages'	=> 'add_pages_page',
+								 'psots'	=> 'add_posts_page');
 			}
 
 			// Add a new submenu under Options:

@@ -68,7 +68,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 
 		var $error_code;
 
-		var $min_user_rights = 'manage_links';
+		var $links_min_user_rights = 'manage_links';
 
 		/**
 		 * plugins_loaded
@@ -94,21 +94,21 @@ if (! class_exists('EG_Delicious_Admin')) {
 			);
 
 			// Add plugin options page
-			$this->add_page('options', 					/* page type: post, page, option, tool 	*/
-							'EG-Delicious Options',		/* Page title 							*/
-							'EG-Delicious',				/* Menu title 							*/
-							$this->min_user_rights, 	/* Access level / capability			*/
-							'egdel_options',			/* file 								*/
-							'options_page');			/* function								*/
+			$this->add_page('options', 						/* page type: post, page, option, tool 	*/
+							'EG-Delicious Options',			/* Page title 							*/
+							'EG-Delicious',					/* Menu title 							*/
+							$this->links_min_user_rights, 	/* Access level / capability			*/
+							'egdel_options',				/* file 								*/
+							'options_page');				/* function								*/
 
-			// Add plugin options page
+			// Add links synchronisation page
 			$this->add_page('links',
-							'Blogroll Synchronisation',			/* Page title					*/
-							'Delicious Sync.',					/* Menu title 					*/
-							$this->min_user_rights, 			/* Access level / capability	*/
-							'egdel_sync',						/* file 						*/
-							'wp_delicious_synchronisation');	/* function						*/
-
+							'Delicious Blogroll Synchronisation',	/* Page title					*/
+							'Delicious Links Sync.',				/* Menu title 					*/
+							$this->links_min_user_rights, 			/* Access level / capability	*/
+							'egdel_links_sync',						/* file 						*/
+							'wp_links_delicious_sync');				/* function						*/
+							
 		} // End of plugins_loaded
 
 		/**
@@ -266,7 +266,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				'<h2>'.__('EG-Delicious Options', $this->textdomain).'</h2>';
 
 			$display_option = FALSE;
-			if (! current_user_can($this->min_user_rights)) {
+			if (! current_user_can($this->links_min_user_rights)) {
 				$this->error_code = EG_DELICIOUS_ERROR_USER_RIGHT;
 				$this->display_error();
 			}
@@ -533,7 +533,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 
 			if ($this->egdel_sync_submit !== FALSE) {
 
-				check_admin_referer( 'egdel_sync' );
+				check_admin_referer( 'egdel_links_sync' );
 
 				switch ($this->egdel_sync_submit) {
 					case 'stop':
@@ -546,7 +546,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 					break;
 
 					case 'start':
-						$this->build_synchronisation_list();
+						$this->build_links_synchronisation_list();
 						if ($this->error_code == EG_DELICIOUS_ERROR_NONE) {
 							$this->options['sync_status'] = 'started';
 							$this->options['sync_date']   = time();
@@ -564,7 +564,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 						$this->options['sync_date']   = 0;
 						$this->options['sync_user']   = '';
 						$this->save_options();
-						$this->build_synchronisation_list();
+						$this->build_links_synchronisation_list();
 						if ($this->error_code == EG_DELICIOUS_ERROR_NONE) {
 							$this->options['sync_status'] = 'started';
 							$this->options['sync_date']   = time();
@@ -683,7 +683,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				'</p>';
 
 			echo '<form method="POST" action=""><p class="submit">'.
-				 wp_nonce_field('egdel_sync').
+				 wp_nonce_field('egdel_links_sync').
 				 '<input class="button" type="submit" name="egdel_sync_start" value="'.__('Start synchronization', $this->textdomain).'" />'.'</p></form>';
 
 		} // End of synchronization_stopped
@@ -706,9 +706,9 @@ if (! class_exists('EG_Delicious_Admin')) {
 			}
 			else {
 				$referer = wp_get_referer();
-				if (strpos($referer, 'page=egdel_sync') === FALSE && $this->egdel_sync_submit === FALSE) {
+				if (strpos($referer, 'page=egdel_links_sync') === FALSE && $this->egdel_sync_submit === FALSE) {
 					echo '<form method="POST" action="">'.
-						'<p>'.wp_nonce_field('egdel_sync').
+						'<p>'.wp_nonce_field('egdel_links_sync').
 						sprintf(__('Synchronization on-going, started on %s', $this->textdomain),
 							date_i18n($this->datetime_format, $this->options['sync_date'])).
 						'</p>'.
@@ -725,7 +725,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 							date_i18n($this->datetime_format, $this->options['sync_date'])).
 						'</p>';
 					$this->display_synchronization_table();
-					// '<form method="POST" action="">'.wp_nonce_field('egdel_sync').
+					// '<form method="POST" action="">'.wp_nonce_field('egdel_links_sync').
 					echo '<p class="submit"><input class="button" type="submit" name="egdel_sync_save" value="'.__('Update changes', $this->textdomain).'" />'.'&nbsp;&nbsp;'.
 						'<input class="button" type="submit" name="egdel_sync_stop" value="'.__('Stop synchronization', $this->textdomain).'" />'.
 						'</p></form>';
@@ -764,7 +764,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function synchronization_error() {
 			echo '<p>'.
 				__('Synchronisation failed', $this->textdomain).',<br />'.
-				sprintf(__('Click <a href="%1s">here</a> if you want to start a new session', $this->textdomain), admin_url('link-manager.php?page=egdel_sync')).'</p>';
+				sprintf(__('Click <a href="%1s">here</a> if you want to start a new session', $this->textdomain), admin_url('link-manager.php?page=egdel_links_sync')).'</p>';
 			$this->options['sync_status'] = 'stopped';
 			$this->save_options();
 		} // End of synchronization_error
@@ -793,7 +793,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		} // End of display_error
 
 		/**
-		 * wp_delicious_synchronisation
+		 * wp_links_delicious_sync
 		 *
 		 *
 		 *
@@ -802,14 +802,14 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param none
 		 * @return none
 		 */
-		function wp_delicious_synchronisation() {
-			echo '<div id="icon-tools" class="icon32"><br /></div>'.
+		function wp_links_delicious_sync() {
+			echo '<div id="icon-link-manager" class="icon32"><br /></div>'.
 				 '<div class="wrap">'.
 				 '<h2>'.__('BlogRoll synchronization', $this->textdomain).'</h2>';
 
 			if ($this->check_requirements(TRUE)) {
 
-				if (! current_user_can($this->min_user_rights)) {
+				if (! current_user_can($this->links_min_user_rights)) {
 					$this->error_code = EG_DELICIOUS_ERROR_USER_RIGHT;
 					$this->display_error();
 				}
@@ -851,7 +851,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				} // End if user can manage links
 			} // End of check_requirements
 			echo '</div>';
-		} // End of wp_delicious_synchronisation
+		} // End of wp_links_delicious_sync
 
 		/**
 		 * tags_to_bundle
@@ -992,7 +992,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		} // End of select_action
 
 		/**
-		 * build_synchronisation_list
+		 * build_links_synchronisation_list
 		 *
 		 *
 		 *
@@ -1001,7 +1001,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param none
 		 * @return none
 		 */
-		function build_synchronisation_list($update_sync = FALSE) {
+		function build_links_synchronisation_list($update_sync = FALSE) {
 			global $wpdb;
 
 			$this->error_code = EG_DELICIOUS_ERROR_NONE;
@@ -1158,8 +1158,8 @@ if (! class_exists('EG_Delicious_Admin')) {
 				}
 			} /* End synchro ok */
 
-		} // End of build_synchronisation_list
-
+		} // End of build_links_synchronisation_list
+	
 		/**
 		 * html_select
 		 *
@@ -1214,7 +1214,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				);
 			}
 			echo '<form id="egdel_filter" action="" method="GET">'.
-				 '<input type="hidden" name="page" value="egdel_sync" />'.
+				 '<input type="hidden" name="page" value="egdel_links_sync" />'.
 			     '<div class="tablenav">';
 			if ( $page_links )	echo '<div class="tablenav-pages">'.$page_links.'<br/>&nbsp;</div>';
 			echo __('Links per page: ', $this->textdomain);
@@ -1233,7 +1233,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 			$pages_list = array_chunk($this->linksdb_index , $links_per_page, true);
 
 			echo '<form method="POST" action="">'.
-					wp_nonce_field('egdel_sync').
+					wp_nonce_field('egdel_links_sync').
 				'<table class="wide widefat">'.
 			    '<thead><tr>'.
 				'<th rowspan="2">'.__('Link', $this->textdomain).'</th>'.
@@ -1286,7 +1286,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 						'</div>'.
 					'</div>';
 			}
-		} // End of display_synchronization_table
+		} // End of display_synchronization_table	
 
 	} // End of Class
 

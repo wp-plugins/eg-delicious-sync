@@ -43,7 +43,7 @@ $eg_delicious_public->set_textdomain(EG_DELICIOUS_TEXTDOMAIN);
 $eg_delicious_public->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_delicious_public->set_wp_versions('2.6', FALSE, FALSE, FALSE);
 $eg_delicious_public->set_php_version('4.3');
-$eg_delicious_public->set_stylesheets('eg-delicious.css', FALSE) ;
+// $eg_delicious_public->set_stylesheets('eg-delicious.css', FALSE) ;
 $eg_delicious_public->load();
 
 ?>

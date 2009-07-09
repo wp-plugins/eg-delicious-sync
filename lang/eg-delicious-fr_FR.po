@@ -299,7 +299,7 @@ msgstr "Sauvegarder les changements"
 
 #: eg-delicious-admin.inc.php:724
 msgid "Stop synchronization"
-msgstr "Arr&egrave;ter la synchronisation"
+msgstr "Arr&ecirc;ter la synchronisation"
 
 #: eg-delicious-admin.inc.php:742
 msgid "There is no link to synchronize. <br />Synchronization session is ended successfully.<br/>You can see the result of the synchronisation by <a href=\"%s\">browsing links</a>"
@@ -376,6 +376,8 @@ msgid "WordPress"
 msgstr "WordPress"
 
 #: eg-delicious-admin.inc.php:1238
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
 msgid "Tags"
 msgstr "Tags"
 
@@ -398,4 +400,127 @@ msgstr "Cat&eacute;gorie<br />sugg&eacute;r&eacute;e"
 #: eg-delicious-admin.inc.php:1246
 msgid "No links to display"
 msgstr "Pas de lien &agrave; afficher"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Enhanced blogroll for EG-Delicious"
+msgstr "Blogroll avanc&eacute;e pour EG-Delicious"
+
+#: eg-delicious-widgets.inc.php:
+msgid "General options"
+msgstr "Options g&eacute;n&eacute;rales"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Title"
+msgstr "Titre"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Columns"
+msgstr "Colonnes"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Minimum number of links"
+msgstr "Nombre minimum de liens"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories options"
+msgstr "Options de cat&eacute;gories"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories to display:"
+msgstr "Cat&eacute;gories &agrave; afficher:"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Group links by category"
+msgstr "Regrouper les liens par cat&eacute;gorie"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Links options"
+msgstr "Options pour les liens"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Page/Post ID to see all links"
+msgstr "ID de la page ou de l'article affichant tous les liens"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Show description"
+msgstr "Afficher la description"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Hide Invisible"
+msgstr "Cacher les liens invisibles"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order by"
+msgstr "Trier par"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Name"
+msgstr "Nom"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Rating"
+msgstr "Note"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Random"
+msgstr "Al&eacute;atoire"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order"
+msgstr "Ordre"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Ascending"
+msgstr "Ascendant"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Descending"
+msgstr "Descendant"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Number of links to display"
+msgstr "Nombre de liens &agrave; afficher"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Blogroll"
+msgstr "Blogroll"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Bookmarks"
+msgstr "Favoris"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "All"
+msgstr "Toutes"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Home"
+msgstr "Page d'accueil"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Categories"
+msgstr "Cat&eacute;gories"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Posts"
+msgstr "Articles"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, for"
+msgstr "Afficher le widget pour"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, when"
+msgstr "Afficher le widget pour"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Hide widget, when"
+msgstr "Cacher le widget pour"
 
