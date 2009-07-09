@@ -1,0 +1,545 @@
+
+#: eg-delicious-core.inc.php:37
+#: eg-delicious-admin.inc.php:88
+msgid "No error."
+msgstr ""
+
+#: eg-delicious-core.inc.php:38
+msgid "Unknown query."
+msgstr ""
+
+#: eg-delicious-core.inc.php:39
+msgid "Error while querying Delicious."
+msgstr ""
+
+#: eg-delicious-core.inc.php:40
+msgid "No data available from Delicious."
+msgstr ""
+
+#: eg-delicious-core.inc.php:41
+msgid "Parse error."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:89
+msgid "Error while requesting WordPress links."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:90
+msgid "Error while getting WordPress links categories."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:91
+msgid "You cannot access to the page. You haven't the \"Manage links\" capability. Please contact the blog administrator."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:93
+msgid "Error while querying Delicious."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:176
+msgid "Cannot get Delicious tags"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:183
+msgid "Cannot get Delicious bundles"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:163
+msgid "Delicious account"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:164
+msgid "Username"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:167
+msgid "Password"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:189
+msgid "WordPress Links"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:190
+msgid "Manage date"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:190
+msgid "WordPress doesn't set the \"update date\" when you create or edit a link. Do you want to change the date of links when you create or edit them?"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:193
+msgid "Links synchronisation"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:195
+msgid "WordPress links"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:195
+msgid "When a link exists in WordPress, and does NOT exist in Delicious, do you want to:"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:196
+msgid "Delete WordPress link"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:196
+msgid "Leave as-is"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:197
+msgid "Update"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:198
+msgid "Always update the WordPress links,"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:198
+msgid "Never update WordPress links"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:198
+msgid "Leave the plugin decide"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:200
+msgid "Default parameters"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:200
+msgid "Parameters to use when creating links in WordPress"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:201
+msgid "Link target: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:202
+msgid "Link visible: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:202
+msgid "Yes"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:202
+msgid "No"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:204
+msgid "Categories synchronisation"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:206
+msgid "Replace or update"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:206
+msgid "When a WordPress link is updated:"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:207
+msgid "Replace the existing categories by those coming from Delicious,"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:207
+msgid "Add categories coming from Delicious."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:207
+msgid "Keep the WordPress categories"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:209
+msgid "Allow multiple categories"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:209
+msgid "During category synchronisation:"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:209
+msgid "If you choose "Add categories" in the previous question, some links will have several categories, evenif you choose \"Allow only one category\"."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:210
+msgid "Allow multiple categories"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:210
+msgid "Allow only one category per WordPress link,"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:210
+msgid "Allow several categories per WordPress link."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:212
+msgid "Alignment key"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:212
+msgid "Do you want to synchronize the WordPress link categories with"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:212
+msgid "Click on <strong>Save changes</strong> button to change the following alignment table"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:218
+msgid "WordPress Categories"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:222
+msgid "Tags / Categories assignments"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:230
+msgid "Bundles / Categories assignments"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:235
+msgid "Other assignments"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:236
+msgid "Other item: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:237
+msgid "Not classified link: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:239
+msgid "Uninstall options"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:239
+msgid "Be careful: these actions cannot be cancelled. All plugins options will be deleted while plugin uninstallation."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:240
+msgid "Options"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:240
+msgid "Delete options during uninstallation"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:244
+msgid "Save changes"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:262
+msgid "EG-Delicious Options"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:272
+msgid "A synchronization is started by %1s, since %2s.<br />You cannot modify options now.<br />Please wait, and retry later."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:432
+msgid "Could not update link in the database"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:660
+msgid "Cannot collect last Delicious update date."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:667
+msgid "No synchronization was done yet."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:669
+msgid "Last synchronization date: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:674
+msgid "Last Delicious update: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:675
+msgid "Last WordPress update: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:681
+msgid "Start synchronization"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:699
+msgid "A synchronization is currently started by %s, please wait, and retry later."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:706
+msgid "Synchronization on-going, started on %s"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:709
+msgid "Do you want to continue this session, or restart a new one?"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:710
+msgid "Continue the current session"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:711
+msgid "Start a new session"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:712
+msgid "Stop the session"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:718
+msgid "Synchronization on-going, started on %s"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:723
+msgid "Update changes"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:724
+msgid "Stop synchronization"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:742
+msgid "There is no link to synchronize. <br />Synchronization session is ended successfully.<br/>You can see the result of the synchronisation by <a href=\"%s\">browsing links</a>"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:760
+msgid "Synchronisation failed"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:761
+msgid "Click <a href=\"%1s\">here</a> if you want to start a new session"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:784
+msgid "Error "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:802
+msgid "BlogRoll synchronization"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:17
+msgid "Unbundled tag"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:969
+msgid "Add to WP"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:970
+msgid "Update WP"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:971
+msgid "Delete WP"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1014
+msgid "Cannot get Delicious posts"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1021
+msgid "Cannot get Delicious tags"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1028
+msgid "Cannot get Delicious bundles"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1214
+msgid "Links per page: "
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1223
+msgid "Change"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1233
+msgid "Link"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1234
+msgid "Delicious"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1235
+msgid "Action"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1236
+msgid "WordPress"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1238
+msgid "Tags"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1239
+msgid "Bundles"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1240
+msgid "Last<br />Update"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1241
+msgid "Current<br />category"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1242
+msgid "Suggested<br/>category"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:1246
+msgid "No links to display"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:197
+msgid "When a link exist in WordPress AND Delicious databases, do you want: "
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Enhanced blogroll for EG-Delicious"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "General options"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Title"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Columns"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Minimum number of links"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories options"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories to display:"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Group links by category"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Links options"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Page/Post ID to see all links"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Show description"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Hide Invisible"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order by"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Name"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Count"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Rating"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Random"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Ascending"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Descending"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Number of links to display"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Page/Post ID to see all links"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Blogroll"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Bookmarks"
+msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "Show widget on pages"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "All"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Home"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Categories"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Posts"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Tags"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, for"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, when"
+msgstr ""
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Hide widget, when"
+msgstr ""
