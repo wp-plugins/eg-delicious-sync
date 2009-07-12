@@ -1,6 +1,6 @@
 <?php
 
- require_once('lib/eg-forms.inc.php');
+require_once('lib/eg-forms.inc.php');
 
 if (! class_exists('EG_Delicious_Admin')) {
 
@@ -10,6 +10,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 	define('EG_DELICIOUS_ERROR_USER_RIGHT', 12);
 	define('EG_DELICIOUS_ERROR_CONFIG', 	13);
 	define('EG_DELICIOUS_ERROR_DELQUERY',	14);
+	define('EG_DELICIOUS_ERROR_LISTCHG',	15);
 
 	define('EG_DELICIOUS_LINKS_PER_PAGE',	25);
 	define('EG_DELICIOUS_NOSYNC_ID', 		'nosync');
@@ -35,7 +36,8 @@ if (! class_exists('EG_Delicious_Admin')) {
 		'sync_status'				 => 'stopped',
 		'sync_date'					 => 0,
 		'sync_user'					 => '',
-		'last_sync_date' 			 => 0
+		'last_sync_date' 			 => 0,
+		'sync_tags_type'			 => 'update'
 	);
 
 	/**
@@ -67,9 +69,17 @@ if (! class_exists('EG_Delicious_Admin')) {
 		var $file_linksdb;
 
 		var $error_code;
+		var $error_msg;
+		var $error_details;
 
 		var $links_min_user_rights = 'manage_links';
+		var $tags_min_user_rights  = 'manage_categories';
 
+		var $HELP = array(
+			'sync_tags_type_update'  => 'All tags existing in Delicious and NOT in WordPress will be added in the WordPress database.',
+			'sync_tags_type_replace' => 'All tags existing in WordPress and NOT in Delicious will be deleted, and all tags existing in Delicious and NOT in WordPress will be added.'
+		);
+		
 		/**
 		 * plugins_loaded
 		 *
@@ -85,30 +95,31 @@ if (! class_exists('EG_Delicious_Admin')) {
 			parent::plugins_loaded();
 
 			$this->ERROR_MESSAGES = array(
-				EG_DELICIOUS_CORE_ERROR_NONE 	=> __('No error.', $this->textdomain),
-				EG_DELICIOUS_ERROR_GET_WPLINK	=> __('Error while requesting WordPress links.', $this->textdomain),
-				EG_DELICIOUS_ERROR_GET_WPCAT	=> __('Error while getting WordPress links categories.', $this->textdomain),
-				EG_DELICIOUS_ERROR_USER_RIGHT	=> __('You cannot access to the page. You haven\'t the "Manage links" capability. Please contact the blog administrator.', $this->textdomain),
-				EG_DELICIOUS_ERROR_CONFIG		=> __('Plugin not configured! Please go to <a href="'.admin_url('options-general.php?page=egdel_options').'">Settings / EG-Delicious</a> page to enter required parameters.', $this->textdomain),
-				EG_DELICIOUS_ERROR_DELQUERY		=> __('Error while querying Delicious.', $this->textdomain)
+				EG_DELICIOUS_CORE_ERROR_NONE 	=> 'No error.', 
+				EG_DELICIOUS_ERROR_GET_WPLINK	=> 'Error while requesting WordPress links.', 
+				EG_DELICIOUS_ERROR_GET_WPCAT	=> 'Error while getting WordPress links categories.', 
+				EG_DELICIOUS_ERROR_USER_RIGHT	=> 'You cannot access to the page. You haven\'t the "Manage links" capability. Please contact the blog administrator.',
+				EG_DELICIOUS_ERROR_CONFIG		=> 'Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters.',
+				EG_DELICIOUS_ERROR_DELQUERY		=> 'Error while querying Delicious.',
+				EG_DELICIOUS_ERROR_LISTCHG		=> 'Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended.',
 			);
 
 			// Add plugin options page
-			$this->add_page('options', 						/* page type: post, page, option, tool 	*/
-							'EG-Delicious Options',			/* Page title 							*/
-							'EG-Delicious',					/* Menu title 							*/
-							$this->links_min_user_rights, 	/* Access level / capability			*/
-							'egdel_options',				/* file 								*/
-							'options_page');				/* function								*/
+			$this->add_page('options', 							/* page type: post, page, option, tool 	*/
+							'EG-Delicious Options',				/* Page title 							*/
+							'EG-Delicious',						/* Menu title 							*/
+							$this->links_min_user_rights, 		/* Access level / capability			*/
+							'egdel_options',					/* file 								*/
+							'options_page');					/* function								*/
 
 			// Add links synchronisation page
 			$this->add_page('links',
-							'Delicious Blogroll Synchronisation',	/* Page title					*/
-							'Delicious Links Sync.',				/* Menu title 					*/
-							$this->links_min_user_rights, 			/* Access level / capability	*/
-							'egdel_links_sync',						/* file 						*/
-							'wp_links_delicious_sync');				/* function						*/
-							
+							'Blogroll Synchronisation',			/* Page title					*/
+							'Delicious Sync.',					/* Menu title 					*/
+							$this->links_min_user_rights, 		/* Access level / capability	*/
+							'egdel_links_sync',					/* file 						*/
+							'links_sync');						/* function						*/
+
 		} // End of plugins_loaded
 
 		/**
@@ -127,12 +138,12 @@ if (! class_exists('EG_Delicious_Admin')) {
 			$this->plugin_temp        = $this->plugin_path.'tmp/';
 			$this->file_linksdb       = $this->plugin_temp.'synchronize_links.txt';
 			$this->file_linksdb_index = $this->plugin_temp.'synchronize_links_index.txt';
-			
+
 			$this->load_options();
 
 			$this->delicious_data = & EG_Delicious_Core::get_instance(
-											$this->plugin_temp, 
-											$this->options['username'], 
+											$this->plugin_temp,
+											$this->options['username'],
 											$this->options['password']
 									);
 
@@ -141,11 +152,51 @@ if (! class_exists('EG_Delicious_Admin')) {
 			$this->current_wp_user	= $logged_user->display_name;
 			$this->datetime_format  = get_option('date_format').' '.get_option('time_format');
 
+			add_action('admin_notices', array(&$this, 'display_error'));
 			if ($this->options['wp_link_update']) {
 				add_action('edit_link', array(&$this, 'update_wp_link_date'));
 				add_action('add_link',  array(&$this, 'update_wp_link_date'));
 			}
 		} // End of admin_init
+
+		/**
+		 * check_bundles_tags_modification
+		 *
+		 * Check if bundles or tags changed since the last options saving
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param 	boolean		$display	TRUE to display error message, FALSE otherwise
+		 * @param 	boolean		$set_error	TRUE to set the error at plugin level
+		 * @return 	boolean					True if change, False if not change
+		 */
+		function check_bundles_tags_modification($display=TRUE, $set_error=TRUE) {
+
+			// Array_diff_key cannot be use because available only with PHP 5.
+
+			if ($this->options['sync_cat_type'] == 'tag') {
+				if (isset($this->options['tags_assignment'])) $table = array_keys($this->options['tags_assignment']);
+				$list  = array_keys($this->tags_list);
+			}
+			else {
+				if (isset($this->options['bundles_assignment'])) $table = array_keys($this->options['bundles_assignment']);
+				$list  = array_keys($this->bundles_list);			
+			}
+
+			$returned_code = FALSE;			
+			if (isset($table) && isset($list) && sizeof($table)>0 && sizeof($list)>0) {
+				// Array_diff_key cannot be use because available only with PHP 5.
+				$list_keys     = array_keys($list);
+				$table_keys    = array_keys($table);
+				$returned_code = (sizeof(array_diff($table, $list))>0 || sizeof(array_diff($list, $table))>0);
+			}
+			if ($returned_code) {
+				if ($set_error) $this->error_code = EG_DELICIOUS_ERROR_LISTCHG;
+				if ($display)   $this->display_error(EG_DELICIOUS_ERROR_LISTCHG);
+			}
+			return ($returned_code);
+
+		} // End of check_bundles_tags_modification
 
 		/**
 		 * add_form_setup
@@ -176,15 +227,19 @@ if (! class_exists('EG_Delicious_Admin')) {
 				if ($this->options['sync_cat_type'] == 'tag') {
 					$this->tags_list = $this->delicious_data->get_data('tags');
 					if ($this->tags_list === FALSE) {
-						$this->delicious_data->get_error($error_code, $error_msg);
-						$this->display_error($error_code, $error_msg.' '.__('Cannot get Delicious tags', $this->textdomain));
+						$this->delicious_data->get_error($this->error_code, $this->error_msg);
+						$this->error_details =  'Cannot get Delicious tags';
+						$this->display_error();
+
 					}
 				}
 				else {
 					$this->bundles_list = $this->delicious_data->get_data('bundles');
 					if ($this->bundles_list === FALSE) {
-						$this->delicious_data->get_error($error_code, $error_msg);
-						$this->display_error($error_code, $error_msg.' '.__('Cannot get Delicious bundles', $this->textdomain));
+						$this->delicious_data->get_error($this->error_code, $this->error_msg);
+						$this->error_details =  'Cannot get Delicious bundles';
+						$this->display_error();
+
 					}
 				}
 
@@ -205,7 +260,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 					$form->add_field($id_section, $id_group, 'select', 'Link target: ', 'sync_links_default_target', '', '', '', '', 'regular', array( 'none' => ' ', '_blank' => '_blank', '_top' => '_top') );
 					$form->add_field($id_section, $id_group, 'select', 'Link visible: ', 'sync_links_default_visible', '', '', '', '', 'regular', array( 'Y' => 'Yes', 'N' => 'No') );
 
-					$id_section = $form->add_section('Categories synchronisation');
+					$id_section = $form->add_section('Categories synchronization');
 
 					$id_group   = $form->add_group($id_section, 'Replace or update', 'When a WordPress link is updated:');
 					$form->add_field($id_section, $id_group, 'radio', 'Replace or update', 'sync_cat_update', '', '' , '','', 'regular', array('replace' => 'Replace the existing categories by those coming from Delicious,', 'update' => 'Add categories coming from Delicious.', 'none' => 'Keep the WordPress categories'));
@@ -240,6 +295,11 @@ if (! class_exists('EG_Delicious_Admin')) {
 					$form->add_field($id_section, $id_group, 'select', 'Other item: ', 'sync_links_other_item', '', '', '', '', 'regular', $wp_link_categories);
 					$form->add_field($id_section, $id_group, 'select', 'Not classified link: ', 'sync_links_not_classified', '', '', '', '', 'regular', $wp_link_categories);
 
+					$id_section = $form->add_section('Tags synchronization');
+					$id_group   = $form->add_group($id_section, 'Synchronization mode');
+					$form->add_field($id_section, $id_group, 'radio', 'Synchronization mode', 'sync_tags_type', '', '' , '','', 'regular', array('replace' => 'Replace the WordPress tags by those coming from Delicious,', 'update' => 'Update the WordPress tags with those coming from Delicious.'));
+					
+					
 					$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugins options will be deleted while plugin uninstallation.');
 					$id_group   = $form->add_group($id_section, 'Options');
 					$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation', 'uninstall_options');
@@ -291,11 +351,12 @@ if (! class_exists('EG_Delicious_Admin')) {
 					$this->options = $results;
 					$this->save_options();
 
-					if ($sync_cat_type     != $this->options['sync_cat_type'] || 
+					if ($sync_cat_type     != $this->options['sync_cat_type'] ||
 					    $username_password != $this->options['username'].$this->options['password']) {
 						$this->add_options_form();
 					}
 				}
+				$this->check_bundles_tags_modification();
 				$this->options_form->display_form($this->options);
 			}
 			echo '</div>';
@@ -324,16 +385,14 @@ if (! class_exists('EG_Delicious_Admin')) {
 				}
 				else {
 					$this->error_code = EG_DELICIOUS_ERROR_GET_WP_CATEGORIES;
+					return FALSE;
 				}
 			}
-			if ($this->error_code != EG_DELICIOUS_ERROR_NONE)
-				return FALSE;
-			else {
-				if ($add_nosync)
-					return ( array(EG_DELICIOUS_NOSYNC_ID => EG_DELICIOUS_NOSYNC_LABEL) + $this->wp_link_categories );
-				else
-					return ($this->wp_link_categories);
-			}
+			if ($add_nosync)
+				return ( array(EG_DELICIOUS_NOSYNC_ID => EG_DELICIOUS_NOSYNC_LABEL) + $this->wp_link_categories );
+			else
+				return ($this->wp_link_categories);
+
 		} // End of get_wp_links_categories
 
 		/**
@@ -346,7 +405,6 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param boolean	$add_nosync		Add a 'No synchronize' option
 		 * @return string					HTML select string
 		 */
-
 		function wp_categories_selector($add_nosync=FALSE, $index, $default='') {
 			if (!isset($this->wp_link_categories)) {
 				$this->get_wp_links_categories($add_nosync);
@@ -488,9 +546,42 @@ if (! class_exists('EG_Delicious_Admin')) {
 			}
 		} // End of load_options
 
+		/**
+		 * display_error
+		 *
+		 * Display Error message
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param 	integer	$error_code		Code of the error to display
+		 * @param	string	$error_msg		Error message
+		 * @return none
+		 */
+		function display_error($error_code=FALSE, $error_msg='', $error_details='') {
+
+			if ($error_code === FALSE) $error_code = $this->error_code;
+
+			if ($error_code != EG_DELICIOUS_ERROR_NONE) {
+				if ($error_msg == '') {
+					if ($this->error_msg == '') $error_msg = __($this->ERROR_MESSAGES[$error_code], $this->textdomain);
+					else $error_msg = __($this->error_msg, $this->textdomain);
+				}
+				if ($error_details != '') {
+					$error_details = __($error_details, $this->textdomain);
+				}
+				elseif ($this->error_details != '') {
+					$error_details = __($this->error_details, $this->textdomain);
+				}
+
+				echo '<div id="message" class="error fade"><p>'.
+					__('Error ', $this->textdomain).$error_code.': '.$error_msg.' '.$error_details.
+					'</p></div>';
+			}
+		} // End of display_error
+
 
 		/**
-		 * change_wp_link_date
+		 * links_sync_change_date
 		 *
 		 * Change 'link_updated' field of the wp_link table
 		 *
@@ -500,7 +591,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param	int		$timestamp		unix timestamp
 		 * @return 	boolean					TRUE if all is OK, FALSE otherwise
 		 */
-		function change_wp_link_date($link_id, $timestamp) {
+		function links_sync_change_date($link_id, $timestamp) {
 			global $wpdb;
 
 			$query = 'UPDATE '.$wpdb->links.' SET link_updated=FROM_UNIXTIME(%1s) WHERE link_id=%2s';
@@ -510,10 +601,10 @@ if (! class_exists('EG_Delicious_Admin')) {
 				else
 					return 0;
 			} // End of if query
-		} // End of change_wp_link_date
+		} // End of links_sync_change_date
 
 		/**
-		 * synchronization_update
+		 * links_sync_update
 		 *
 		 * Get response from the synchronization form, and operate actions
 		 *
@@ -522,7 +613,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param none
 		 * @return none
 		 */
-		function synchronization_update() {
+		function links_sync_update() {
 
 			$this->egdel_sync_submit = FALSE;
 			if (isset($_POST['egdel_sync_start']))        $this->egdel_sync_submit = 'start';
@@ -530,6 +621,14 @@ if (! class_exists('EG_Delicious_Admin')) {
 			elseif (isset($_POST['egdel_sync_restart']))  $this->egdel_sync_submit = 'restart';
 			elseif (isset($_POST['egdel_sync_save']))     $this->egdel_sync_submit = 'save';
 			elseif (isset($_POST['egdel_sync_continue'])) $this->egdel_sync_submit = 'continue';
+
+			if ($this->options['sync_status'] == 'started') {
+				if (! isset($this->links_db) && file_exists($this->file_linksdb))
+					$this->links_db = unserialize(file_get_contents($this->file_linksdb));
+
+				if (! isset($this->linksdb_index) && file_exists($this->file_linksdb))
+					$this->linksdb_index = unserialize(file_get_contents($this->file_linksdb_index));
+			}
 
 			if ($this->egdel_sync_submit !== FALSE) {
 
@@ -546,7 +645,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 					break;
 
 					case 'start':
-						$this->build_links_synchronisation_list();
+						$this->links_sync_build_list();
 						if ($this->error_code == EG_DELICIOUS_ERROR_NONE) {
 							$this->options['sync_status'] = 'started';
 							$this->options['sync_date']   = time();
@@ -600,7 +699,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 										if (is_array($categories[$index])) $link['link_category'] = $categories[$index];
 										else $link['link_category'] = array($categories[$index]);
 										$link_id = wp_insert_link($link);
-										$this->change_wp_link_date($link_id, $link['link_updated']);
+										$this->links_sync_change_date($link_id, $link['link_updated']);
 									}
 								break;
 							}
@@ -629,130 +728,134 @@ if (! class_exists('EG_Delicious_Admin')) {
 					break;
 				} // End of switch
 			} // Submit button pressed?
-		} // End of synchronization_update
+		} // End of links_sync_update
 
 		/**
-		 * synchronization_stopped
+		 * links_sync_compute
 		 *
-		 * Display synchronization page when synchronization is stopped
+		 * Collect data from WordPress and Delicious
 		 *
 		 * @package EG-Delicious
 		 *
 		 * @param none
 		 * @return none
 		 */
-		function synchronization_stopped() {
+		function links_sync_compute() {
 			global $wpdb;
 
-			// Collect last WordPress links update
-			$this->last_wp_update = wp_cache_get('last_wp_update', $this->cache_group);
-			if ($this->last_wp_update === FALSE) {
-				$results = $wpdb->get_results( 'SELECT UNIX_TIMESTAMP(MAX(link_updated)) as wp_last_update FROM '.$wpdb->links );
-				if (sizeof($results) == 0 || $results[0]->wp_last_update == 0) {
-					$this->last_wp_update = FALSE;
-					$last_wp_upd = __('Unknown', $this->delicious);
-				}
-				else {
-					$this->last_wp_update = $results[0]->wp_last_update;
-					wp_cache_set('last_wp_update', $this->last_wp_update, $this->cache_group);
-					$last_wp_upd = date_i18n($this->datetime_format, $this->last_wp_update);
-				}
-			}
+			switch ($this->options['sync_status']) {
 
-			// Collect last Delicious link update
-			$this->last_delicious_update = $this->delicious_data->get_data('update');
-			if ($this->last_delicious_update === FALSE) {
-				$this->delicious_data->get_error($error_code, $error_msg);
-				$this->display_error($error_code, $error_msg.' '.__('Cannot collect last Delicious update date.', $this->textdomain));
-				$last_del_upd = __('Unknown', $this->delicious);
-			}
-			else
-				$last_del_upd = date_i18n($this->datetime_format, $this->get_local_time($this->last_delicious_update));
+				case 'stopped':
+					// Collect last WordPress links update
+					$this->last_wp_update = wp_cache_get('last_wp_update', $this->cache_group);
+					if ($this->last_wp_update === FALSE) {
+						$results = $wpdb->get_results( 'SELECT UNIX_TIMESTAMP(MAX(link_updated)) as wp_last_update FROM '.$wpdb->links );
+						if (sizeof($results) != 0 && $results[0]->wp_last_update != 0) {
+							$this->last_wp_update = $results[0]->wp_last_update;
+							wp_cache_set('last_wp_update', $this->last_wp_update, $this->cache_group);
+						}
+					}
 
-			if ($this->options['last_sync_date'] == 0)
-				$last_sync_date = __('No synchronization was done yet.', $this->textdomain);
-			else
-				$last_sync_date =  __('Last synchronization date: ', $this->textdomain).
-									date_i18n($this->datetime_format, $this->options['last_sync_date']);
+					// Collect last Delicious link update
+					$this->last_delicious_update = $this->delicious_data->get_data('update');
+					if ($this->last_delicious_update === FALSE) {
+						$this->delicious_data->get_error($this->error_code, $this->error_msg);
+						$this->error_details = 'Cannot collect last Delicious update date.';
+					}
+				break;
 
-
-			echo '<p>'.
-				__('Last Delicious update: ', $this->textdomain).$last_del_upd.',<br />'.
-				__( 'Last WordPress update: ', $this->textdomain).$last_wp_upd.',<br />'.
-				$last_sync_date.
-				'</p>';
-
-			echo '<form method="POST" action=""><p class="submit">'.
-				 wp_nonce_field('egdel_links_sync').
-				 '<input class="button" type="submit" name="egdel_sync_start" value="'.__('Start synchronization', $this->textdomain).'" />'.'</p></form>';
-
-		} // End of synchronization_stopped
+			} // End of switch
+		} // End of links_sync_compute
 
 		/**
-
-		 * synchronization_started
+		 * links_sync_display_page
 		 *
-		 * Display synchronization page when synchronization is started
+		 *
 		 *
 		 * @package EG-Delicious
 		 *
 		 * @param none
 		 * @return none
 		 */
-		function synchronization_started() {
-			if ($this->options['sync_user'] != $this->current_wp_user) {
-				echo '<p>'.
-					sprintf(__('A synchronization is currently started by %s, please wait, and retry later.', $this->textdomain), $this->options['sync_user']).'</p>';
-			}
-			else {
-				$referer = wp_get_referer();
-				if (strpos($referer, 'page=egdel_links_sync') === FALSE && $this->egdel_sync_submit === FALSE) {
-					echo '<form method="POST" action="">'.
-						'<p>'.wp_nonce_field('egdel_links_sync').
-						sprintf(__('Synchronization on-going, started on %s', $this->textdomain),
-							date_i18n($this->datetime_format, $this->options['sync_date'])).
-						'</p>'.
-						'<p class="submit">'.__('Do you want to continue this session, or restart a new one?', $this->textdomain).'<br />'.
-						'<input type="submit" name="egdel_sync_continue" value="'.__('Continue the current session', $this->textdomain).'" /> '.
-						'<input type="submit" name="egdel_sync_restart" value="'.__('Start a new session', $this->textdomain).'" /> '.
-						'<input type="submit" name="egdel_sync_stop" value="'.__('Stop the session', $this->textdomain).'" />'.
-						'</p>'.
-						'</form>';
-				}
-				else {
+		function links_sync_display_page() {
+
+			$this->display_error();
+
+			switch ($this->options['sync_status']) {
+				case 'started':
+					if ($this->options['sync_user'] != $this->current_wp_user) {
+						echo '<p>'.
+							sprintf(__('A synchronization is currently started by %s, please wait, and retry later.', $this->textdomain), $this->options['sync_user']).'</p>';
+					}
+					else {
+						$referer = wp_get_referer();
+						if (strpos($referer, 'page=egdel_links_sync') === FALSE && $this->egdel_sync_submit === FALSE) {
+							echo '<form method="POST" action="">'.
+								'<p>'.wp_nonce_field('egdel_links_sync').
+								sprintf(__('Synchronization on-going, started on %s', $this->textdomain),
+									date_i18n($this->datetime_format, $this->options['sync_date'])).
+								'</p>'.
+								'<p class="submit">'.__('Do you want to continue this session, or restart a new one?', $this->textdomain).'<br />'.
+								'<input type="submit" name="egdel_sync_continue" value="'.__('Continue the current session', $this->textdomain).'" /> '.
+								'<input type="submit" name="egdel_sync_restart" value="'.__('Start a new session', $this->textdomain).'" /> '.
+								'<input type="submit" name="egdel_sync_stop" value="'.__('Stop the session', $this->textdomain).'" />'.
+								'</p>'.
+								'</form>';
+						}
+						else {
+							echo '<p>'.
+								sprintf(__('Synchronization on-going, started on %s', $this->textdomain),
+									date_i18n($this->datetime_format, $this->options['sync_date'])).
+								'</p>';
+							$this->links_sync_display_list();
+						} // End of check referrer
+					} // End of synchronization start by current user
+
+				break;
+
+				case 'stopped':
+					if ($this->last_wp_update === FALSE) $last_wp_upd = __('Unknown', $this->delicious);
+					else $last_wp_upd = date_i18n($this->datetime_format, $this->last_wp_update);
+
+					if ($this->last_delicious_update === FALSE) $last_del_upd = __('Unknown', $this->delicious);
+					else $last_del_upd = date_i18n($this->datetime_format, $this->get_local_time($this->last_delicious_update));
+
+					if ($this->options['last_sync_date'] == 0)
+						$last_sync_date = __('No synchronization was done yet.', $this->textdomain);
+					else
+						$last_sync_date = __('Last synchronization date: ', $this->textdomain).
+											date_i18n($this->datetime_format, $this->options['last_sync_date']);
+
 					echo '<p>'.
-						sprintf(__('Synchronization on-going, started on %s', $this->textdomain),
-							date_i18n($this->datetime_format, $this->options['sync_date'])).
+						__('Last Delicious update: ', $this->textdomain).$last_del_upd.',<br />'.
+						__( 'Last WordPress update: ', $this->textdomain).$last_wp_upd.',<br />'.
+						$last_sync_date.
 						'</p>';
-					$this->display_synchronization_table();
-					// '<form method="POST" action="">'.wp_nonce_field('egdel_links_sync').
-					echo '<p class="submit"><input class="button" type="submit" name="egdel_sync_save" value="'.__('Update changes', $this->textdomain).'" />'.'&nbsp;&nbsp;'.
-						'<input class="button" type="submit" name="egdel_sync_stop" value="'.__('Stop synchronization', $this->textdomain).'" />'.
-						'</p></form>';
-				} // End of check referrer
-			} // End of synchronization start by current user
-		} // End of synchronization_started
+
+					echo '<form method="POST" action=""><p class="submit">'.
+						 wp_nonce_field('egdel_links_sync').
+						 '<input class="button" type="submit" name="egdel_sync_start" value="'.__('Start synchronization', $this->textdomain).'" />'.'</p></form>';
+
+				break;
+
+				case 'ended':
+					echo '<p>'.
+						sprintf(__('There is no link to synchronize. <br />Synchronization session is ended successfully.<br/>You can see the result of the synchronisation by <a href="%s">browsing links</a>', $this->textdomain), admin_url('link-manager.php')).'</p>';
+					$this->options['sync_status'] = 'stopped';
+					$this->save_options();
+				break;
+
+				case 'error':
+					echo '<p>'.
+						__('Synchronisation failed', $this->textdomain).',<br />'.
+						sprintf(__('Click <a href="%1s">here</a> if you want to start a new session', $this->textdomain), admin_url('link-manager.php?page=egdel_links_sync')).'</p>';
+					$this->options['sync_status'] = 'stopped';
+					$this->save_options();
+			} // End of switch
+		} // End of links_sync_display_page
 
 		/**
-		 * synchronization_ended
-		 *
-		 * Display synchronization page when synchronization is ended successfully
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param	none
-		 * @return	none
-		 */
-		function synchronization_ended() {
-			echo '<p>'.
-				sprintf(__('There is no link to synchronize. <br />Synchronization session is ended successfully.<br/>You can see the result of the synchronisation by <a href="%s">browsing links</a>', $this->textdomain), admin_url('link-manager.php')).
-				'</p>';
-			$this->options['sync_status'] = 'stopped';
-			$this->save_options();
-		} // End of synchronization_ended
-
-		/**
-		 * synchronization_error
+		 * links_sync
 		 *
 		 *
 		 *
@@ -761,238 +864,36 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param none
 		 * @return none
 		 */
-		function synchronization_error() {
-			echo '<p>'.
-				__('Synchronisation failed', $this->textdomain).',<br />'.
-				sprintf(__('Click <a href="%1s">here</a> if you want to start a new session', $this->textdomain), admin_url('link-manager.php?page=egdel_links_sync')).'</p>';
-			$this->options['sync_status'] = 'stopped';
-			$this->save_options();
-		} // End of synchronization_error
-
-		/**
-		 * display_error
-		 *
-		 * Display Error message
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param 	integer	$error_code		Code of the error to display
-		 * @param	string	$error_msg		Error message
-		 * @return none
-		 */
-		function display_error($error_code=FALSE, $error_msg='') {
-
-			if ($error_code === FALSE) $error_code = $this->error_code;
-
-			if ($error_code != EG_DELICIOUS_ERROR_NONE) {
-				if ($error_msg == '') $error_msg = $this->ERROR_MESSAGES[$this->error_code];
-				echo '<div id="message" class="error fade"><p>'.
-					__('Error ', $this->textdomain).$error_code.': '.$error_msg.
-					'</p></div>';
-			}
-		} // End of display_error
-
-		/**
-		 * wp_links_delicious_sync
-		 *
-		 *
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function wp_links_delicious_sync() {
+		function links_sync() {
 			echo '<div id="icon-link-manager" class="icon32"><br /></div>'.
 				 '<div class="wrap">'.
 				 '<h2>'.__('BlogRoll synchronization', $this->textdomain).'</h2>';
 
 			if ($this->check_requirements(TRUE)) {
 
-				if (! current_user_can($this->links_min_user_rights)) {
-					$this->error_code = EG_DELICIOUS_ERROR_USER_RIGHT;
+				if (! current_user_can($this->links_min_user_rights)) $this->error_code = EG_DELICIOUS_ERROR_USER_RIGHT;
+				elseif (! $this->is_user_defined()) $this->error_code = EG_DELICIOUS_ERROR_CONFIG;
+
+				if ($error_code != EG_DELICIOUS_ERROR_NONE) {
 					$this->display_error();
 				}
 				else {
-					if (! $this->is_user_defined()) {
-						$this->error_code = EG_DELICIOUS_ERROR_CONFIG;
-						$this->display_error();
-					}
-					else {
+					// Event collect (three submit buttons: Start, Stop and Update.
+					$this->links_sync_update();
 
-						if ($this->options['sync_status'] == 'started') {
-							if (! isset($this->links_db) && file_exists($this->file_linksdb))
-								$this->links_db = unserialize(file_get_contents($this->file_linksdb));
+					// Collect data from WordPress and Delicious
+					$this->links_sync_compute();
 
-							if (! isset($this->linksdb_index) && file_exists($this->file_linksdb))
-								$this->linksdb_index = unserialize(file_get_contents($this->file_linksdb_index));
-						}
+					// Display pages
+					$this->links_sync_display_page();
 
-						// Event collect (three submit buttons: Start, Stop and Update.
-						$this->synchronization_update();
-
-						switch ($this->options['sync_status']) {
-							case 'started':
-								$this->synchronization_started();
-							break;
-
-							case 'stopped':
-								$this->synchronization_stopped();
-							break;
-
-							case 'ended':
-								$this->synchronization_ended();
-							break;
-
-							case 'error':
-								$this->synchronization_error();
-						}
-					} // End if user_defined
-				} // End if user can manage links
-			} // End of check_requirements
+				} // End of no error
+			} // End of requirements ok
 			echo '</div>';
-		} // End of wp_links_delicious_sync
+		} // End of links_sync
 
 		/**
-		 * tags_to_bundle
-		 *
-		 * Define bundles <- tags associations table
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function tags_to_bundle() {
-
-			if (isset($this->tags_list) && isset($this->bundles_list)) {
-				foreach ($this->bundles_list as $bundle => $bundle_attrs) {
-					foreach ($bundle_attrs['TAGS'] as $tag) {
-						$this->tags_list[$tag]['bundles'][] = $bundle;
-					}
-				}
-				$this->bundles_tags_assoc = TRUE;
-			}
-		} // End of tags_to_bundle
-
-		/**
-		 * get_bundles_from_tags
-		 *
-		 * Define list of bundles from a list of tags.
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param array		$tags		list of tags
-		 * @return array				list of bundles
-		 */
-		function get_bundles_from_tags($tags) {
-
-			if ($this->bundles_tags_assoc === FALSE) {
-				$this->tags_to_bundle();
-			}
-			$bundles = array();
-			foreach ($tags as $tag) {
-				if (isset($this->tags_list[$tag]['bundles'])) {
-					$temp = $bundles;
-					$bundles = array_merge($temp, $this->tags_list[$tag]['bundles']);
-				}
-				else {
-					$bundles[] = __(EG_DELICIOUS_UNBUNDLED, $this->textdomain);
-				}
-			}
-			return ($bundles);
-		} // End of get_bundles_from_tags
-
-		/**
-		 * suggested_categories
-		 *
-		 * Generate list of categories from list of bundles
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function suggested_categories($tags, $bundles, $existing_categories) {
-
-			$mode = $this->options['sync_cat_update'];
-			if ($mode == 'none') {
-				$categories_list = $existing_categories;
-			}
-			else {
-				if ($this->options['sync_links_type'] == 'tag') {
-					$sync_table = $this->options['tags_assignment'];
-					$list       = $tags;
-				}
-				else {
-					$sync_table = $this->options['bundles_assignment'];
-					$list       = $bundles;
-				}
-
-				if ($mode == 'update') $categories_list = $existing_categories;
-				else $categories_list = array();
-
-				if (sizeof($list) == 0) {
-					$categories_list = $this->options['sync_links_not_classified'];
-				}
-				else {
-					foreach ($list as $item_name) {
-						if ( isset($sync_table[$item_name]))
-							$new_category = $sync_table[$item_name];
-						else
-							$new_category = $this->options['sync_links_other_item'];
-
-						if ($new_categoty != EG_DELICIOUS_NOSYNC_ID)
-							$categories_list[] = $new_category;
-					} // End foreach $bundles_list
-
-					if ($this->options['sync_cat_multi'] == 'single')  {
-						$pareto_table = array_count_values($categories_list);
-						arsort($pareto_table);
-						$categories_list = array( key($pareto_table ) );
-					}
-					else {
-						$categories_list = array_unique($categories_list);
-					}
-				}
-			} // End of $mode != none
-			return ($categories_list);
-		} // End of suggested_categories
-
-		/**
-		 * select_action
-		 *
-		 * Build a HTML select/option form.
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function select_action($index, $default) {
-			$actions_list = array(
-				'none'    => __(' ', $this->textdomain),
-				'add_wp'  => __('Add to WP', $this->textdomain),
-				'upd_wp'  => __('Update WP', $this->textdomain),
-				'del_wp'  => __('Delete WP', $this->textdomain)
-			);
-			$string  = '<select name="egdel_action['.$index.']">';
-			if ($default == 'none') {
-				$string .= '<option value="none" selected>'.$actions_list['none'].'</option>'.
-							'<option value="del_wp">'.$actions_list['del_wp'].'</option>'.
-							'<option value="upd_wp">'.$actions_list['upd_wp'].'</option>';
-			}
-			else {
-				$string .= '<option value="none">'.$actions_list['none'].'</option>'.
-							'<option value="'.$default.'" selected>'.$actions_list[$default].'</option>';
-			}
-			$string .= '</select>';
-
-			return ($string);
-		} // End of select_action
-
-		/**
-		 * build_links_synchronisation_list
+		 * links_sync_build_list
 		 *
 		 *
 		 *
@@ -1001,12 +902,11 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param none
 		 * @return none
 		 */
-		function build_links_synchronisation_list($update_sync = FALSE) {
+		function links_sync_build_list($update_sync = FALSE) {
 			global $wpdb;
 
 			$this->error_code = EG_DELICIOUS_ERROR_NONE;
-
-			$sync_wp_cleanup = ($this->options['sync_links_wp_del'] && !$update_sync);
+			$sync_wp_cleanup  = ($this->options['sync_links_wp_del'] && !$update_sync);
 
 			// Get the date since last update
 			if ($update_sync) $update_sync = $this->get_local_time($this->options['last_sync_date']);
@@ -1017,27 +917,29 @@ if (! class_exists('EG_Delicious_Admin')) {
 			if ($this->posts_list === FALSE) {
 				$this->error_code = EG_DELICIOUS_ERROR_DELQUERY;
 				$this->delicious_data->get_error($this->error_code, $this->error_msg);
-				$this->display_error($this->error_code, $this->error_msg.' '.__('Cannot get Delicious posts', $this->textdomain));
+				$this->error_details =  'Cannot get Delicious posts';
 			}
 			else {
 				$this->tags_list = $this->delicious_data->get_data('tags');
 				if ($this->tags_list === FALSE) {
 					$this->error_code = EG_DELICIOUS_ERROR_DELQUERY;
 					$this->delicious_data->get_error($this->error_code, $this->error_msg);
-					$this->display_error($this->error_code, $this->error_msg.' '.__('Cannot get Delicious tags', $this->textdomain));
+					$this->error_details =  'Cannot get Delicious tags';
 				}
 				else {
 					$this->bundles_list = $this->delicious_data->get_data('bundles');
 					if ($this->bundles_list === FALSE) {
 						$this->error_code = EG_DELICIOUS_ERROR_DELQUERY;
 						$this->delicious_data->get_error($this->error_code, $this->error_msg);
-						$this->display_error($this->error_code, $this->error_msg.' '.__('Cannot get Delicious bundles', $this->textdomain));
+						$this->error_details = 'Cannot get Delicious bundles';
 					}
 				}
 			}
 
 			if ( $this->posts_list!==FALSE && $this->tags_list!==FALSE && $this->bundles_list!==FALSE ) {
 
+				$this->check_bundles_tags_modification(TRUE, FALSE);
+				
 				// We have Delicious links.
 				// Prepare WordPress List
 				$wp_links_list = wp_cache_get('wp_links_list', $this->cache_group);
@@ -1153,37 +1055,15 @@ if (! class_exists('EG_Delicious_Admin')) {
 					}
 					@fclose($fd);
 				}
-				if ($this->error_code != EG_DELICIOUS_ERROR_NONE) {
-					$this->display_error();
-				}
+				//if ($this->error_code != EG_DELICIOUS_ERROR_NONE) {
+				//	$this->display_error();
+				//}
 			} /* End synchro ok */
 
-		} // End of build_links_synchronisation_list
-	
-		/**
-		 * html_select
-		 *
-		 * Build a html select string from categories' list
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param string	$select_name	Name/id of the select
-		 * @param string	$default		default option
-		 * @return string					html code
-		 */
-		function html_select($list, $select_name, $default=FALSE) {
-			$string = '<select name="'.$select_name.'">';
-			foreach($list as $key => $value) {
-				if ($default!==FALSE && $default == $key) $selected = 'selected';
-				else $selected = '';
-				$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
-			}
-			$string .= '</select>';
-			return ($string);
-		} /* End of html_select */
+		} // End of links_sync_build_list
 
 		/**
-		 * display_synchronization_table
+		 * links_sync_display_list
 		 *
 		 * Display table with all links and actions
 		 *
@@ -1192,7 +1072,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @param none
 		 * @return none
 		 */
-		function display_synchronization_table() {
+		function links_sync_display_list() {
 
 			if (isset($_GET['paged'])) $page_number = $_GET['paged'];
 			else $page_number = 1;
@@ -1234,7 +1114,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 
 			echo '<form method="POST" action="">'.
 					wp_nonce_field('egdel_links_sync').
-				'<table class="wide widefat">'.
+				'<table class="wide widefat egdel_links_sync">'.
 			    '<thead><tr>'.
 				'<th rowspan="2">'.__('Link', $this->textdomain).'</th>'.
 				'<th colspan="3">'.__('Delicious', $this->textdomain).'</th>'.
@@ -1266,7 +1146,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 						'<td>'.(sizeof($attrs['tags'])==0?'&nbsp;':implode(',<br />',$attrs['tags'])).'</td>'.
 						'<td>'.($attrs['bundles']==''?'&nbsp;':implode(',<br />',$attrs['bundles'])).'</td>'.
 						'<td>'.($attrs['link_updated']==0?'&nbsp;':date_i18n($this->datetime_format, $attrs['link_updated'] )).'</td>'.
-						'<td>'.$this->select_action($index, $attrs['action']).'</td>'.
+						'<td>'.$this->links_sync_select_action($index, $attrs['action']).'</td>'.
 						'<td>'.($attrs['link_cat_names']==''?'&nbsp;':$attrs['link_cat_names']).'</td>';
 					if ($this->options['sync_cat_multi'] == 'multi') {
 						echo '<td>'.$this->wp_categories_checkbox($index, $attrs['suggested_category']).'</td>';
@@ -1286,7 +1166,170 @@ if (! class_exists('EG_Delicious_Admin')) {
 						'</div>'.
 					'</div>';
 			}
-		} // End of display_synchronization_table	
+			echo '<p class="submit"><input class="button" type="submit" name="egdel_sync_save" value="'.__('Update changes', $this->textdomain).'" />'.'&nbsp;&nbsp;'.
+				'<input class="button" type="submit" name="egdel_sync_stop" value="'.__('Stop synchronization', $this->textdomain).'" />'.
+				'</p></form>';
+		} // End of links_sync_display_list
+
+		/**
+		 * tags_to_bundle
+		 *
+		 * Define bundles <- tags associations table
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function tags_to_bundle() {
+
+			if (isset($this->tags_list) && isset($this->bundles_list)) {
+				foreach ($this->bundles_list as $bundle => $bundle_attrs) {
+					foreach ($bundle_attrs['TAGS'] as $tag) {
+						$this->tags_list[$tag]['bundles'][] = $bundle;
+					}
+				}
+				$this->bundles_tags_assoc = TRUE;
+			}
+		} // End of tags_to_bundle
+
+		/**
+		 * get_bundles_from_tags
+		 *
+		 * Define list of bundles from a list of tags.
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param array		$tags		list of tags
+		 * @return array				list of bundles
+		 */
+		function get_bundles_from_tags($tags) {
+
+			if ($this->bundles_tags_assoc === FALSE) {
+				$this->tags_to_bundle();
+			}
+			$bundles = array();
+			foreach ($tags as $tag) {
+				if (isset($this->tags_list[$tag]['bundles'])) {
+					$temp = $bundles;
+					$bundles = array_merge($temp, $this->tags_list[$tag]['bundles']);
+				}
+				else {
+					$bundles[] = __(EG_DELICIOUS_UNBUNDLED, $this->textdomain);
+				}
+			}
+			return ($bundles);
+		} // End of get_bundles_from_tags
+
+		/**
+		 * suggested_categories
+		 *
+		 * Generate list of categories from list of bundles
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function suggested_categories($tags, $bundles, $existing_categories) {
+
+			$mode = $this->options['sync_cat_update'];
+			if ($mode == 'none') {
+				$categories_list = $existing_categories;
+			}
+			else {
+				if ($this->options['sync_links_type'] == 'tag') {
+					$sync_table = $this->options['tags_assignment'];
+					$list       = $tags;
+				}
+				else {
+					$sync_table = $this->options['bundles_assignment'];
+					$list       = $bundles;
+				}
+
+				if ($mode == 'update') $categories_list = $existing_categories;
+				else $categories_list = array();
+
+				if (sizeof($list) == 0) {
+					$categories_list = $this->options['sync_links_not_classified'];
+				}
+				else {
+					foreach ($list as $item_name) {
+						if ( isset($sync_table[$item_name]))
+							$new_category = $sync_table[$item_name];
+						else
+							$new_category = $this->options['sync_links_other_item'];
+
+						if ($new_categoty != EG_DELICIOUS_NOSYNC_ID)
+							$categories_list[] = $new_category;
+					} // End foreach $bundles_list
+
+					if ($this->options['sync_cat_multi'] == 'single')  {
+						$pareto_table = array_count_values($categories_list);
+						arsort($pareto_table);
+						$categories_list = array( key($pareto_table ) );
+					}
+					else {
+						$categories_list = array_unique($categories_list);
+					}
+				}
+			} // End of $mode != none
+			return ($categories_list);
+		} // End of suggested_categories
+
+		/**
+		 * links_sync_select_action
+		 *
+		 * Build a HTML select/option form.
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function links_sync_select_action($index, $default) {
+			$actions_list = array(
+				'none'    => __(' ', $this->textdomain),
+				'add_wp'  => __('Add to WP', $this->textdomain),
+				'upd_wp'  => __('Update WP', $this->textdomain),
+				'del_wp'  => __('Delete from WP', $this->textdomain)
+			);
+			$string  = '<select name="egdel_action['.$index.']">';
+			if ($default == 'none') {
+				$string .= '<option value="none" selected>'.$actions_list['none'].'</option>'.
+							'<option value="del_wp">'.$actions_list['del_wp'].'</option>'.
+							'<option value="upd_wp">'.$actions_list['upd_wp'].'</option>';
+			}
+			else {
+				$string .= '<option value="none">'.$actions_list['none'].'</option>'.
+							'<option value="'.$default.'" selected>'.$actions_list[$default].'</option>';
+			}
+			$string .= '</select>';
+
+			return ($string);
+		} // End of links_sync_select_action
+
+		/**
+		 * html_select
+		 *
+		 * Build a html select string from categories' list
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param string	$select_name	Name/id of the select
+		 * @param string	$default		default option
+		 * @return string					html code
+		 */
+		function html_select($list, $select_name, $default=FALSE) {
+			$string = '<select name="'.$select_name.'">';
+			foreach($list as $key => $value) {
+				if ($default!==FALSE && $default == $key) $selected = 'selected';
+				else $selected = '';
+				$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+			}
+			$string .= '</select>';
+			return ($string);
+		} /* End of html_select */
 
 	} // End of Class
 
@@ -1300,8 +1343,9 @@ $eg_delicious_admin = new EG_Delicious_Admin('EG-Delicious',
 $eg_delicious_admin->set_textdomain(EG_DELICIOUS_TEXTDOMAIN);
 $eg_delicious_admin->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_delicious_admin->set_wp_versions('2.6',	FALSE, FALSE, FALSE);
+$eg_delicious_admin->set_stylesheets(FALSE, 'eg-delicious-admin.css') ;
 if (function_exists('wp_remote_request'))
-	$eg_delicious_admin->set_php_version('4.3');
+	$eg_delicious_admin->set_php_version('4.3', FALSE, 'curl');
 else
 	$eg_delicious_admin->set_php_version('4.3', 'allow_url_fopen');
 

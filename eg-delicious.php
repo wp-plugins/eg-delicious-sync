@@ -3,7 +3,7 @@
 Plugin Name: EG-Delicious
 Plugin URI: http://www.emmanuelgeorjon.com/en/eg-delicious-sync-1791
 Description: Manage Delicious links (Import into WordPress database)
-Version: 0.7.1
+Version: 0.7.2
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,12 +26,12 @@ Author URI: http://www.emmanuelgeorjon.com/
 */
 
 define('EG_DELICIOUS_COREFILE', 	 __FILE__);
-define('EG_DELICIOUS_VERSION', 	  	 '0.7.1');
+define('EG_DELICIOUS_VERSION', 	  	 '0.7.2');
 define('EG_DELICIOUS_OPTIONS_ENTRY', 'EG-Delicious-Options');
 define('EG_DELICIOUS_TEXTDOMAIN', 	 'eg-delicious');
 define('EG_DELICIOUS_CACHE_GROUP',	 'EG-Delicious');
 
-define('EG_DELICIOUS_DEBUG_MODE',	 FALSE);
+define('EG_DELICIOUS_DEBUG_MODE',	     FALSE);
 
 require_once('lib/eg-plugin.inc.php');
 require_once('eg-delicious-core.inc.php');
@@ -43,5 +43,13 @@ else {
 	require_once('eg-delicious-public.inc.php');
 }
 
+if (version_compare($wp_version, '2.8', '<')) {
+	require_once('lib/eg-widgets.inc.php');
+	require_once('eg-delicious-widgets_pre_28.inc.php');
+}
+else {
+	require_once('lib/eg-widgets280.inc.php');
+	require_once('eg-delicious-widgets.inc.php');
+}
 
 ?>

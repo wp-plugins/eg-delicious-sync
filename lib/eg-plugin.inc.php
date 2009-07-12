@@ -357,16 +357,7 @@ if (!class_exists('EG_Plugin_103')) {
 			$this->widgets_init();
 
 			if (sizeof($this->pages) > 0) {
-				add_action( 'admin_menu', array(&$this, 'add_plugin_pages') );
-				if ($this->option_page_url) {
-					if (version_compare($wp_version, '2.7', '<')) {
-						add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
-					}
-					else {
-						add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file),
-									array( &$this, 'filter_plugin_actions_27_and_after') );
-					}
-				}
+				add_action( 'admin_menu', array(&$this, 'admin_menu') );
 			}
 			$this->include_stylesheets();
 		}
@@ -864,7 +855,7 @@ if (!class_exists('EG_Plugin_103')) {
 		  * @param 		none
 		  * @return 		none
 		 */
-		function add_plugin_pages() {
+		function admin_menu() {
 			global $wp_version;
 
 			if (version_compare($wp_version, '2.7', '<')) {
@@ -905,6 +896,16 @@ if (!class_exists('EG_Plugin_103')) {
 								$page->page_url,
 								array(&$this, $page->callback));
 			}
+			if ($option_page_url != '') {
+				if (version_compare($wp_version, '2.7', '<')) {
+					add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
+				}
+				else {
+					add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file),
+								array( &$this, 'filter_plugin_actions_27_and_after') );
+				}
+			}
+
 			return ($option_page_url);
 		}
 

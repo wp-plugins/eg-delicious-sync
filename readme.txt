@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
-Tested up to: 2.8.1 RC1
-Stable tag: 0.7.1
+Tested up to: 2.8.1
+Stable tag: 0.7.2
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -71,6 +71,18 @@ Then you can go to menu **Settings / EG-Delicious** to set plugin parameters
 1. When you click on the **Update changes** button, the plugin proceed with all links when the action, and categories fields are not empty
 1. The session is terminated, when you synchronize all links, or when you press the **Stop synchronization** button.
 
+= Widget =
+
+**EG-Delicious Blogroll widget**
+This widget allows you to display your blogroll, but it gives you more options than the standard widget.
+
+* You can display the blogroll, in 1, or 2 colomns,
+* The option **Minimum number of links** is the limit under which the widget uses only one columns.
+* You can choose the categories you want to display
+* If you check **Group links by category**, the widget will display one "block" per category, each block starting by the name of category,
+* if you have a page or a post, displaying all your links, you can specify its ID in the field **Page/Post ID to see all links**. The widget will display an additional link named *All bookmarks*, linked to the specified page or post.
+* With the last fields, you can choose the page where you want to display your bookmarks: onyl homepage, a specific categories, or a specific language ...
+
 == Frequently Asked Questions ==
 
 = The plugin backups of Delicious links into the WordPress links database. To have a true synchronization, can we update the Delicious database with the WordPress links? =
@@ -89,6 +101,12 @@ No, for the moment, because of constraints of the Delicious API:
 5. Sample of a synchronization session
 
 == Changelog ==
+
+= Version 0.7.2 - July 12th, 2009 =
+* Bug fix:
+	* Error during Delicious request with WordPrss 2.8
+* New feature:
+	* Enhanced blogroll widget
 
 = Version 0.7.1 - July 09th, 2009 =
 * Bug fix:

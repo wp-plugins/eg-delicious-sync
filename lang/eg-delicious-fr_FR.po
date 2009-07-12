@@ -132,7 +132,7 @@ msgid "No"
 msgstr "Non"
 
 #: eg-delicious-admin.inc.php:204
-msgid "Categories synchronisation"
+msgid "Categories synchronization"
 msgstr "Synchronisation des cat&eacute;gories"
 
 #: eg-delicious-admin.inc.php:206
@@ -334,8 +334,8 @@ msgid "Update WP"
 msgstr "M.a.j WP"
 
 #: eg-delicious-admin.inc.php:971
-msgid "Delete WP"
-msgstr "Effacer dans WP"
+msgid "Delete from WP"
+msgstr "Effacer de WP"
 
 #: eg-delicious-admin.inc.php:1014
 msgid "Cannot get Delicious posts"
@@ -511,6 +511,11 @@ msgstr "Articles"
 
 #: eg-widgets200.inc.php:
 #: eg-widgets100.inc.php:
+msgid "Show widget on pages"
+msgstr "Afficher le widget sur les pages"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
 msgid "Show widget, for"
 msgstr "Afficher le widget pour"
 
@@ -523,4 +528,220 @@ msgstr "Afficher le widget pour"
 #: eg-widgets100.inc.php:
 msgid "Hide widget, when"
 msgstr "Cacher le widget pour"
+
+#: eg-delicious-admin.inc.php:
+msgid "Tags synchronization"
+msgstr "Synchonisation des tags"
+
+#: eg-delicious-admin.inc.php:
+msgid "Synchronization mode"
+msgstr "Mode de synchronization"
+
+#: eg-delicious-admin.inc.php:
+msgid "replace"
+msgstr "Remplacement"
+
+#: eg-delicious-admin.inc.php:
+msgid "Replace the WordPress tags by those coming from Delicious,"
+msgstr "Remplace la totalit&eacute; des tags de WordPress par ceux de Delicious"
+
+#: eg-delicious-admin.inc.php:
+msgid "update"
+msgstr "Mise &agrave; jour"
+
+#: eg-delicious-admin.inc.php:
+msgid "Update the WordPress tags with those coming from Delicious."
+msgstr "Mise &agrave; jour des tags de WordPress avec ceux provenant de Delicious"
+
+#: eg-delicious-admin.inc.php:
+msgid "All tags existing in Delicious and NOT in WordPress will be added in the WordPress database."
+msgstr "Tous les tags existant dans Delicious, et n'existant PAS dans WordPress seront ajout&eacute;s &agrave; WordPress."
+
+#: eg-delicious-admin.inc.php:
+msgid "All tags existing in WordPress and NOT in Delicious will be deleted, and all tags existing in Delicious and NOT in WordPress will be added."
+msgstr "Tous les tags existant dans WordPress, mais n'existant pas dans Delicious seront effac&eacute;s de WordPress, et tous les tags existant dans Delicious, mais n'existant pas dans WordPress, seront ajout&eacute;s &agrave; WordPress."
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Delicious username"
+msgstr "Nom d'utilisateur de Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Quantity"
+msgstr "Quantit&eacute;"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Font parameters"
+msgstr "Police de caracteres"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Smallest size"
+msgstr "Taille minimale"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Largest size"
+msgstr "Taille maximale"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "alphabetical"
+msgstr "alphab&eacute;tique"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Frequency"
+msgstr "Popularit&eacute;"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Flat"
+msgstr "Applati"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "List (UL/LI)"
+msgstr "Liste (UL/LI)"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show"
+msgstr "Affichage"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show Delicious name"
+msgstr "Afficher le nom Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show \"Add me to your network\""
+msgstr "Afficher \"Ajoutez moi &agrave; votre r&eacute;seau\""
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show Tags count"
+msgstr "Afficher le nombre d'utilisation"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Delicious TagRolls"
+msgstr "TagRolls Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "<strong>RSS Error</strong>: %s"
+msgstr "<strong>Erreur RSS</strong>: %s"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "An error has occurred; the feed is probably down. Try again later."
+msgstr "Une erreur est survenue; Le flux est certainement indisponible. Essayez un peu plus tard."
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I am <a href=\"%1s\">%2s</a> on <a href=\"%3s\">Delicious</a>"
+msgstr "Je suis <a href=\"%1s\">%2s</a> sur <a href=\"%3s\">Delicious</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "<a href=\"%s\">Add me to your network</a>"
+msgstr "<a href=\"%s\">Ajoutez moi &agrave; votre r&eacute;seau</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "RSS feeds to display Delicious Tags"
+msgstr "Fils RSS permettant l'affichage des tags Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "EG-Delicious TagRolls"
+msgstr "TagRolls EG-Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Display Delicious Network badge"
+msgstr "Affiche une r&eacute;sum&eacute; de votre compte Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "EG-Delicious Network badge"
+msgstr "Network Badge EG-Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "None"
+msgstr "Aucun"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Small"
+msgstr "Petit"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Medium"
+msgstr "Moyen"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show bookmark count"
+msgstr "Afficher le nombre de favoris"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show network count"
+msgstr "Afficher le nombre de personnes figurant dans votre r&eacute;seau"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show fan count"
+msgstr "Afficher le nombre de fans"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Delicious Network Badge"
+msgstr "Network Badge Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I have <strong>%1s</strong> <a href=\"%2s\">bookmarks</a>"
+msgstr "J'ai <strong>%1s</strong> <a href=\"%2s\">favoris</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I have <strong>%1s</strong> people in <a href=\"%2s\">my network</a>"
+msgstr "J'ai <strong>%1s</strong> personnes dans <a href=\"%2s\">mon r&eacute;seau</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I have <strong>%1s</strong> fan"
+msgstr "J'ai <strong>%1s</strong> fan"
+
+#: eg-delicious-admin.inc.php:
+msgid "Synchronisation mode: <strong>%s</strong>."
+msgstr "Mode de synchronisation: <strong>%s</strong>."
+
+#: eg-delicious-admin.inc.php:
+msgid "You can modify this mode, by <a href=\"%s\">editing options</a>"
+msgstr "Vous pouvez modifier ce mode, en utilisant la page <a href=\"%s\">des options</a>"
+
+#: eg-delicious-admin.inc.php:
+msgid "Count"
+msgstr "Nombre<br />d'utilisation"
+
+#: eg-delicious-admin.inc.php:
+msgid "No tags to display"
+msgstr "Aucun tag"
+
+#: eg-delicious-admin.inc.php:
+msgid "Description"
+msgstr "Description"
+
+#: eg-delicious-admin.inc.php:
+msgid "Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended."
+msgstr "Les <strong>Tags</strong> ou les <strong>Bundles</strong> de Delicious ont chang&eacute; depuis la derni&egrave;re configuration. Une v&eacute;rification est recommand&eacute;e."
 
