@@ -1,20 +1,17 @@
 <?php
 
-define('EG_DELICIOUS_USE_LOCAL_DATA', FALSE);
-
 function eg_delicious_debug_info($msg) {
 	$debug_info = debug_backtrace();
 	$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - ';
 	echo $output.$msg.'<br />';
 }
 
-
 if (! class_exists('EG_Delicious_Core')) {
 
 	define('EG_DELICIOUS_CORE_ERROR_NONE',			0);
 	define('EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY',	1);
 	define('EG_DELICIOUS_CORE_ERROR_READING',		2);
-	define('EG_DELICIOUS_CORE_ERROR_NO_DATA',		3);
+	// define('EG_DELICIOUS_CORE_ERROR_NO_DATA',		3);
 	define('EG_DELICIOUS_CORE_ERROR_PARSING',		4);
 
 	define('EG_DELICIOUS_PASSWORD_SECRET_KEY',		'EG-Delicious');
@@ -47,27 +44,35 @@ if (! class_exists('EG_Delicious_Core')) {
 			EG_DELICIOUS_CORE_ERROR_NONE 			=> 'No error.',
 			EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY	=> 'Unknown query.',
 			EG_DELICIOUS_CORE_ERROR_READING			=> 'Error while querying Delicious.',
-			EG_DELICIOUS_CORE_ERROR_NO_DATA			=> 'No data available from Delicious.',
+			/* EG_DELICIOUS_CORE_ERROR_NO_DATA			=> 'No data available from Delicious.', */
 			EG_DELICIOUS_CORE_ERROR_PARSING			=> 'Parse error.'
 		);
 
 		var $DELICIOUS_QUERY = array(
 			'posts' 		=> array(
+				'type'		=> 'array',
 				'parser'	=> 'parse_posts',
 				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/posts/all?meta=yes'
 			),
 			'bundles'   	=> array(
+				'type'		=> 'array',
 				'parser'	=> 'parse_bundles',
 				'url'  		=> 'https://{username}:{password}@api.del.icio.us/v1/tags/bundles/all'
 			),
 			'tags'			=> array(
+				'type'		=> 'array',
 				'parser'	=> 'parse_tags',
 				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/tags/get'
 			),
 			'update'		=> array(
+				'type'		=> 'string',
 				'parser'	=> 'parse_update',
 				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/posts/update'
 			),
+			'post_add'		=> array(
+				'type'		=> 'array',
+				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/posts/add?'
+			)
 		);
 
 		/**
@@ -263,8 +268,13 @@ if (! class_exists('EG_Delicious_Core')) {
 			if (version_compare($wp_version, '2.8', '>=')) {
 				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('WP 2.8. Use wp_remote_request');
 				$response = wp_remote_request($query, array('sslverify' => false));
-				if (is_wp_error($response)) $result = FALSE;
-				else $result = wp_remote_retrieve_body($response);
+				if (! is_wp_error($response)) {
+					$result   = wp_remote_retrieve_body($response);
+				}
+				else {
+					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Error message: '.htmlentities($response->get_error_message()));
+					$result = FALSE;
+				}
 			}
 			else {
 				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('WP < 2.8. Use curl');
@@ -279,7 +289,7 @@ if (! class_exists('EG_Delicious_Core')) {
 				curl_close($ch);
 			}
 			if ($result === FALSE) {
-				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('WP < 2.8. curl doesn\'t work use file_get_contents');
+				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Previous method doesn\'t work use file_get_contents');
 				$result = @file_get_contents($query);
 			}
 			return ($result);
@@ -294,9 +304,11 @@ if (! class_exists('EG_Delicious_Core')) {
 		 *
 		 * @return 	array				data collected
 		 */
-		function get_data($query, $params = array()) {
+		function get_data($query) {
 
 			$this->error_code = EG_DELICIOUS_CORE_ERROR_NONE;
+
+			if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Getting '.$query);
 
 			if (!isset($this->DELICIOUS_QUERY[$query])) {
 				// Query doesn't exist
@@ -312,18 +324,20 @@ if (! class_exists('EG_Delicious_Core')) {
 
 					// In debug mode, we use internal file, to avoid sending query to Delicious
 					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('No Data on cache, querying Delicious');
-					if (EG_DELICIOUS_USE_LOCAL_DATA) 
+					if (EG_DELICIOUS_USE_LOCAL_DATA)
 						$query_string = trailingslashit($this->cache_path).'debug/'.$query.'.txt';
 					else {
 						// Building query
 						$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
 						$query_string = str_replace('{password}', $this->password, $query_string);
 					}
+					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Query: '.$query_string);
+
 					// Read the file
 					$xml_string = FALSE;
 					$xml_string = $this->http_request($query_string);
 
-					if (! isset($xml_string)     || $xml_string === FALSE || 
+					if (! isset($xml_string)     || $xml_string === FALSE ||
 					    ! is_string($xml_string) || $xml_string == '') {
 						$this->error_code = EG_DELICIOUS_CORE_ERROR_READING;
 						$this->error_msg  = $this->ERROR_MESSAGES[$this->error_code];
@@ -333,16 +347,21 @@ if (! class_exists('EG_Delicious_Core')) {
 						$parsing_result = call_user_func(array(&$this, $this->DELICIOUS_QUERY[$query]['parser']), $xml_string);
 
 						if ($parsing_result === FALSE) {
+							$this->cache_del($query);
 							$this->error_code = EG_DELICIOUS_CORE_ERROR_PARSING;
 						}
 						else {
-							if ( sizeof($this->parsed_data) == 0 ) {
-								$this->cache_del($query);
-								$this->error_code = EG_DELICIOUS_CORE_ERROR_NO_DATA;
+							if ($this->DELICIOUS_QUERY[$query]['type'] == 'string') {
+								$this->parsed_data = (string) $this->parsed_data;
 							}
 							else {
-								$this->cache_set($query, $this->parsed_data);
+								if ( ! is_array($this->parsed_data) || sizeof($this->parsed_data) == 0 ) {
+									if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Empty list for '.$query);
+									$this->parsed_data = array();
+									// $this->error_code = EG_DELICIOUS_CORE_ERROR_NO_DATA;
+								}
 							}
+							$this->cache_set($query, $this->parsed_data);
 						} // End of no error while parsing
 					} // End of no error while reading
 
@@ -353,11 +372,49 @@ if (! class_exists('EG_Delicious_Core')) {
 				return ($this->parsed_data);
 			}
 			else {
-				$this->error_msg  = $this->ERROR_MESSAGES[$this->error_code];
+				$this->error_msg = $this->ERROR_MESSAGES[$this->error_code];
 				return (FALSE);
 			}
 		} // End of get_data
 
+		/**
+		 * get_data
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param	string	$query		query id
+		 * @param	array	$params		list of query parameters
+		 * @return 	boolean				TRUE if no error occured, FALSE otherwise
+		 */
+		function push_data($query, $params = FALSE) {
+
+			$this->error_code = EG_DELICIOUS_CORE_ERROR_NONE;
+
+			if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Getting '.$query);
+
+			if (!isset($this->DELICIOUS_QUERY[$query])) {
+				// Query doesn't exist
+				$this->error_code = EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY;
+			}
+			else {
+				$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
+				$query_string = str_replace('{password}', $this->password, $query_string);
+
+				$param_string = '';
+				if ($params !== FALSE) {
+					foreach ($params as $key => $value) {
+						$param_string .= ($param_string==''?'?':'&').$key.'='.$value;
+					}
+				}
+				$query_string = url_encode(sanitize_url($query_string.$param_string));
+
+				// Read the file
+				$xml_string = FALSE;
+				$xml_string = $this->http_request($query_string);
+
+
+			}
+		} // End of push_data
 
 		/**
 		 * parse_update
@@ -571,7 +628,7 @@ if (! class_exists('EG_Delicious_Core')) {
 		 * @return 	string					Date in the ISO format
 		 */
 		function timestamp_to_iso($timestamp) {
-			return (date('Y-m-dTH:i:sZ', $timestamp));
+			return (date('Y-m-d\TH:i:s\Z', $timestamp));
 		} // End of timestamp_to_iso
 
 		/**

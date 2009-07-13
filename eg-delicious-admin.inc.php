@@ -11,6 +11,8 @@ if (! class_exists('EG_Delicious_Admin')) {
 	define('EG_DELICIOUS_ERROR_CONFIG', 	13);
 	define('EG_DELICIOUS_ERROR_DELQUERY',	14);
 	define('EG_DELICIOUS_ERROR_LISTCHG',	15);
+	define('EG_DELICIOUS_ERROR_NOTAG',		16);
+	define('EG_DELICIOUS_ERROR_NOBUNDLE',	17);
 
 	define('EG_DELICIOUS_LINKS_PER_PAGE',	25);
 	define('EG_DELICIOUS_NOSYNC_ID', 		'nosync');
@@ -79,7 +81,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 			'sync_tags_type_update'  => 'All tags existing in Delicious and NOT in WordPress will be added in the WordPress database.',
 			'sync_tags_type_replace' => 'All tags existing in WordPress and NOT in Delicious will be deleted, and all tags existing in Delicious and NOT in WordPress will be added.'
 		);
-		
+
 		/**
 		 * plugins_loaded
 		 *
@@ -95,13 +97,15 @@ if (! class_exists('EG_Delicious_Admin')) {
 			parent::plugins_loaded();
 
 			$this->ERROR_MESSAGES = array(
-				EG_DELICIOUS_CORE_ERROR_NONE 	=> 'No error.', 
-				EG_DELICIOUS_ERROR_GET_WPLINK	=> 'Error while requesting WordPress links.', 
-				EG_DELICIOUS_ERROR_GET_WPCAT	=> 'Error while getting WordPress links categories.', 
+				EG_DELICIOUS_CORE_ERROR_NONE 	=> 'No error.',
+				EG_DELICIOUS_ERROR_GET_WPLINK	=> 'Error while requesting WordPress links.',
+				EG_DELICIOUS_ERROR_GET_WPCAT	=> 'Error while getting WordPress links categories.',
 				EG_DELICIOUS_ERROR_USER_RIGHT	=> 'You cannot access to the page. You haven\'t the "Manage links" capability. Please contact the blog administrator.',
 				EG_DELICIOUS_ERROR_CONFIG		=> 'Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters.',
 				EG_DELICIOUS_ERROR_DELQUERY		=> 'Error while querying Delicious.',
 				EG_DELICIOUS_ERROR_LISTCHG		=> 'Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended.',
+				EG_DELICIOUS_ERROR_NOTAG		=> 'No tag downloaded from Delicious. Switch to bundle mode.',
+				EG_DELICIOUS_ERROR_NOBUNDLE		=> 'No bundle downloaded from Delicious. Switch to tag mode.'
 			);
 
 			// Add plugin options page
@@ -175,15 +179,19 @@ if (! class_exists('EG_Delicious_Admin')) {
 			// Array_diff_key cannot be use because available only with PHP 5.
 
 			if ($this->options['sync_cat_type'] == 'tag') {
-				if (isset($this->options['tags_assignment'])) $table = array_keys($this->options['tags_assignment']);
-				$list  = array_keys($this->tags_list);
+				if (isset($this->options['tags_assignment']))
+					$table = array_keys($this->options['tags_assignment']);
+				if (isset($this->tags_list) && $this->tags_list!==FALSE)
+					$list  = array_keys($this->tags_list);
 			}
 			else {
-				if (isset($this->options['bundles_assignment'])) $table = array_keys($this->options['bundles_assignment']);
-				$list  = array_keys($this->bundles_list);			
+				if (isset($this->options['bundles_assignment']))
+					$table = array_keys($this->options['bundles_assignment']);
+				if (isset($this->bundles_list) && $this->bundles_list!==FALSE)
+					$list = array_keys($this->bundles_list);
 			}
 
-			$returned_code = FALSE;			
+			$returned_code = FALSE;
 			if (isset($table) && isset($list) && sizeof($table)>0 && sizeof($list)>0) {
 				// Array_diff_key cannot be use because available only with PHP 5.
 				$list_keys     = array_keys($list);
@@ -224,26 +232,35 @@ if (! class_exists('EG_Delicious_Admin')) {
 
 			if ( $this->is_user_defined() ) {
 
-				if ($this->options['sync_cat_type'] == 'tag') {
-					$this->tags_list = $this->delicious_data->get_data('tags');
-					if ($this->tags_list === FALSE) {
-						$this->delicious_data->get_error($this->error_code, $this->error_msg);
-						$this->error_details =  'Cannot get Delicious tags';
-						$this->display_error();
-
-					}
+				$this->tags_list = $this->delicious_data->get_data('tags');
+				if ($this->tags_list === FALSE) {
+					$this->delicious_data->get_error($this->error_code, $this->error_msg);
+					$this->error_details =  'Cannot get Delicious tags';
+					$this->display_error();
 				}
-				else {
-					$this->bundles_list = $this->delicious_data->get_data('bundles');
-					if ($this->bundles_list === FALSE) {
-						$this->delicious_data->get_error($this->error_code, $this->error_msg);
-						$this->error_details =  'Cannot get Delicious bundles';
-						$this->display_error();
-
-					}
+				$this->bundles_list = $this->delicious_data->get_data('bundles');
+				if ($this->bundles_list === FALSE) {
+					$this->delicious_data->get_error($this->error_code, $this->error_msg);
+					$this->error_details =  'Cannot get Delicious bundles';
+					$this->display_error();
 				}
 
-				if ($this->bundles_list !== FALSE && $this->tags_list !== FALSE) {
+				if ($this->error_code == EG_DELICIOUS_ERROR_NONE) {
+
+					if ($this->options['sync_cat_type'] == 'tag') {
+						if ( sizeof($this->tags_list)==0 && sizeof($this->bundles_list)>0 ) {
+							$this->options['sync_cat_type'] = 'bundle';
+							$this->error_code = EG_DELICIOUS_ERROR_NOTAG;
+							$this->display_error();
+						}
+					}
+					else {
+						if ( sizeof($this->bundles_list)==0 &&  sizeof($this->tags_list)>0) {
+							$this->options['sync_cat_type'] = 'tag';
+							$this->error_code = EG_DELICIOUS_ERROR_NOBUNDLE;
+							$this->display_error();
+						}
+					}
 
 					$id_section = $form->add_section('WordPress Links');
 					$id_group   = $form->add_group($id_section, 'Manage date', 'WordPress doesn\'t set the "update date" when you create or edit a link. Do you want to change the date of links when you create or edit them?');
@@ -274,32 +291,40 @@ if (! class_exists('EG_Delicious_Admin')) {
 					$wp_link_categories = $this->get_wp_links_categories(TRUE);
 
 					if ($this->options['sync_cat_type'] == 'tag') {
-						$tags_categories = array( 'header' => array('Delicious Tags', 'WordPress Categories'));
-						foreach ($this->tags_list as $tag => $values) {
-							$tags_categories['list'][] = array( 'value' => $tag, 'select' => $wp_link_categories);
-						}
 						$id_group = $form->add_group($id_section, 'Tags / Categories assignments');
-						$form->add_field($id_section, $id_group, 'grid select', 'Tags / Categories assignments', 'tags_assignment', '', '', '', '', 'regular', $tags_categories );
+						if (sizeof($this->tags_list)==0) {
+							echo __('No tags available', $this->textdomain);
+						}
+						else {
+							$tags_categories = array( 'header' => array('Delicious Tags', 'WordPress Categories'));
+							foreach ($this->tags_list as $tag => $values) {
+								$tags_categories['list'][] = array( 'value' => $tag, 'select' => $wp_link_categories);
+							}
+							$form->add_field($id_section, $id_group, 'grid select', 'Tags / Categories assignments', 'tags_assignment', '', '', '', '', 'regular', $tags_categories );
+						}
 					}
 					else {
-						$bundles_categories = array( 'header' => array('Delicious Bundle', 'WordPress Categories'));
-						foreach ($this->bundles_list as $bundle => $values) {
-							$bundles_categories['list'][] = array( 'value' => $bundle, 'select' => $wp_link_categories);
-						}
 						$id_group = $form->add_group($id_section, 'Bundles / Categories assignments');
-						$form->add_field($id_section, $id_group, 'grid select', 'Bundles / Categories assignments', 'bundles_assignment', '', '', '', '', 'regular', $bundles_categories );
-
+						if (sizeof($this->bundles_list) == 0) {
+							echo __('No bundles available', $this->textdomain);
+						}
+						else {
+							$bundles_categories = array( 'header' => array('Delicious Bundle', 'WordPress Categories'));
+							foreach ($this->bundles_list as $bundle => $values) {
+								$bundles_categories['list'][] = array( 'value' => $bundle, 'select' => $wp_link_categories);
+							}
+							$form->add_field($id_section, $id_group, 'grid select', 'Bundles / Categories assignments', 'bundles_assignment', '', '', '', '', 'regular', $bundles_categories );
+						}
 					}
 
 					$id_group = $form->add_group($id_section, 'Other assignments');
 					$form->add_field($id_section, $id_group, 'select', 'Other item: ', 'sync_links_other_item', '', '', '', '', 'regular', $wp_link_categories);
 					$form->add_field($id_section, $id_group, 'select', 'Not classified link: ', 'sync_links_not_classified', '', '', '', '', 'regular', $wp_link_categories);
 
-					$id_section = $form->add_section('Tags synchronization');
-					$id_group   = $form->add_group($id_section, 'Synchronization mode');
-					$form->add_field($id_section, $id_group, 'radio', 'Synchronization mode', 'sync_tags_type', '', '' , '','', 'regular', array('replace' => 'Replace the WordPress tags by those coming from Delicious,', 'update' => 'Update the WordPress tags with those coming from Delicious.'));
-					
-					
+//					$id_section = $form->add_section('Tags synchronization');
+//					$id_group   = $form->add_group($id_section, 'Synchronization mode');
+//					$form->add_field($id_section, $id_group, 'radio', 'Synchronization mode', 'sync_tags_type', '', '' , '','', 'regular', array('replace' => 'Replace the WordPress tags by those coming from Delicious,', 'update' => 'Update the WordPress tags with those coming from Delicious.'));
+
 					$id_section = $form->add_section('Uninstall options', '', 'Be careful: these actions cannot be cancelled. All plugins options will be deleted while plugin uninstallation.');
 					$id_group   = $form->add_group($id_section, 'Options');
 					$form->add_field($id_section, $id_group, 'checkbox', 'Delete options during uninstallation', 'uninstall_options');
@@ -939,7 +964,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 			if ( $this->posts_list!==FALSE && $this->tags_list!==FALSE && $this->bundles_list!==FALSE ) {
 
 				$this->check_bundles_tags_modification(TRUE, FALSE);
-				
+
 				// We have Delicious links.
 				// Prepare WordPress List
 				$wp_links_list = wp_cache_get('wp_links_list', $this->cache_group);
@@ -1238,7 +1263,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				$categories_list = $existing_categories;
 			}
 			else {
-				if ($this->options['sync_links_type'] == 'tag') {
+				if ($this->options['sync_cat_type'] == 'tag') {
 					$sync_table = $this->options['tags_assignment'];
 					$list       = $tags;
 				}
@@ -1250,8 +1275,8 @@ if (! class_exists('EG_Delicious_Admin')) {
 				if ($mode == 'update') $categories_list = $existing_categories;
 				else $categories_list = array();
 
-				if (sizeof($list) == 0) {
-					$categories_list = $this->options['sync_links_not_classified'];
+				if (sizeof($list) == 0 || (sizeof($list)==1 && $list[0] == '')) {
+					$categories_list[] = $this->options['sync_links_not_classified'];
 				}
 				else {
 					foreach ($list as $item_name) {
@@ -1260,7 +1285,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 						else
 							$new_category = $this->options['sync_links_other_item'];
 
-						if ($new_categoty != EG_DELICIOUS_NOSYNC_ID)
+						if ($new_category != EG_DELICIOUS_NOSYNC_ID)
 							$categories_list[] = $new_category;
 					} // End foreach $bundles_list
 

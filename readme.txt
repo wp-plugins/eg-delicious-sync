@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
 Tested up to: 2.8.1
-Stable tag: 0.7.2
+Stable tag: 0.8.0
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -101,6 +101,12 @@ No, for the moment, because of constraints of the Delicious API:
 5. Sample of a synchronization session
 
 == Changelog ==
+
+= Version 0.8.0 - July 13th, 2009 =
+* Bug fix:
+	* Warning message with array_keys function,
+	* Options didn't displayed when bundles not used,
+	* Uninstall doesn't delete option entries,
 
 = Version 0.7.2 - July 12th, 2009 =
 * Bug fix:
