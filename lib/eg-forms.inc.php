@@ -3,7 +3,7 @@
 Plugin Name: EG-Forms
 Plugin URI:
 Description: Class to build admin forms
-Version: 1.0.3
+Version: 1.0.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_103')) {
+if (!class_exists('EG_Forms_104')) {
 
-	Class EG_Forms_103 {
+	Class EG_Forms_104 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -62,7 +62,7 @@ if (!class_exists('EG_Forms_103')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_103($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
+		function EG_Forms_104($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
 		}
@@ -332,7 +332,10 @@ if (!class_exists('EG_Forms_103')) {
 				}
 
 				if ($is_submitted != 'submit') {
-					$new_options = call_user_func(array(&$this, $is_submitted), $options, $defaults);
+					if (is_array($is_submitted))
+						$new_options = call_user_func($is_submitted, $options, $defaults);
+					else
+						$new_options = call_user_func(array(&$this, $is_submitted), $options, $defaults);
 				}
 				else {
 					$new_options = $options;
@@ -451,25 +454,31 @@ if (!class_exists('EG_Forms_103')) {
 					break;
 
 					case 'grid select':
-						$grid_default_values = $default_values[$option_name];
-						$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
-						foreach ($field->values['header'] as $item) {
-							$string .= '<th>'.__($item, $this->textdomain).'</th>';
+						if (! isset($field->values['header']) || sizeof($field->values['header']) == 0 ||
+							! isset($field->values['list'])   || sizeof($field->values['list'])   == 0) {
+							$string .= '<p><font color="red">'.__('No data available', $this->textdomain).'</font></p>';
 						}
-						$string .= '</tr></thead><tbody>';
-						foreach ($field->values['list'] as $item) {
-							$string .= '<tr><td>'.
-								'<input type="text" value="'.$item['value'].'" disabled /></td><td>'.
-								($group?'<label for="'.$option_name.'['.$item['value'].']">':'').
-								'<select name="'.$option_name.'['.$item['value'].']" id="'.$option_name.'['.$item['value'].']" >';
-							foreach ($item['select'] as $key => $value) {
-								if ($key == $grid_default_values[$item['value']]) $selected = 'selected';
-								else $selected = '';
-								$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+						else {
+							$grid_default_values = $default_values[$option_name];
+							$string .= '<fieldset><legend class="hidden">'.__($field->label, $this->textdomain).'</legend><table border="0"><thead><tr>';
+							foreach ($field->values['header'] as $item) {
+								$string .= '<th>'.__($item, $this->textdomain).'</th>';
 							}
-							$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
+							$string .= '</tr></thead><tbody>';
+							foreach ($field->values['list'] as $item) {
+								$string .= '<tr><td>'.
+									'<input type="text" value="'.$item['value'].'" disabled /></td><td>'.
+									($group?'<label for="'.$option_name.'['.$item['value'].']">':'').
+									'<select name="'.$option_name.'['.$item['value'].']" id="'.$option_name.'['.$item['value'].']" >';
+								foreach ($item['select'] as $key => $value) {
+									if ($key == $grid_default_values[$item['value']]) $selected = 'selected';
+									else $selected = '';
+									$string .= '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+								}
+								$string .=	'</select>'.($group?'</label>':'').'</td></tr>';
+							}
+							$string .= '</tbody></table></fieldset>';
 						}
-						$string .= '</tbody></table></fieldset>';
 					break;
 				}
 				// Adding description

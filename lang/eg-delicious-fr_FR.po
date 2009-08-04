@@ -43,6 +43,30 @@ msgstr "Erreur de requ&ecirc;te &agrave; WordPress."
 msgid "You cannot access to the page. You haven't the \"Manage links\" capability. Please contact the blog administrator."
 msgstr "Vous ne pouvez acc&eacute;der &agrave; cette page. Vous n'avez pas les droits \"Gestion des liens\". Veuillez contacter votre administrateur."
 
+#: eg-delicious-admin.inc.php:91
+msgid "Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters."
+msgstr "Plugin non configur&eacute;! Utilisez le menu <strong>Param&egrave;tres / EG-Delicious</strong> pour saisir les param&egrave;tres n&eacute;cessaires."
+
+#: eg-delicious-admin.inc.php:
+msgid "No tag downloaded from Delicious. Switch to bundle mode."
+msgstr "Pas de tag trouv&eacute; dans Delicious. Passage en mode bundle."
+
+#: eg-delicious-admin.inc.php:
+msgid "No bundle downloaded from Delicious. Switch to tag mode."
+msgstr "Pas de bundle trouv&eacute; dans Delicious. Passage en mode tag."
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot publish post in Delicious."
+msgstr "Impossible de publier l'article dans Delicious."
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot create backup path. Backup failed"
+msgstr "Impossible de cr&eacute;er le r&eacute;pertoire de sauvegarde. La sauvegarde a &eacute;chou&eacute;"
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot delete post in Delicious"
+msgstr "Impossible d'effacer l'article dans Delicious"
+
 #: eg-delicious-admin.inc.php:163
 msgid "Delicious account"
 msgstr "Compte Delicious"
@@ -418,8 +442,8 @@ msgid "Columns"
 msgstr "Colonnes"
 
 #: eg-delicious-widgets.inc.php:
-msgid "Minimum number of links"
-msgstr "Nombre minimum de liens"
+msgid "Minimum number of links per column"
+msgstr "Nombre minimum de liens par colonne"
 
 #: eg-delicious-widgets.inc.php:
 msgid "Categories options"
@@ -488,6 +512,10 @@ msgstr "Blogroll"
 #: eg-delicious-widgets.inc.php:
 msgid "Bookmarks"
 msgstr "Favoris"
+
+#: eg-delicious-widgets.inc.php:
+msgid "List of the links"
+msgstr "Voir tous les liens"
 
 #: eg-widgets200.inc.php:
 #: eg-widgets100.inc.php:
@@ -744,4 +772,232 @@ msgstr "Description"
 #: eg-delicious-admin.inc.php:
 msgid "Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended."
 msgstr "Les <strong>Tags</strong> ou les <strong>Bundles</strong> de Delicious ont chang&eacute; depuis la derni&egrave;re configuration. Une v&eacute;rification est recommand&eacute;e."
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious and WordPress tags are synchronized."
+msgstr "Delicious et WordPress sont synchronis&eacute;s"
+
+#: eg-delicious-admin.inc.php
+msgid "Tags added to WordPress:"
+msgstr "Tags ajout&eacute;s &agrave; WordPress:"
+
+#: eg-delicious-admin.inc.php
+msgid "Tags deleted from WordPress:"
+msgstr "Tags effac&eacute;s de WordPress:"
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious and WordPress tags are synchronized. Goto page <a href=\"%1s\">Manage tags</a> to see results."
+msgstr "Les tags de Delicious et de WordPress sont maintenant synchronis&eacute;s. Aller &agrave; la page de <a href=\"%1s\">gestion des tags</a> pour visualiser le r&eacute;sultat"
+
+#: eg-delicious-admin.inc.php
+msgid "Publish posts"
+msgstr "Publication des articles"
+
+#: eg-delicious-admin.inc.php
+msgid "Activation"
+msgstr "Activation"
+
+#: eg-delicious-admin.inc.php
+msgid "Add posts to Delicious when publish them in Wordpress?"
+msgstr "Ajouter dans Delicious, les articles que vous publiez dans WordPress?"
+
+#: eg-delicious-admin.inc.php
+msgid "Classification"
+msgstr "Classement/Organisatio"
+
+#: eg-delicious-admin.inc.php
+msgid "When publish post, use:"
+msgstr "Lorsque vous publiez un article, souhaitez-vous utiliser:"
+
+#: eg-delicious-admin.inc.php
+msgid "or use specific values:"
+msgstr "ou utiliser les valeurs suivantes:"
+
+#: eg-delicious-admin.inc.php
+msgid "(Give a list of comma-separated values)"
+msgstr "(Entrez une liste de valeurs s&eacute;par&eacute;es par une virgule)"
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious parameters"
+msgstr "Param&egrave;tres de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Do you want to share the post in Delicious?"
+msgstr "Souhaitez-vous que le lien soit partag&eacute; dans Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "The following parameters allow you to add to Delicious, the posts published in WordPress. You can use this feature to follow the popularity of your posts, for example."
+msgstr "Les param&egrave;tres suivants permettent l'ajout dans Delicious, des articles publi&eacute;s dans WordPress. Vous pouvez utiliser cette fonctionnalit&eacute;, pour suivre la popularit&eacute; de vos articles dans Delicious, par exemple."
+
+#: eg-delicious-admin.inc.php
+msgid "EG-Delicious Backup"
+msgstr "Sauvegarde Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Downloading Delicious data"
+msgstr "T&eacute;l&eacute;charger les donn&eacute;es sauvegard&eacute;es"
+
+#: eg-delicious-admin.inc.php
+msgid "Generating backup file"
+msgstr "G&eacute;n&eacute;ration du fichier de backup"
+
+#: eg-delicious-admin.inc.php
+msgid "Saving backup file"
+msgstr "Sauvegarde du fichier g&eacute;n&eacute;r&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup failed"
+msgstr "La sauvegarde a &eacute;chou&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup ended successfully"
+msgstr "La sauvegarde est compl&egrave;te"
+
+#: eg-delicious-admin.inc.php
+msgid "Click on <a href=\"%s\">this link</a> to return to backup configuration panel."
+msgstr "Cliquer sur <a href=\"%s\">ce lien</a> pour retourner &agrave; la page de gestion des sauvegardes."
+
+#: eg-delicious-admin.inc.php
+msgid "Start Manual backup"
+msgstr "D&eacute;marrer la sauvegarde manuelle"
+
+#: eg-delicious-admin.inc.php
+msgid "Delete"
+msgstr "Effacer"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking configuration"
+msgstr "V&eacute;rification de la configuration"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking backup folder"
+msgstr "V&eacute;rification du r&eacute;pertoire de sauvegarde"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path exists"
+msgstr "Le r&eacute;pertoire de sauvegarde existe"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path doesn't exist, try to create it"
+msgstr "Le r&eacute;pertoire de sauvegarde n'existe pas. Tentative de cr&eacute;ation"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking backup folder again ... "
+msgstr "Nouvelle v&eacute;rification du r&eacute;pertoire ... "
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path doesn't exist, and cannot create it!"
+msgstr "Le r&eacute;pertoire de sauvegarde n'existe pas, et ne peut être cr&eacute;&eacute;e!"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path created successfully"
+msgstr "R&eacute;pertoire de sauvegarde cr&eacute;&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking if backup folder is writeable ... "
+msgstr "V&eacute;rification des droits du r&eacute;pertoire de sauvegarde ... "
+
+#: eg-delicious-admin.inc.php
+msgid "Path is writable!"
+msgstr "Le r&eacute;pertoire est accessible en &eacute;riture!"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup file is not writeable."
+msgstr "Le r&eacute;pertoire n'est pas accessible en &eacute;criture"
+
+#: eg-delicious-admin.inc.php
+msgid "Please change the security access of the directory before using this page."
+msgstr "Veuillez changer les droits d'acc&egrave;s &agrave; ce r&eacute;pertoire avant de continuer."
+
+#: eg-delicious-admin.inc.php
+msgid "Collecting backup files"
+msgstr "Enum&eacute;ration des fichier de sauvegarde"
+
+#: eg-delicious-admin.inc.php
+msgid "done (%s collected)."
+msgstr "fait (%s trouv&eacute;s)."
+
+#: eg-delicious-admin.inc.php
+msgid "Checking Delicious connection"
+msgstr "V&eacute;rification de la connexion &agrave; Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Connection failed."
+msgstr "La connexion a &eacute;chou&eacute;."
+
+#: eg-delicious-admin.inc.php
+msgid "Connection done."
+msgstr "Connexion effectu&eacute;e."
+
+#: eg-delicious-admin.inc.php
+msgid "The last backup is earlier than the last Delicious database change."
+msgstr "La derni&egrave;re sauvegarde est plus rescente que la derni&egrave;re mise &agrave; jour de Delicious."
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious database evolved since the last backup."
+msgstr "La base de Delicious a &eacute;volu&eacute; depuis la derni&egrave;re sauvegarde."
+
+#: eg-delicious-admin.inc.php
+msgid "Backup recommended."
+msgstr "Sauvegarde recommand&eacute;e."
+
+#: eg-delicious-admin.inc.php
+msgid "Backup not required."
+msgstr "Sauvegarde inutile."
+
+#: eg-delicious-admin.inc.php
+msgid "Manual backup"
+msgstr "Sauvegarde manuelle"
+
+#: eg-delicious-admin.inc.php
+msgid "Click on"
+msgstr "Cliquer sur"
+
+#: eg-delicious-admin.inc.php
+msgid "to start the backup immediately."
+msgstr "pour d&eacute;marrer la sauvegarde imm&eacute;diatement."
+
+#: eg-delicious-admin.inc.php
+msgid "No."
+msgstr "Num."
+
+#: eg-delicious-admin.inc.php
+msgid "Select"
+msgstr "S&eacute;lection"
+
+#: eg-delicious-admin.inc.php
+msgid "File"
+msgstr "Fichier"
+
+#: eg-delicious-admin.inc.php
+msgid "Date/Time"
+msgstr "Date/Heure"
+
+#: eg-delicious-admin.inc.php
+msgid "Size"
+msgstr "Taille"
+
+#: eg-delicious-admin.inc.php
+msgid "No backup file found. No backup performed before."
+msgstr "Aucun fichier n'a &eacute;t&eacute; trouv&eacute;. Aucune sauvegarde n'a &eacute;t&eacute; r&eacute;alis&eacute;e jusqu'&agrave; pr&eacute;sent."
+
+#: eg-delicious-admin.inc.php
+msgid "Total"
+msgstr "Total"
+
+#: eg-delicious-admin.inc.php
+msgid "Download"
+msgstr "T&eacute;l&eacute;charger"
+
+#: eg-delicious-admin.inc.php
+msgid "User defined."
+msgstr "Utilisateur configur&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "User not defined."
+msgstr "Utilisateur non configur&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot delete post in Delicious."
+msgstr "Impossible d'effacer le lien dans Delicious"
 

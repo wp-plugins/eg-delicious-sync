@@ -1,10 +1,18 @@
 <?php
 
+/**
+  * eg_delicious_debug_info
+  *
+  * @package EG-Delicious
+  *
+  * @param	string	$msg	Display a message with the date and the current function
+  * @return none
+  */
 function eg_delicious_debug_info($msg) {
 	$debug_info = debug_backtrace();
 	$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - ';
 	echo $output.$msg.'<br />';
-}
+} // End of eg_delicious_debug_info
 
 if (! class_exists('EG_Delicious_Core')) {
 
@@ -13,6 +21,7 @@ if (! class_exists('EG_Delicious_Core')) {
 	define('EG_DELICIOUS_CORE_ERROR_READING',		2);
 	// define('EG_DELICIOUS_CORE_ERROR_NO_DATA',		3);
 	define('EG_DELICIOUS_CORE_ERROR_PARSING',		4);
+	define('EG_DELICIOUS_CORE_ERROR_PUSH',			5);
 
 	define('EG_DELICIOUS_PASSWORD_SECRET_KEY',		'EG-Delicious');
 	/**
@@ -45,7 +54,8 @@ if (! class_exists('EG_Delicious_Core')) {
 			EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY	=> 'Unknown query.',
 			EG_DELICIOUS_CORE_ERROR_READING			=> 'Error while querying Delicious.',
 			/* EG_DELICIOUS_CORE_ERROR_NO_DATA			=> 'No data available from Delicious.', */
-			EG_DELICIOUS_CORE_ERROR_PARSING			=> 'Parse error.'
+			EG_DELICIOUS_CORE_ERROR_PARSING			=> 'Parse error.',
+			EG_DELICIOUS_CORE_ERROR_PUSH			=> 'Error while adding post in Delicious'
 		);
 
 		var $DELICIOUS_QUERY = array(
@@ -71,7 +81,11 @@ if (! class_exists('EG_Delicious_Core')) {
 			),
 			'post_add'		=> array(
 				'type'		=> 'array',
-				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/posts/add?'
+				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/posts/add'
+			),
+			'post_del'		=> array(
+				'type'		=> 'array',
+				'url'		=> 'https://{username}:{password}@api.del.icio.us/v1/posts/delete'
 			)
 		);
 
@@ -253,7 +267,7 @@ if (! class_exists('EG_Delicious_Core')) {
 		} // End of cache_del
 
 		/**
-		 * get_url
+		 * http_request
 		 *
 		 * @package EG-Delicious
 		 *
@@ -282,7 +296,7 @@ if (! class_exists('EG_Delicious_Core')) {
 				curl_setopt($ch, CURLOPT_URL, 			 $query);
 				curl_setopt($ch, CURLOPT_FAILONERROR, 	 TRUE);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				curl_setopt($ch, CURLOPT_HEADER, 		 FALSE); // pour voir s'il est interessant de recuperer le Header
+				curl_setopt($ch, CURLOPT_HEADER, 		 FALSE); 
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 				$result = curl_exec($ch);
 				if (curl_errno($ch)) $result = FALSE;
@@ -291,6 +305,7 @@ if (! class_exists('EG_Delicious_Core')) {
 			if ($result === FALSE) {
 				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Previous method doesn\'t work use file_get_contents');
 				$result = @file_get_contents($query);
+				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('File_get_contents doesn\'t work also. Bad news!');
 			}
 			return ($result);
 		} // End of http_request
@@ -331,8 +346,6 @@ if (! class_exists('EG_Delicious_Core')) {
 						$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
 						$query_string = str_replace('{password}', $this->password, $query_string);
 					}
-					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Query: '.$query_string);
-
 					// Read the file
 					$xml_string = FALSE;
 					$xml_string = $this->http_request($query_string);
@@ -406,14 +419,18 @@ if (! class_exists('EG_Delicious_Core')) {
 						$param_string .= ($param_string==''?'?':'&').$key.'='.$value;
 					}
 				}
-				$query_string = url_encode(sanitize_url($query_string.$param_string));
+				$query_string = sanitize_url($query_string.$param_string);
 
+				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Query: '.$query_string);
 				// Read the file
 				$xml_string = FALSE;
 				$xml_string = $this->http_request($query_string);
-
-
+				if ($xml_string === FALSE || strstr($xml_string, '<result code="done"') === FALSE) {
+					$this->error_code = EG_DELICIOUS_CORE_ERROR_PUSH;
+				}
+				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Error code: '.$this->error_code);
 			}
+			return ($this->error_code == EG_DELICIOUS_CORE_ERROR_NONE);
 		} // End of push_data
 
 		/**

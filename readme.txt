@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
-Tested up to: 2.8.1
-Stable tag: 0.8.0
+Tested up to: 2.8.2
+Stable tag: 1.0.0
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -18,6 +18,11 @@ Most of plugins related to Delicious allow to display Delicious links, or synchr
 
 **EG-Delicious-Sync** use the HTTP API of Delicious, and allows to perform a true full backup of your Delicious links, into the WordPress database, in the standard table (wp_links). So, after this synchronization, you can use the standard features of WordPress to manage and display these links (widgets, template tags ...), as if the Delicious posts are local.
 
+Two benefits:
+
+* You have a backup of your Delicious database,
+* You manage only one list (Delicious), and you are sure that WordPress links are up to date.
+
 You can customize the backup (or synchronization) with a number of options:
 
 * You can entirely control the links classification, by assigning the WordPress categories of links, with the Delicious bundles, or the Delicious tags,
@@ -26,8 +31,11 @@ You can customize the backup (or synchronization) with a number of options:
 
 Other features:
 
+* Tags synchronization: align the Delicious tags with Wordpress tags,
 * An enhanced blogroll widget: display whay you want, where you want!
-* 
+* Widgets to display the Delicious Network Badge, and the Delicious tags,
+* A full backup (without synchronization) of the Delicious database,
+* You can also automaticaly add your WordPress posts in Delicious, when you publish them. With this feature, you can see your post popularity in Delicious (how many people bookmark your posts).
 
 == Installation ==
 
@@ -62,7 +70,7 @@ Then you can go to menu **Settings / EG-Delicious** to set plugin parameters
 1. Once you fill the assignments table, click on "Save changes",
 1. Options are saved, and you are ready to lanch your first synchronisation session.
 
-= Synchronize =
+= Synchronize links =
 
 1. To synchronize the Delicious and WordPress links databases, use the menu **Links / Delicious Sync.**,
 1. Click on the **start synchronization** button,
@@ -71,7 +79,27 @@ Then you can go to menu **Settings / EG-Delicious** to set plugin parameters
 1. When you click on the **Update changes** button, the plugin proceed with all links when the action, and categories fields are not empty
 1. The session is terminated, when you synchronize all links, or when you press the **Stop synchronization** button.
 
-= Widget =
+= Synchronize tags =
+
+This feature synchronizes the lists of tags of Delicious and WordPress.
+
+1. You can first, go to **Settings/EG-Delicious**, to set the options of this synchronization,
+1. You can choose to add Delicious tags into WordPress, or align the Delicious tags with the WordPress tags,
+1. Once the configuration is done, you can start the synchronization, using the menu **Posts / Tags Delicious Sync**,
+1. When you click on this menu, the plugin downloads the list of Delicious tags, and compares it with the WordPress list. Once this comparison is terminated, the plugin displays a table with tags, and suggested actions,
+1. For each tag, you can specify the action you want (add to WordPress, del from WordPress ...),
+1. When you set all parameters, click on **Save changes** to launch the synchronization.
+
+= Posts publication = 
+This feature automatically add in Delicious, the post you publish in WordPress.
+
+1. The feature can be activated in the menu **Settings/EG-Delicious**
+1. In the **Posts publication** part, click on Activation checkbox,
+1. You can choose also which tags will be used to add your post in Delicious. You can use WordPress tags, WordPress categories, or specify tags manually.
+1. Once settings are saved, each time you edit a post, and click on the **Publish button**, your post will be add to Delicious with the specified tags.
+1. If you delete a post in WordPress, it will be also deleted in Delicious
+
+= Widgets =
 
 **EG-Delicious Blogroll widget**
 This widget allows you to display your blogroll, but it gives you more options than the standard widget.
@@ -81,7 +109,35 @@ This widget allows you to display your blogroll, but it gives you more options t
 * You can choose the categories you want to display
 * If you check **Group links by category**, the widget will display one "block" per category, each block starting by the name of category,
 * if you have a page or a post, displaying all your links, you can specify its ID in the field **Page/Post ID to see all links**. The widget will display an additional link named *All bookmarks*, linked to the specified page or post.
-* With the last fields, you can choose the page where you want to display your bookmarks: onyl homepage, a specific categories, or a specific language ...
+
+**Network Badge widget**
+This widget displays a summary of your Delicious profil (Name, number of posts, ...).
+You can choose:
+
+* the title,
+* the size of the icon,
+* the field (name, number of posts, size of your network, number of your fans, ...),
+
+
+**Delicious tags widget**
+This widget displays the Delicious tags, as you can do with the WordPress tags.
+Options are:
+
+* Number of tags to display,
+* The minimum and maximum font size,
+* The sort key (popularity, or just alphabetical), and sort order (ascending or descending),
+* The style you want to use: flat or simple list,
+* You can also display your Delicious Name, and sentence such as "Add me to your network"
+
+In these three widgets, you can choose where or when to display them:
+* Where: only home page, categories pages, or post/page pages. You can specify also, a specific category, tags or post/page.
+* When: you can choose to display or hide widgets according the current selected language ...
+
+= Backup tool =
+
+This feature is available in the **Tools / Delicious backup** menu. It backups all Delicious links and tags, and store backup file in the plugin directory.
+
+You can download the resulting files, or read them on a browser. You can also re-import them in Delicious, in case of errors.
 
 == Frequently Asked Questions ==
 
@@ -92,15 +148,32 @@ No, for the moment, because of constraints of the Delicious API:
 * This API allows us to create a link in Delicious database, but we cannot launch a big amount of requests at the same time, because of Delicious securization.
 * With this API, we cannot update a link. We just can delete and re-create it, but in this case, the date is wrong.
 
+= How can modify styles or widgets? = 
+You have to modify the file `eg-delicious.css` located in the EG-Delicious plugin directory. Two ways:
+
+* Modify directly the `eg-delicious.css` in the plugin directory,
+* Or copy this file, in your theme directory, and modify this copy.
+
+The second way is recommended to ensure that your customization won't be lost during a plugin upgrade.
+
 == Screenshots ==
 
-1. Plugins options: Delicious username and password
-2. Links Management options
-3. Categories synchronization parameters
-4. WordPress categories / Delicious tags or bundles assignements
-5. Sample of a synchronization session
+1. Plugins options: Delicious username and password,
+2. Links Management options,
+3. Categories synchronization parameters,
+4. WordPress categories / Delicious tags or bundles assignements,
+5. Sample of a links synchronization session,
+6. Sample of tags synchronization,
+7. Options to automatically add your WordPress published posts to Delicious
+8. Delicious Backup screen
 
 == Changelog ==
+
+= Version 1.0.0 - July 30th, 2009 =
+* New features
+	* Synchronize tags
+	* Automaticaly add in Delicious, posts published in WordPress
+	* Widgets: network badge, delicious tags
 
 = Version 0.8.0 - July 13th, 2009 =
 * Bug fix:

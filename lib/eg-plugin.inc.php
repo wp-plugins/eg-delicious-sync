@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.0.3
+Version: 1.0.4
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_103')) {
+if (!class_exists('EG_Plugin_104')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,7 +34,7 @@ if (!class_exists('EG_Plugin_103')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_103 {
+	Class EG_Plugin_104 {
 
 		var $plugin_name;
 		var $plugin_version;
@@ -76,7 +76,7 @@ if (!class_exists('EG_Plugin_103')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_103($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_104($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
@@ -119,6 +119,7 @@ if (!class_exists('EG_Plugin_103')) {
 			$this->plugin_url  		= trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
 			$this->plugin_core_file = $this->plugin_path.basename($core_file);
 			$this->plugin_lang_path = str_replace($abspath, '', $wp_plugin_dir).'/'.$plugin_base_path.'/lang';
+
 		}
 
 		/**
@@ -136,12 +137,27 @@ if (!class_exists('EG_Plugin_103')) {
 			add_action('init', array( &$this, 'init'));
 			add_action('wp_logout', array(&$this, 'wp_logout'));
 
+			if (is_admin()) {
+			
+				if ( function_exists('register_uninstall_hook') ) {
+					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
+				}
+
+				add_action('admin_menu', array(&$this, 'admin_menu') );
+				add_action('admin_init',   array( &$this, 'admin_init')   );
+				add_action('admin_header', array( &$this, 'admin_head')   );
+				add_action('admin_footer', array( &$this, 'admin_footer') );
+			}
+			else {
+				add_action('wp_head',   array( &$this, 'head')  );
+				add_action('wp_footer', array( &$this, 'footer'));
+			}
 		}
 
 		function wp_logout() {
 			// Nothing here.
 		}
-		
+
 		/**
 		 * set_owner
 		 *
@@ -267,17 +283,22 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @param
 		 * @return none
 		 */
-		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, $callback) {
+		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, 
+						  $display_callback, $load_callback=FALSE, $columns=1) {
 			$index = sizeof($this->pages);
-			$this->pages[$index]->type         = $page_type;
-			$this->pages[$index]->page_title   = __($page_title, $this->textdomain);
-			$this->pages[$index]->menu_title   = __($menu_title, $this->textdomain);
-			$this->pages[$index]->access_level = $access_level;
-			$this->pages[$index]->page_url     = $page_url;
-			$this->pages[$index]->callback     = $callback;
+			$this->pages[$index]->type             = $page_type;
+			$this->pages[$index]->page_title       = __($page_title, $this->textdomain);
+			$this->pages[$index]->menu_title       = __($menu_title, $this->textdomain);
+			$this->pages[$index]->access_level     = $access_level;
+			$this->pages[$index]->page_url         = $page_url;
+			$this->pages[$index]->display_callback = $display_callback;
+			$this->pages[$index]->load_callback    = $load_callback;
+			$this->pages[$index]->columns	       = $columns;
 
 			if ($page_type == 'options' && !isset($this->option_page_url))
 				$this->option_page_url = $page_url;
+				
+			return ($index);
 		}
 
 		/**
@@ -305,14 +326,15 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @return	none
 		 */
 		function admin_init() {
+		
 			// Add only in Rich Editor mode
 			if ( isset($this->tinyMCE_button) &&
 				 get_user_option('rich_editing') == 'true' ) {
 			// && current_user_can('edit_posts') && current_user_can('edit_pages') )  {
 
 				// add the button for wp2.5 in a new way
-				add_filter('mce_external_plugins', array (&$this, 'add_tinymce_plugin' ), 5);
-				add_filter('mce_buttons',          array (&$this, 'register_button' ),    5);
+				add_filter('mce_external_plugins', array(&$this, 'add_tinymce_plugin' ), 5);
+				add_filter('mce_buttons',          array(&$this, 'register_button' ),    5);
 			}
 		}
 
@@ -356,9 +378,6 @@ if (!class_exists('EG_Plugin_103')) {
 			}
 			$this->widgets_init();
 
-			if (sizeof($this->pages) > 0) {
-				add_action( 'admin_menu', array(&$this, 'admin_menu') );
-			}
 			$this->include_stylesheets();
 		}
 
@@ -378,22 +397,6 @@ if (!class_exists('EG_Plugin_103')) {
 
 			/* --- Get Plugin options --- */
 			$this->get_plugin_option();
-
-			if (is_admin()) {
-				
-				if ( function_exists('register_uninstall_hook') ) {
-					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
-				}
-
-				add_action('admin_init',   array( &$this, 'admin_init')   );
-				add_action('admin_header', array( &$this, 'admin_head')   );
-				add_action('admin_footer', array( &$this, 'admin_footer') );
-			}
-			else {
-				add_action('wp_head',   array( &$this, 'head')  );
-				add_action('wp_footer', array( &$this, 'footer'));
-			}
-
 		}
 
 		/**
@@ -426,7 +429,7 @@ if (!class_exists('EG_Plugin_103')) {
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', get_stylesheet_directory_uri().'/'.$this->stylesheet);
 					}
 					else {
-					
+
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', $this->plugin_url.$this->stylesheet);
 					}
 				}
@@ -444,7 +447,7 @@ if (!class_exists('EG_Plugin_103')) {
 		 */
 		function head() {
 			global $wp_version;
-			
+
 			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
 				wp_print_styles($this->plugin_name.'_stylesheet');
 			}
@@ -572,23 +575,13 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @param 		none
 		 * @return array	$options	list of the options and values
 		 */
-
 		function get_plugin_option($options_entry=FALSE, $default_options=FALSE) {
-/*
-			if ($options_entry === FALSE)
-				$options_entry = $this->options_entry;
 
-			if (! $options_entry) {
-				$options = FALSE;
-			} else {
-				$options = get_option( $options_entry );
-			}
-*/
 			$this->options = get_option($this->options_entry);
 			$this->install_upgrade();
-			
+
 			return ($this->options);
-		} 
+		}
 
 		/**
 		 * options_reset
@@ -620,7 +613,7 @@ if (!class_exists('EG_Plugin_103')) {
 			To use this function:
 				function insta_upgrade() {
 					$current_version = parent::install_upgrade();
-					
+
 					put here your upgrade or install features
 				}
 		 */
@@ -634,7 +627,7 @@ if (!class_exists('EG_Plugin_103')) {
 				$this->options['version'] = $this->plugin_version;
 				add_option($this->options_entry, $this->options);
 			}
-			else {	
+			else {
 				if (  isset($this->options['version'])) $current_version = $this->options['version'];
 				else $current_version = '0.0.0';
 
@@ -862,13 +855,12 @@ if (!class_exists('EG_Plugin_103')) {
 				$page_list = array ( 'posts'	=> 'add_management_page',
 								 'options'	=> 'add_options_page',
 								 'settings'	=> 'add_options_page',
-								 'tools'	=> 'add_options_page',
+								 'tools'	=> 'add_management_page',
 								 'theme'	=> 'add_theme_page',
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_management_page',
 								 'links'	=> 'add_management_page',
-								 'pages'	=> 'add_management_page',
-								 'posts'	=> 'add_management_page');
+								 'pages'	=> 'add_management_page');
 			}
 			else {
 				$page_list = array ( 'posts'	=> 'add_posts_page',
@@ -879,22 +871,24 @@ if (!class_exists('EG_Plugin_103')) {
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_media_page',
 								 'links'	=> 'add_links_page',
-								 'pages'	=> 'add_pages_page',
-								 'psots'	=> 'add_posts_page');
+								 'pages'	=> 'add_pages_page');
 			}
 
 			// Add a new submenu under Options:
 			$option_page_url = '';
-			foreach ($this->pages as $page) {
+			foreach ($this->pages as $id => $page) {
 				if ($page->type == 'options') {
 					$option_page_url = $page->page_url;
 				}
-				call_user_func($page_list[$page->type],
+				$this->pages[$id]->hook = call_user_func($page_list[$page->type],
 								__($page->page_title, $this->textdomain),
 								__($page->menu_title, $this->textdomain),
 								$page->access_level,
 								$page->page_url,
-								array(&$this, $page->callback));
+								array(&$this, $page->display_callback));
+
+				if ($page->load_callback !== FALSE)
+					add_action('load-'.$this->pages[$id]->hook, array(&$this, $page->load_callback));
 			}
 			if ($option_page_url != '') {
 				if (version_compare($wp_version, '2.7', '<')) {

@@ -2,7 +2,7 @@
 
 if (!class_exists('EG_Delicious')) {
 	
-	class EG_Delicious extends EG_Plugin_103 {
+	class EG_Delicious extends EG_Plugin_104 {
 
 		function init() {
 			parent::init();
@@ -13,7 +13,6 @@ if (!class_exists('EG_Delicious')) {
 		} // End of init
 	
 		function wp_logout($user_login) {
-			// $options = get_option($this->options_entry);
 			if ($this->options !== FALSE) {
 			
 				$logged_user = wp_get_current_user();
