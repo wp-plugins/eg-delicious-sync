@@ -1,0 +1,32 @@
+
+table.egdel_links_sync th {
+	text-align: center;
+	background: #ccc none ;
+}
+
+div.backup_delicious h3 {
+	margin-top: 3em;
+}
+
+div.backup_delicious span.green {
+	font-weight: bold;
+	color: green;
+}
+
+div.backup_delicious span.orange {
+	font-weight: bold;
+	color: orange;
+}
+
+div.backup_delicious span.red {
+	font-weight: bold;
+	color: red;
+}
+
+div.backup_delicious span.path {
+	font-weight: bold;
+}
+
+div.backup_delicious table.backup_list tr.total td {
+	font-weight: bold;
+}
