@@ -2067,7 +2067,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function backup_display_page($backup_path, $backup_url) {
 
 			// Check if all is ok from WordPress and Delicious side
-			$config_status = $this->backup_check_status($backup_path, & $backup_list);
+			$config_status = $this->backup_check_status($backup_path, $backup_list);
 
 			echo '<form method="POST" action="" >'.
 				wp_nonce_field('egdel_backup');

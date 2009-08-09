@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
-Tested up to: 2.8.2
-Stable tag: 1.0.0
+Tested up to: 2.8.3
+Stable tag: 1.0.1
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -169,44 +169,39 @@ The second way is recommended to ensure that your customization won't be lost du
 
 == Changelog ==
 
+= Version 1.0.0 - Aug 9th, 2009 =
+* Bugfix: Error message "Call-time pass-by-reference has been deprecated"
+
 = Version 1.0.0 - July 30th, 2009 =
-* New features
-	* Synchronize tags
-	* Automaticaly add in Delicious, posts published in WordPress
-	* Widgets: network badge, delicious tags
+* New: Synchronize tags
+* New: Automaticaly add in Delicious, posts published in WordPress
+* New: Widgets: network badge, delicious tags
 
 = Version 0.8.0 - July 13th, 2009 =
-* Bug fix:
-	* Warning message with array_keys function,
-	* Options didn't displayed when bundles not used,
-	* Uninstall doesn't delete option entries,
+* Bugfix: Warning message with array_keys function,
+* Bugfix: Options didn't displayed when bundles not used,
+* Bugfix: Uninstall doesn't delete option entries,
 
 = Version 0.7.2 - July 12th, 2009 =
-* Bug fix:
-	* Error during Delicious request with WordPrss 2.8
-* New feature:
-	* Enhanced blogroll widget
+* Bugfix: Error during Delicious request with WordPrss 2.8
+* New: Enhanced blogroll widget
 
 = Version 0.7.1 - July 09th, 2009 =
-* Bug fix:
-	* Temp directory didn't exist
+* Bugfix: Temp directory didn't exist
 
 = Version 0.7.0 - July 09th, 2009 =
-* Bug fix:
-	* Securization in case of multi-user blog (cannot edit options during synchronization for example),
-	* Better support of http requests (didn't work with WP 2.7 !)
-	* Automatically stop the synchronization during logout	
+* Bugfix: Securization in case of multi-user blog (cannot edit options during synchronization for example),
+* Bugfix: Better support of http requests (didn't work with WP 2.7 !)
+* Bugfix: Automatically stop the synchronization during logout	
 
 = Version 0.6.5 - July 8th, 2009 =
-* Bug fix:
-	* Must click twice on submit button after giving Delicious username and password,
-	* Error message "You do not have sufficient permissions to access this page." while installing plugin,
-* New feature:
-	* French translation
-	* Interface improvements
+* Bugfix: Must click twice on submit button after giving Delicious username and password,
+* Bugfix: Error message "You do not have sufficient permissions to access this page." while installing plugin,
+* New: French translation
+* New: Interface improvements
 
 = Version 0.6.0 - July 6th, 2009 =
-* Initiale release
+* New: Initiale release
 
 == Licence ==
 
