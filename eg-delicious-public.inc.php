@@ -2,7 +2,7 @@
 
 if (!class_exists('EG_Delicious')) {
 	
-	class EG_Delicious extends EG_Plugin_104 {
+	class EG_Delicious extends EG_Plugin_103 {
 
 		function init() {
 			parent::init();

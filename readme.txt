@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
-Tested up to: 2.8.3
-Stable tag: 1.0.1
+Tested up to: 2.8.1
+Stable tag: 0.8.0
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -80,7 +80,6 @@ Then you can go to menu **Settings / EG-Delicious** to set plugin parameters
 1. The session is terminated, when you synchronize all links, or when you press the **Stop synchronization** button.
 
 = Synchronize tags =
-
 This feature synchronizes the lists of tags of Delicious and WordPress.
 
 1. You can first, go to **Settings/EG-Delicious**, to set the options of this synchronization,
@@ -97,7 +96,6 @@ This feature automatically add in Delicious, the post you publish in WordPress.
 1. In the **Posts publication** part, click on Activation checkbox,
 1. You can choose also which tags will be used to add your post in Delicious. You can use WordPress tags, WordPress categories, or specify tags manually.
 1. Once settings are saved, each time you edit a post, and click on the **Publish button**, your post will be add to Delicious with the specified tags.
-1. If you delete a post in WordPress, it will be also deleted in Delicious
 
 = Widgets =
 
@@ -137,7 +135,8 @@ In these three widgets, you can choose where or when to display them:
 
 This feature is available in the **Tools / Delicious backup** menu. It backups all Delicious links and tags, and store backup file in the plugin directory.
 
-You can download the resulting files, or read them on a browser. You can also re-import them in Delicious, in case of errors.
+You can download the resulting files, or read them on a browser.
+
 
 == Frequently Asked Questions ==
 
@@ -169,39 +168,44 @@ The second way is recommended to ensure that your customization won't be lost du
 
 == Changelog ==
 
-= Version 1.0.0 - Aug 9th, 2009 =
-* Bugfix: Error message "Call-time pass-by-reference has been deprecated"
-
 = Version 1.0.0 - July 30th, 2009 =
-* New: Synchronize tags
-* New: Automaticaly add in Delicious, posts published in WordPress
-* New: Widgets: network badge, delicious tags
+* New features
+	* Synchronize tags
+	* Automaticaly add in Delicious, posts published in WordPress
+	* Widgets: network badge, delicious tags
 
 = Version 0.8.0 - July 13th, 2009 =
-* Bugfix: Warning message with array_keys function,
-* Bugfix: Options didn't displayed when bundles not used,
-* Bugfix: Uninstall doesn't delete option entries,
+* Bug fix:
+	* Warning message with array_keys function,
+	* Options didn't displayed when bundles not used,
+	* Uninstall doesn't delete option entries,
 
 = Version 0.7.2 - July 12th, 2009 =
-* Bugfix: Error during Delicious request with WordPrss 2.8
-* New: Enhanced blogroll widget
+* Bug fix:
+	* Error during Delicious request with WordPrss 2.8
+* New feature:
+	* Enhanced blogroll widget
 
 = Version 0.7.1 - July 09th, 2009 =
-* Bugfix: Temp directory didn't exist
+* Bug fix:
+	* Temp directory didn't exist
 
 = Version 0.7.0 - July 09th, 2009 =
-* Bugfix: Securization in case of multi-user blog (cannot edit options during synchronization for example),
-* Bugfix: Better support of http requests (didn't work with WP 2.7 !)
-* Bugfix: Automatically stop the synchronization during logout	
+* Bug fix:
+	* Securization in case of multi-user blog (cannot edit options during synchronization for example),
+	* Better support of http requests (didn't work with WP 2.7 !)
+	* Automatically stop the synchronization during logout	
 
 = Version 0.6.5 - July 8th, 2009 =
-* Bugfix: Must click twice on submit button after giving Delicious username and password,
-* Bugfix: Error message "You do not have sufficient permissions to access this page." while installing plugin,
-* New: French translation
-* New: Interface improvements
+* Bug fix:
+	* Must click twice on submit button after giving Delicious username and password,
+	* Error message "You do not have sufficient permissions to access this page." while installing plugin,
+* New feature:
+	* French translation
+	* Interface improvements
 
 = Version 0.6.0 - July 6th, 2009 =
-* New: Initiale release
+* Initiale release
 
 == Licence ==
 

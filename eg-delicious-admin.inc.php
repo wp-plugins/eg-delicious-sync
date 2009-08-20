@@ -57,7 +57,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 	 *
 	 * @package EG-Delicious
 	 */
-	Class EG_Delicious_Admin extends EG_Plugin_104 {
+	Class EG_Delicious_Admin extends EG_Plugin_103 {
 
 		var $options_form;
 		var $plugin_temp;
@@ -89,21 +89,6 @@ if (! class_exists('EG_Delicious_Admin')) {
 			'sync_tags_type_replace' => 'All tags existing in WordPress and NOT in Delicious will be deleted, and all tags existing in Delicious and NOT in WordPress will be added.'
 		);
 
-		var	$ERROR_MESSAGES = array(
-				EG_DELICIOUS_CORE_ERROR_NONE 	=> 'No error.',
-				EG_DELICIOUS_ERROR_GET_WPLINK	=> 'Error while requesting WordPress links.',
-				EG_DELICIOUS_ERROR_GET_WPCAT	=> 'Error while getting WordPress links categories.',
-				EG_DELICIOUS_ERROR_USER_RIGHT	=> 'You cannot access to the page. You haven\'t the "Manage links" capability. Please contact the blog administrator.',
-				EG_DELICIOUS_ERROR_CONFIG		=> 'Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters.',
-				EG_DELICIOUS_ERROR_DELQUERY		=> 'Error while querying Delicious.',
-				EG_DELICIOUS_ERROR_LISTCHG		=> 'Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended.',
-				EG_DELICIOUS_ERROR_NOTAG		=> 'No tag downloaded from Delicious. Switch to bundle mode.',
-				EG_DELICIOUS_ERROR_NOBUNDLE		=> 'No bundle downloaded from Delicious. Switch to tag mode.',
-				EG_DELICIOUS_ERROR_NOPUBLISH	=> 'Cannot publish post in Delicious.',
-				EG_DELICIOUS_ERROR_BACKUP_PATH  => 'Cannot create backup path. Backup failed',
-				EG_DELICIOUS_ERROR_CANTDEL		=> 'Cannot delete post in Delicious'
-			);
-		
 		/**
 		 * plugins_loaded
 		 *
@@ -118,43 +103,55 @@ if (! class_exists('EG_Delicious_Admin')) {
 
 			parent::plugins_loaded();
 
+			$this->ERROR_MESSAGES = array(
+				EG_DELICIOUS_CORE_ERROR_NONE 	=> 'No error.',
+				EG_DELICIOUS_ERROR_GET_WPLINK	=> 'Error while requesting WordPress links.',
+				EG_DELICIOUS_ERROR_GET_WPCAT	=> 'Error while getting WordPress links categories.',
+				EG_DELICIOUS_ERROR_USER_RIGHT	=> 'You cannot access to the page. You haven\'t the "Manage links" capability. Please contact the blog administrator.',
+				EG_DELICIOUS_ERROR_CONFIG		=> 'Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters.',
+				EG_DELICIOUS_ERROR_DELQUERY		=> 'Error while querying Delicious.',
+				EG_DELICIOUS_ERROR_LISTCHG		=> 'Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended.',
+				EG_DELICIOUS_ERROR_NOTAG		=> 'No tag downloaded from Delicious. Switch to bundle mode.',
+				EG_DELICIOUS_ERROR_NOBUNDLE		=> 'No bundle downloaded from Delicious. Switch to tag mode.',
+				EG_DELICIOUS_ERROR_NOPUBLISH	=> 'Cannot publish post in Delicious.',
+				EG_DELICIOUS_ERROR_BACKUP_PATH  => 'Cannot create backup path. Backup failed',
+				EG_DELICIOUS_ERROR_CANTDEL		=> 'Cannot delete post in Delicious'
+			);
+
 			// Add plugin options page
 			$this->add_page('options', 							/* page type: post, page, option, tool 	*/
 							'EG-Delicious Options',				/* Page title 							*/
 							'EG-Delicious',						/* Menu title 							*/
 							$this->links_min_user_rights, 		/* Access level / capability			*/
 							'egdel_options',					/* file 								*/
-							'options_page',						/* function								*/
-							'load_eg_delicious_pages');
+							'options_page');					/* function								*/
 
 			// Add links synchronisation page
 			$this->add_page('links',
 							'Blogroll Synchronisation',			/* Page title					*/
-							'EG-Delicious Sync.',				/* Menu title 					*/
+							'Delicious Sync.',					/* Menu title 					*/
 							$this->links_min_user_rights, 		/* Access level / capability	*/
 							'egdel_links_sync',					/* file 						*/
-							'links_sync',						/* function						*/
-							'load_eg_delicious_pages');
+							'links_sync');						/* function						*/
 
 			// Add tags synchronization page
 			$this->add_page('posts',
 							'Delicious tag synchronization',	/* Page title					*/
-							'EG-Delicious Tags',				/* Menu title 					*/
+							'Tags Delicious Sync.',				/* Menu title 					*/
 							$this->tags_min_user_rights, 		/* Access level / capability	*/
 							'egdel_tags_sync',					/* file 						*/
-							'tags_sync',						/* function						*/
-							'load_eg_delicious_pages');
+							'tags_sync');						/* function						*/
 
 			// Add backup Delicious page
 			$this->add_page('tools',
 							'Delicious Backup',					/* Page title					*/
-							'EG-Delicious Backup',				/* Menu title 					*/
+							'Delicious Backup',					/* Menu title 					*/
 							$this->links_min_user_rights, 		/* Access level / capability	*/
 							'egdel_backup',						/* file 						*/
-							'backup_delicious',					/* function						*/
-							'load_eg_delicious_pages');
+							'backup_delicious');				/* function						*/
 
 		} // End of plugins_loaded
+
 
 		/**
 		 * ainit
@@ -172,7 +169,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 			// Manage the download feature (for backup file)
 			$this->backup_delicious_download();
 		}
-		
+
 		/**
 		 * admin_init
 		 *
@@ -185,30 +182,6 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 */
 		function admin_init() {
 			parent::admin_init();
-			
-			if (current_user_can( 'publish_posts' ) && $this->options['publish_post']) {
-				add_action('transition_post_status', array(&$this, 'publish_post'), 10, 3);
-				add_action('delete_post', array(&$this, 'delete_post'));
-			}
-
-			add_action('admin_notices', array(&$this, 'notice_error'));
-			if ($this->options['wp_link_update']) {
-				add_action('edit_link', array(&$this, 'update_wp_link_date'));
-				add_action('add_link',  array(&$this, 'update_wp_link_date'));
-			}
-		} // End of admin_init
-
-		/**
-		 * load_eg_delicious_pages
-		 *
-		 * Load data for plugin pages
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function load_eg_delicious_pages() {
 
 			$this->plugin_temp        = $this->plugin_path.'tmp/';
 			$this->file_linksdb       = $this->plugin_temp.'synchronize_links.txt';
@@ -227,7 +200,17 @@ if (! class_exists('EG_Delicious_Admin')) {
 			$this->current_wp_user	= $logged_user->display_name;
 			$this->datetime_format  = get_option('date_format').' '.get_option('time_format');
 
-		} // End of load_eg_delicious_pages
+			if (current_user_can( 'publish_posts' ) && $this->options['publish_post']) {
+				add_action('transition_post_status', array(&$this, 'publish_post'), 10, 3);
+				add_action('delete_post', array(&$this, 'delete_post'));
+			}
+
+			add_action('admin_notices', array(&$this, 'notice_error'));
+			if ($this->options['wp_link_update']) {
+				add_action('edit_link', array(&$this, 'update_wp_link_date'));
+				add_action('add_link',  array(&$this, 'update_wp_link_date'));
+			}
+		} // End of admin_init
 
 		/**
 		 * notice_error
@@ -2067,7 +2050,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function backup_display_page($backup_path, $backup_url) {
 
 			// Check if all is ok from WordPress and Delicious side
-			$config_status = $this->backup_check_status($backup_path, $backup_list);
+			$config_status = $this->backup_check_status($backup_path, & $backup_list);
 
 			echo '<form method="POST" action="" >'.
 				wp_nonce_field('egdel_backup');

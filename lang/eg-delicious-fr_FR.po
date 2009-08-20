@@ -43,30 +43,6 @@ msgstr "Erreur de requ&ecirc;te &agrave; WordPress."
 msgid "You cannot access to the page. You haven't the \"Manage links\" capability. Please contact the blog administrator."
 msgstr "Vous ne pouvez acc&eacute;der &agrave; cette page. Vous n'avez pas les droits \"Gestion des liens\". Veuillez contacter votre administrateur."
 
-#: eg-delicious-admin.inc.php:91
-msgid "Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters."
-msgstr "Plugin non configur&eacute;! Utilisez le menu <strong>Param&egrave;tres / EG-Delicious</strong> pour saisir les param&egrave;tres n&eacute;cessaires."
-
-#: eg-delicious-admin.inc.php:
-msgid "No tag downloaded from Delicious. Switch to bundle mode."
-msgstr "Pas de tag trouv&eacute; dans Delicious. Passage en mode bundle."
-
-#: eg-delicious-admin.inc.php:
-msgid "No bundle downloaded from Delicious. Switch to tag mode."
-msgstr "Pas de bundle trouv&eacute; dans Delicious. Passage en mode tag."
-
-#: eg-delicious-admin.inc.php:
-msgid "Cannot publish post in Delicious."
-msgstr "Impossible de publier l'article dans Delicious."
-
-#: eg-delicious-admin.inc.php:
-msgid "Cannot create backup path. Backup failed"
-msgstr "Impossible de cr&eacute;er le r&eacute;pertoire de sauvegarde. La sauvegarde a &eacute;chou&eacute;"
-
-#: eg-delicious-admin.inc.php:
-msgid "Cannot delete post in Delicious"
-msgstr "Impossible d'effacer l'article dans Delicious"
-
 #: eg-delicious-admin.inc.php:163
 msgid "Delicious account"
 msgstr "Compte Delicious"
@@ -442,8 +418,8 @@ msgid "Columns"
 msgstr "Colonnes"
 
 #: eg-delicious-widgets.inc.php:
-msgid "Minimum number of links per column"
-msgstr "Nombre minimum de liens par colonne"
+msgid "Minimum number of links"
+msgstr "Nombre minimum de liens"
 
 #: eg-delicious-widgets.inc.php:
 msgid "Categories options"
@@ -512,10 +488,6 @@ msgstr "Blogroll"
 #: eg-delicious-widgets.inc.php:
 msgid "Bookmarks"
 msgstr "Favoris"
-
-#: eg-delicious-widgets.inc.php:
-msgid "List of the links"
-msgstr "Voir tous les liens"
 
 #: eg-widgets200.inc.php:
 #: eg-widgets100.inc.php:
@@ -830,7 +802,7 @@ msgid "The following parameters allow you to add to Delicious, the posts publish
 msgstr "Les param&egrave;tres suivants permettent l'ajout dans Delicious, des articles publi&eacute;s dans WordPress. Vous pouvez utiliser cette fonctionnalit&eacute;, pour suivre la popularit&eacute; de vos articles dans Delicious, par exemple."
 
 #: eg-delicious-admin.inc.php
-msgid "EG-Delicious Backup"
+msgid "Delicious Backup"
 msgstr "Sauvegarde Delicious"
 
 #: eg-delicious-admin.inc.php
