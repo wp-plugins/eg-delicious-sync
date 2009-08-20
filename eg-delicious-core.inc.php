@@ -24,6 +24,7 @@ if (! class_exists('EG_Delicious_Core')) {
 	define('EG_DELICIOUS_CORE_ERROR_PUSH',			5);
 
 	define('EG_DELICIOUS_PASSWORD_SECRET_KEY',		'EG-Delicious');
+
 	/**
 	 * Class EG_Delicious_Core
 	 *

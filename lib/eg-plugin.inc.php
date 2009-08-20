@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.0.3
+Version: 1.0.6
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_103')) {
+if (!class_exists('EG_Plugin_106')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,13 +34,13 @@ if (!class_exists('EG_Plugin_103')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_103 {
+	Class EG_Plugin_106 {
 
 		var $plugin_name;
 		var $plugin_version;
 		var $plugin_path;
 		var $plugin_url;
-		var $plugin_core_file;
+		var $plugin_corefile;
 		var $plugin_lang_path;
 
 		var $plugin_author_name;
@@ -54,8 +54,12 @@ if (!class_exists('EG_Plugin_103')) {
 		var $options;
 		var $default_options;
 
+		var $cache_expiration = 0;
+		var $cache_group      = '';
+		var $cache_path       = '';
+		var $use_cache        = 0;
+		
 		var $tinyMCE_button;
-		var $cacheexpiration = 0;
 		var $textdomain      = '';
 
 		var $wp_version_min = '2.5';
@@ -76,7 +80,7 @@ if (!class_exists('EG_Plugin_103')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_103($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_106($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
@@ -117,8 +121,11 @@ if (!class_exists('EG_Plugin_103')) {
 			$plugin_base_path		= basename( dirname($core_file) );
 			$this->plugin_path 		= trailingslashit($wp_plugin_dir.'/'.$plugin_base_path);
 			$this->plugin_url  		= trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
-			$this->plugin_core_file = $this->plugin_path.basename($core_file);
+			$this->plugin_corefile  = $this->plugin_path.basename($core_file);
 			$this->plugin_lang_path = str_replace($abspath, '', $wp_plugin_dir).'/'.$plugin_base_path.'/lang';
+			
+			global $wp_object_cache;
+			$this->use_cache  = ( $wp_object_cache->cache_enabled === TRUE ) ? TRUE : FALSE;
 		}
 
 		/**
@@ -132,16 +139,36 @@ if (!class_exists('EG_Plugin_103')) {
 		}
 
 		function load() {
-			add_action('plugins_loaded', array(&$this, 'plugins_loaded'), 0);
-			add_action('init', array( &$this, 'init'));
-			add_action('wp_logout', array(&$this, 'wp_logout'));
 
+			add_action('plugins_loaded', array(&$this,  'plugins_loaded') );
+			add_action('init',           array( &$this, 'init')           );
+			add_action('wp_logout',      array(&$this,  'wp_logout')      );
+
+			if (is_admin()) {
+			
+				if ( function_exists('register_uninstall_hook') ) {
+					register_uninstall_hook ($this->plugin_corefile, array(&$this, 'uninstall') );
+				}
+
+				if ( function_exists('register_activation_hook') ) {
+					register_activation_hook( $this->plugin_corefile, array(&$this, 'install_upgrade') );
+				}
+
+				add_action('admin_menu',   array(&$this, 'admin_menu')    );
+				add_action('admin_init',   array( &$this, 'admin_init')   );
+				add_action('admin_header', array( &$this, 'admin_head')   );
+				add_action('admin_footer', array( &$this, 'admin_footer') );
+			}
+			else {
+				add_action('wp_head',   array( &$this, 'head')  );
+				add_action('wp_footer', array( &$this, 'footer'));
+			}
 		}
 
 		function wp_logout() {
 			// Nothing here.
 		}
-		
+
 		/**
 		 * set_owner
 		 *
@@ -267,21 +294,26 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @param
 		 * @return none
 		 */
-		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, $callback) {
+		function add_page($page_type, $page_title, $menu_title, $access_level, $page_url, 
+						  $display_callback, $load_callback=FALSE, $columns=1) {
 			$index = sizeof($this->pages);
-			$this->pages[$index]->type         = $page_type;
-			$this->pages[$index]->page_title   = __($page_title, $this->textdomain);
-			$this->pages[$index]->menu_title   = __($menu_title, $this->textdomain);
-			$this->pages[$index]->access_level = $access_level;
-			$this->pages[$index]->page_url     = $page_url;
-			$this->pages[$index]->callback     = $callback;
+			$this->pages[$index]->type             = $page_type;
+			$this->pages[$index]->page_title       = __($page_title, $this->textdomain);
+			$this->pages[$index]->menu_title       = __($menu_title, $this->textdomain);
+			$this->pages[$index]->access_level     = $access_level;
+			$this->pages[$index]->page_url         = $page_url;
+			$this->pages[$index]->display_callback = $display_callback;
+			$this->pages[$index]->load_callback    = $load_callback;
+			$this->pages[$index]->columns	       = $columns;
 
 			if ($page_type == 'options' && !isset($this->option_page_url))
 				$this->option_page_url = $page_url;
+				
+			return ($index);
 		}
 
 		/**
-		 * active_cache
+		 * activate_cache
 		 *
 		 * Active cache and set the expiration duration
 		 *
@@ -290,8 +322,10 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @param	int	$expiration	Expiration duration (in second)
 		 * @return none
 		 */
-		function active_cache($expiration = 3600) {
-			$this->cacheexpiration = $expiration;
+		function activate_cache($expiration = 3600, $cache_group='', $cache_path='tmp') {
+			$this->cache_expiration = $expiration;
+			$this->cache_group      = ($cache_group != '' ? $cache_group : $this->plugin_name);
+			$this->cache_path       = $this->plugin_path . trailingslashit($cache_path);
 		}
 
 		/**
@@ -305,14 +339,15 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @return	none
 		 */
 		function admin_init() {
+		
 			// Add only in Rich Editor mode
 			if ( isset($this->tinyMCE_button) &&
 				 get_user_option('rich_editing') == 'true' ) {
 			// && current_user_can('edit_posts') && current_user_can('edit_pages') )  {
 
 				// add the button for wp2.5 in a new way
-				add_filter('mce_external_plugins', array (&$this, 'add_tinymce_plugin' ), 5);
-				add_filter('mce_buttons',          array (&$this, 'register_button' ),    5);
+				add_filter('mce_external_plugins', array(&$this, 'add_tinymce_plugin' ), 5);
+				add_filter('mce_buttons',          array(&$this, 'register_button' ),    5);
 			}
 		}
 
@@ -327,9 +362,9 @@ if (!class_exists('EG_Plugin_103')) {
 		 * @param	none
 		 * @return	none
 		 */
-		function widgets_init() {
+		// function widgets_init() {
 			// empty for this class
-		}
+		// }
 
 		/**
 		 * init
@@ -351,14 +386,11 @@ if (!class_exists('EG_Plugin_103')) {
 					load_plugin_textdomain( $this->textdomain, $this->plugin_lang_path);
 				} else {
 					// for WP >= 2.6
-					load_plugin_textdomain( $this->textdomain, FALSE , basename(dirname($this->plugin_core_file)).'/lang');
+					load_plugin_textdomain( $this->textdomain, FALSE , basename(dirname($this->plugin_corefile)).'/lang');
 				}
 			}
-			$this->widgets_init();
+			// $this->widgets_init();
 
-			if (sizeof($this->pages) > 0) {
-				add_action( 'admin_menu', array(&$this, 'admin_menu') );
-			}
 			$this->include_stylesheets();
 		}
 
@@ -377,23 +409,7 @@ if (!class_exists('EG_Plugin_103')) {
 			$this->check_requirements(FALSE);
 
 			/* --- Get Plugin options --- */
-			$this->get_plugin_option();
-
-			if (is_admin()) {
-				
-				if ( function_exists('register_uninstall_hook') ) {
-					register_uninstall_hook ($this->plugin_core_file, array(&$this, 'uninstall') );
-				}
-
-				add_action('admin_init',   array( &$this, 'admin_init')   );
-				add_action('admin_header', array( &$this, 'admin_head')   );
-				add_action('admin_footer', array( &$this, 'admin_footer') );
-			}
-			else {
-				add_action('wp_head',   array( &$this, 'head')  );
-				add_action('wp_footer', array( &$this, 'footer'));
-			}
-
+			if (! $this->options) $this->options = get_option($this->options_entry);
 		}
 
 		/**
@@ -426,7 +442,7 @@ if (!class_exists('EG_Plugin_103')) {
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', get_stylesheet_directory_uri().'/'.$this->stylesheet);
 					}
 					else {
-					
+
 						wp_enqueue_style( $this->plugin_name.'_stylesheet', $this->plugin_url.$this->stylesheet);
 					}
 				}
@@ -444,7 +460,7 @@ if (!class_exists('EG_Plugin_103')) {
 		 */
 		function head() {
 			global $wp_version;
-			
+
 			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
 				wp_print_styles($this->plugin_name.'_stylesheet');
 			}
@@ -522,7 +538,7 @@ if (!class_exists('EG_Plugin_103')) {
 		function filter_plugin_actions_before_27($links, $file){
 			static $this_plugin;
 
-			if ( !$this_plugin ) $this_plugin = plugin_basename($this->plugin_core_file);
+			if ( !$this_plugin ) $this_plugin = plugin_basename($this->plugin_corefile);
 
 			if ( $file == $this_plugin ) {
 				$settings_link = '<a href="options-general.php?page='.$this->option_page_url.'">' . __('Settings') . '</a>';
@@ -564,33 +580,6 @@ if (!class_exists('EG_Plugin_103')) {
 		}
 
 		/**
-		 * get_plugin_option
-		 *
-		 * Get the plugin options. If options don't exists, create them. In case of plugin upgrate, update them.
-		 *
-		 * @package EG-Plugins
-		 * @param 		none
-		 * @return array	$options	list of the options and values
-		 */
-
-		function get_plugin_option($options_entry=FALSE, $default_options=FALSE) {
-/*
-			if ($options_entry === FALSE)
-				$options_entry = $this->options_entry;
-
-			if (! $options_entry) {
-				$options = FALSE;
-			} else {
-				$options = get_option( $options_entry );
-			}
-*/
-			$this->options = get_option($this->options_entry);
-			$this->install_upgrade();
-			
-			return ($this->options);
-		} 
-
-		/**
 		 * options_reset
 		 *
 		 * Reset options to defaults
@@ -620,30 +609,35 @@ if (!class_exists('EG_Plugin_103')) {
 			To use this function:
 				function insta_upgrade() {
 					$current_version = parent::install_upgrade();
-					
+
 					put here your upgrade or install features
 				}
 		 */
 		function install_upgrade() {
-
+		
+			if (! $this->options) $this->options = get_option($this->options_entry);
+			
 			if ($this->options === FALSE) {
 				// Create option from the defaults
-				if (isset($this->default_options) && $this->default_options != FALSE) {
+				if ($this->default_options !== FALSE) {
 					$this->options = $this->default_options;
 				}
 				$this->options['version'] = $this->plugin_version;
+				$current_version = $this->plugin_version;
 				add_option($this->options_entry, $this->options);
 			}
-			else {	
-				if (  isset($this->options['version'])) $current_version = $this->options['version'];
+			else {
+				if (isset($this->options['version'])) $current_version = $this->options['version'];
 				else $current_version = '0.0.0';
 
 				// Plugin previously installed. Check the version and update options
 				if (version_compare($current_version, $this->plugin_version, '<')) {
-					if (! isset($this->default_options) || $this->default_options === FALSE) {
+					if ($this->default_options === FALSE) {
 						$new_options = $this->options;
 					}
 					else {
+						// $new_options = wp_parse_args($this->options, $this->default_options );
+
 						$new_options = array();
 						foreach ($this->default_options as $key => $value) {
 							if (isset($this->options[$key])) $new_options[$key] = $this->options[$key];
@@ -656,7 +650,8 @@ if (!class_exists('EG_Plugin_103')) {
 				}
 			}
 			return ($current_version);
-		} // End of upgrade
+
+		} // End of install_upgrade
 
 		/**
 		  * display_requirements_msg
@@ -687,7 +682,7 @@ if (!class_exists('EG_Plugin_103')) {
 		 *
 		 * Check PHP version required to run the plugin
 		 *
-		 * @package EG-Delicious
+		 * @package EG-Plugin
 		 *
 		 * @param boolean	display_msg		display error message or not
 		 * @return boolean					TRUE if required PHP versio, FALSE if not
@@ -707,7 +702,7 @@ if (!class_exists('EG_Plugin_103')) {
 		 *
 		 * Check PHP extensions
 		 *
-		 * @package EG-Delicious
+		 * @package EG-Plugin
 		 *
 		 * @param boolean	display_msg			display error message or not
 		 * @param array		extensions_list		list of required extensions
@@ -740,7 +735,7 @@ if (!class_exists('EG_Plugin_103')) {
 		 *
 		 * Check PHP options
 		 *
-		 * @package EG-Delicious
+		 * @package EG-Plugin
 		 *
 		 * @param 	boolean		display_msg			display error message or not
 		 * @param 	array		extensions_list		list of required extensions
@@ -773,7 +768,7 @@ if (!class_exists('EG_Plugin_103')) {
 		 *
 		 * Check WordPress version required to run the plugin
 		 *
-		 * @package EG-Delicious
+		 * @package EG-Plugin
 		 *
 		 * @param boolean	display_msg		display error message or not
 		 * @return boolean					TRUE if required WordPress version, FALSE if not
@@ -862,7 +857,7 @@ if (!class_exists('EG_Plugin_103')) {
 				$page_list = array ( 'posts'	=> 'add_management_page',
 								 'options'	=> 'add_options_page',
 								 'settings'	=> 'add_options_page',
-								 'tools'	=> 'add_options_page',
+								 'tools'	=> 'add_management_page',
 								 'theme'	=> 'add_theme_page',
 								 'users'	=> 'add_users_page',
 								 'media'	=> 'add_management_page',
@@ -883,23 +878,26 @@ if (!class_exists('EG_Plugin_103')) {
 
 			// Add a new submenu under Options:
 			$option_page_url = '';
-			foreach ($this->pages as $page) {
+			foreach ($this->pages as $id => $page) {
 				if ($page->type == 'options') {
 					$option_page_url = $page->page_url;
 				}
-				call_user_func($page_list[$page->type],
+				$this->pages[$id]->hook = call_user_func($page_list[$page->type],
 								__($page->page_title, $this->textdomain),
 								__($page->menu_title, $this->textdomain),
 								$page->access_level,
 								$page->page_url,
-								array(&$this, $page->callback));
+								array(&$this, $page->display_callback));
+
+				if ($page->load_callback !== FALSE)
+					add_action('load-'.$this->pages[$id]->hook, array(&$this, $page->load_callback));
 			}
 			if ($option_page_url != '') {
 				if (version_compare($wp_version, '2.7', '<')) {
 					add_filter('plugin_action_links', array(&$this, 'filter_plugin_actions_before_27'), 10, 2);
 				}
 				else {
-					add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_core_file),
+					add_filter( 'plugin_action_links_' . plugin_basename($this->plugin_corefile),
 								array( &$this, 'filter_plugin_actions_27_and_after') );
 				}
 			}
@@ -926,9 +924,105 @@ if (!class_exists('EG_Plugin_103')) {
 			<?php
 			}
 		} /* --- end of display_message --- */
+		
+		/**
+		 * get_cache_file
+		 *
+		 * Build cache file name
+		 *
+		 * @package EG-Plugin
+		 *
+		 * @param	string	$name		name of cache file
+		 * @return 	string				file name
+		 */
+		function get_cache_file($name) {
+			return $this->cache_path.'cache_'.$name.'.txt';
+		} // End of get_cache_file
+
+		/**
+		 * cache_get
+		 *
+		 * @package EG-Plugin
+		 *
+		 * @param	string	$name		name of data to cache
+		 * @return 	array				cached data
+		 */
+		function cache_get($name) {
+
+			// if WP cache is activated, use it
+			if ($this->use_cache) {
+				return wp_cache_get($name, $this->cache_group);
+			}
+			else {
+				$data = FALSE;
+				// WP cache not activated, use home made cache
+				$cache_file = $this->get_cache_file($name);
+				if ( file_exists($cache_file)) {
+					if ((filemtime($cache_file) + $this->cache_expiration) <= time()) {
+						$this->cache_del($name);
+						return (FALSE);
+					}
+					else {
+						$data = unserialize(base64_decode(@ file_get_contents($cache_file)));
+					}
+				}
+				return ($data);
+			}
+		} // End of cache_get
+
+		/**
+		 * cache_set
+		 *
+		 * @package EG-Plugin
+		 *
+		 * @param	string	$name		name of data to cache
+		 * @param	mixed	$data		data to cache
+		 *
+		 * @return 	none
+		 */
+		function cache_set($name, $data) {
+
+			// if WP cache is activated, use it
+			if ($this->use_cache) {
+				wp_cache_set($name, $data, $this->cache_group, $this->cache_expiration);
+			}
+			else {
+				// WP cache not activated, use home made cache
+				$cache_file = $this->get_cache_file($name);
+				$string = base64_encode(serialize($data));
+				$fd = @fopen($cache_file, 'w');
+				if ( false !== $fd ) {
+					fputs($fd, $string);
+				}
+				@fclose($fd);
+			}
+		} // End of cache_set
+
+				/**
+		 * cache_del
+		 *
+		 * @package EG-Plugin
+		 *
+		 * @param	string	$name		name of data to un-cache
+		 *
+		 * @return 	none
+		 */
+		function cache_del($name) {
+
+			// if WP cache is activated, use it
+			if ($this->use_cache)
+				wp_cache_delete($name, $this->cache_group);
+			else {
+				// WP cache not activated, use home made cache
+				$cache_file = $this->get_cache_file($name);
+				if (file_exists($cache_file)) {
+					@unlink($cache_file);
+				}
+			}
+		} // End of cache_del
+		
+		
 	} /* End of class */
 } /* End of class_exists */
-
-
 
 ?>

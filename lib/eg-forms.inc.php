@@ -343,7 +343,9 @@ if (!class_exists('EG_Forms_104')) {
 						if (isset($options[$key])) {
 							if (isset($_POST[$key])) {
 								if (!is_array($_POST[$key])) {
-									$new_options[$key] = attribute_escape($_POST[$key]);
+									if (is_float($_POST[$key])) $new_options[$key] = floatval($_POST[$key]);
+									elseif (is_int($_POST[$key])) $new_options[$key] = intval($_POST[$key]);
+									else $new_options[$key] = attribute_escape($_POST[$key]);
 								}
 								else {
 									$new_options[$key] = (array)$_POST[$key];

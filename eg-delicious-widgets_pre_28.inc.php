@@ -353,93 +353,44 @@ if (!class_exists('EG_Delicious_BlogRoll_Widget')) {
 				}
 			}
 			$fields = array(
-						'presentation' => array(
-							'type'		=> 'comment',
-							'label'		=> 'General options'
-						),
-						'title' => array(
-							'type'		=> 'ftext',
-							'label'		=> 'Title'
-						),
-						'columns' => array(
-							'type'		=> 'select',
-							'label'		=> 'Columns',
-							'list'		=> array( '1' => 1, '2' => 2)
-						),
-						'column_min'	=> array(
-							'type'		=> 'numeric',
-							'label'		=> 'Minimum number of links'
-						),
-						'end_pres'	=> array(
-							'type' 		=> 'separator'
-						),
-						'categories' => array(
-							'type'		=> 'comment',
-							'label'		=> 'Categories options'
-						),
-						'category' => array(
-							'type'		=> 'checkbox',
-							'label'		=> 'Categories to display:',
-							'list'		=> $categories
-						),
-						'categorize'  => array(
-							'type'		=> 'checkbox',
-							'label'		=> 'Group links by category',
-						),
-						'end_category' => array(
-							'type'		=> 'separator'
-						),
-						'links' => array(
-							'type'		=> 'comment',
-							'label'		=> 'Links options'
-						),
-						'show_description' => array(
-							'type'		=> 'checkbox',
-							'label'		=> 'Show description',
-						),
-						'hide_invisible' => array(
-							'type'    => 'checkbox',
-							'label'   => 'Hide Invisible',
-						),
-						'orderby' => array(
-							'type'    => 'select',
-							'label'   => 'Order by',
-							'list'    => array( 'none'   => '',
-												'name'   => 'Name',
-												'rating' => 'Rating',
-												'rand'   => 'Random'
-											)
-						),
-						'order' => array(
-							'type'    => 'select',
-							'label'   => 'Order',
-							'list'    => array( 'none' => '',
-												'ASC' => 'Ascending',
-												'DESC' => 'Descending')
-						),
-						'limit' => array(
-							'type'    => 'numeric',
-							'label'   => 'Number of links to display'
-						),
-						'show_all' => array(
-							'type'    => 'numeric',
-							'label'   => 'Page/Post ID to see all links'
-						),
+						'presentation'     => array( 'type'	=> 'comment',  'label' => 'General options'),
+						'title'            => array( 'type'	=> 'ftext',    'label' => 'Title'),
+						'end_title'	       => array( 'type' => 'separator'),
+						'col'	           => array( 'type'	=> 'comment',  'label' => 'Columns'),
+						'columns'          => array( 'type' => 'select',   'label' => 'Columns',
+							        'list' => array( '1' => 1, '2' => 2, '3' => 3)),
+						'column_min'       => array( 'type' => 'numeric',  'label' => 'Minimum number of links per column'),
+						'end_col'	       => array( 'type' => 'separator'),
+						'categories'       => array( 'type'	=> 'comment',  'label' => 'Categories options'),
+						'category'         => array( 'type'	=> 'checkbox', 'label' => 'Categories to display:',
+							'list'		   => $categories),
+						'categorize'       => array( 'type' => 'checkbox', 'label' => 'Group links by category'),
+						'end_category'     => array( 'type'	=> 'separator'),
+						'links'            => array( 'type'	=> 'comment',  'label' => 'Links options'),
+						'show_description' => array( 'type' => 'checkbox', 'label' => 'Show description'),
+						'hide_invisible'   => array( 'type' => 'checkbox', 'label' => 'Hide Invisible'),
+						'orderby'          => array( 'type' => 'select',   'label' => 'Order by',
+							     'list'    => array( 'none' => '', 'name' => 'Name', 'rating' => 'Rating', 'rand' => 'Random')),
+						'order' 		   => array( 'type' => 'select',   'label' => 'Order',
+								    'list' => array( 'none' => '', 'ASC' => 'Ascending',	'DESC' => 'Descending')),
+						'limit' 		   => array( 'type' => 'numeric',  'label' => 'Number of links to display'),
+						'show_all'         => array( 'type' => 'numeric',  'label' => 'Page/Post ID to see all links')
 				);
 
 				$default_values = array(
-						'title' 			=> 'Bookmarks',
+						'title' 			=> 'Blogroll',
 						'columns' 			=> 1,
 						'column_min'		=> -1,
 						'category' 			=> array_keys($categories),
-						'categorize'        => 1,
+						'categorize'        => 0,
+						'show_description'  => 0,
 						'hide_invisible'	=> '1',
-						'orderby' 			=> 'name',
-						'order' 			=> 'ASC',
+						'orderby' 			=> 'none',
+						'order' 			=> 'none',
 						'limit' 			=> '-1',
-						'show_all' 			=> '',
-						'show_description'  => 0
+						'show_all' 			=> ''
 					);
+
 			$this->set_options(EG_DELICIOUS_TEXTDOMAIN, EG_DELICIOUS_COREFILE, 0 );
 			$this->set_form($fields, $default_values, TRUE );
 		} // End of construct
@@ -448,7 +399,7 @@ if (!class_exists('EG_Delicious_BlogRoll_Widget')) {
 
 			$output = '';
 			if ($show_all != '' && $show_all != 0) {
-				$bookmarks[$bookmark_number]->link_name         = __('All favorites',$this->textdomain);
+				$bookmarks[$bookmark_number]->link_name         = __('List of the links',$this->textdomain);
 				$bookmarks[$bookmark_number]->link_url          = get_permalink($show_all);
 				$bookmarks[$bookmark_number]->link_description  = '';
 			}
