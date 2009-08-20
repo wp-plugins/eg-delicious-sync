@@ -1,6 +1,8 @@
 <?php
 
-require_once('lib/eg-forms.inc.php');
+if (! class_exists('EG_Forms_104')) {
+	require('lib/eg-forms.inc.php');
+}
 
 if (! class_exists('EG_Delicious_Admin')) {
 
@@ -57,7 +59,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 	 *
 	 * @package EG-Delicious
 	 */
-	Class EG_Delicious_Admin extends EG_Plugin_103 {
+	Class EG_Delicious_Admin extends EG_Plugin_106 {
 
 		var $options_form;
 		var $plugin_temp;
@@ -89,21 +91,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 			'sync_tags_type_replace' => 'All tags existing in WordPress and NOT in Delicious will be deleted, and all tags existing in Delicious and NOT in WordPress will be added.'
 		);
 
-		/**
-		 * plugins_loaded
-		 *
-		 * Add admins page (options ...)
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function plugins_loaded() {
-
-			parent::plugins_loaded();
-
-			$this->ERROR_MESSAGES = array(
+		var	$ERROR_MESSAGES = array(
 				EG_DELICIOUS_CORE_ERROR_NONE 	=> 'No error.',
 				EG_DELICIOUS_ERROR_GET_WPLINK	=> 'Error while requesting WordPress links.',
 				EG_DELICIOUS_ERROR_GET_WPCAT	=> 'Error while getting WordPress links categories.',
@@ -118,40 +106,57 @@ if (! class_exists('EG_Delicious_Admin')) {
 				EG_DELICIOUS_ERROR_CANTDEL		=> 'Cannot delete post in Delicious'
 			);
 
+		/**
+		 * plugins_loaded
+		 *
+		 * Add admins page (options ...)
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function plugins_loaded() {
+
+			parent::plugins_loaded();
+
 			// Add plugin options page
 			$this->add_page('options', 							/* page type: post, page, option, tool 	*/
 							'EG-Delicious Options',				/* Page title 							*/
 							'EG-Delicious',						/* Menu title 							*/
 							$this->links_min_user_rights, 		/* Access level / capability			*/
 							'egdel_options',					/* file 								*/
-							'options_page');					/* function								*/
+							'options_page',						/* function								*/
+							'load_eg_delicious_pages');
 
 			// Add links synchronisation page
 			$this->add_page('links',
 							'Blogroll Synchronisation',			/* Page title					*/
-							'Delicious Sync.',					/* Menu title 					*/
+							'EG-Delicious Sync.',				/* Menu title 					*/
 							$this->links_min_user_rights, 		/* Access level / capability	*/
 							'egdel_links_sync',					/* file 						*/
-							'links_sync');						/* function						*/
+							'links_sync',						/* function						*/
+							'load_eg_delicious_pages');
 
 			// Add tags synchronization page
 			$this->add_page('posts',
 							'Delicious tag synchronization',	/* Page title					*/
-							'Tags Delicious Sync.',				/* Menu title 					*/
+							'EG-Delicious Tags',				/* Menu title 					*/
 							$this->tags_min_user_rights, 		/* Access level / capability	*/
 							'egdel_tags_sync',					/* file 						*/
-							'tags_sync');						/* function						*/
+							'tags_sync',						/* function						*/
+							'load_eg_delicious_pages');
 
 			// Add backup Delicious page
 			$this->add_page('tools',
 							'Delicious Backup',					/* Page title					*/
-							'Delicious Backup',					/* Menu title 					*/
+							'EG-Delicious Backup',				/* Menu title 					*/
 							$this->links_min_user_rights, 		/* Access level / capability	*/
 							'egdel_backup',						/* file 						*/
-							'backup_delicious');				/* function						*/
+							'backup_delicious',					/* function						*/
+							'load_eg_delicious_pages');
 
 		} // End of plugins_loaded
-
 
 		/**
 		 * ainit
@@ -183,6 +188,30 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function admin_init() {
 			parent::admin_init();
 
+			if (current_user_can( 'publish_posts' ) && $this->options['publish_post']) {
+				add_action('transition_post_status', array(&$this, 'publish_post'), 10, 3);
+				add_action('delete_post', array(&$this, 'delete_post'));
+			}
+
+			add_action('admin_notices', array(&$this, 'notice_error'));
+			if ($this->options['wp_link_update']) {
+				add_action('edit_link', array(&$this, 'update_wp_link_date'));
+				add_action('add_link',  array(&$this, 'update_wp_link_date'));
+			}
+		} // End of admin_init
+
+		/**
+		 * load_eg_delicious_pages
+		 *
+		 * Load data for plugin pages
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function load_eg_delicious_pages() {
+
 			$this->plugin_temp        = $this->plugin_path.'tmp/';
 			$this->file_linksdb       = $this->plugin_temp.'synchronize_links.txt';
 			$this->file_linksdb_index = $this->plugin_temp.'synchronize_links_index.txt';
@@ -200,17 +229,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 			$this->current_wp_user	= $logged_user->display_name;
 			$this->datetime_format  = get_option('date_format').' '.get_option('time_format');
 
-			if (current_user_can( 'publish_posts' ) && $this->options['publish_post']) {
-				add_action('transition_post_status', array(&$this, 'publish_post'), 10, 3);
-				add_action('delete_post', array(&$this, 'delete_post'));
-			}
-
-			add_action('admin_notices', array(&$this, 'notice_error'));
-			if ($this->options['wp_link_update']) {
-				add_action('edit_link', array(&$this, 'update_wp_link_date'));
-				add_action('add_link',  array(&$this, 'update_wp_link_date'));
-			}
-		} // End of admin_init
+		} // End of load_eg_delicious_pages
 
 		/**
 		 * notice_error
@@ -284,11 +303,8 @@ if (! class_exists('EG_Delicious_Admin')) {
 		 * @return none
 		 */
 		function add_options_form() {
-			global $wpdb;
 
-			if (isset($this->options_form)) unset($this->options_form);
-			$this->options_form = new EG_Forms_104('', '', '', $this->textdomain, '', '', 'egdel_options', 'mailto:'.$this->plugin_author_email);
-			$form = & $this->options_form;
+			$form = new EG_Forms_104('', '', '', $this->textdomain, '', '', 'egdel_options', 'mailto:'.$this->plugin_author_email);
 
 			$id_section = $form->add_section('Delicious account');
 			$id_group   = $form->add_group($id_section, 'Username');
@@ -399,7 +415,9 @@ if (! class_exists('EG_Delicious_Admin')) {
 				}
 			}
 			$form->add_button('submit', 'egdel_options_submit', 'Save changes');
-		} /* End of add_options_form */
+
+			return ($form);
+		} // End of add_options_form
 
 		/**
 		 * options_page
@@ -435,9 +453,9 @@ if (! class_exists('EG_Delicious_Admin')) {
 			}
 
 			if ($display_option !== FALSE ) {
-				$this->add_options_form();
+				$form = $this->add_options_form();
 
-				$results = $this->options_form->get_form_values($this->options, $EG_DELICIOUS_DEFAULT_OPTIONS);
+				$results = $form->get_form_values($this->options, $EG_DELICIOUS_DEFAULT_OPTIONS);
 				if ($results) {
 					$sync_cat_type     = $this->options['sync_cat_type'];
 					$username_password = $this->options['username'].$this->options['password'];
@@ -446,11 +464,11 @@ if (! class_exists('EG_Delicious_Admin')) {
 
 					if ($sync_cat_type     != $this->options['sync_cat_type'] ||
 					    $username_password != $this->options['username'].$this->options['password']) {
-						$this->add_options_form();
+						$form = $this->add_options_form();
 					}
 				}
 				$this->check_bundles_tags_modification();
-				$this->options_form->display_form($this->options);
+				$form->display_form($this->options);
 			}
 			echo '</div>';
 		} // End of function options_page
@@ -576,7 +594,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function update_wp_link_date($link_id) {
 			global $wpdb;
 
-			if ( false === $wpdb->query( $wpdb->prepare('UPDATE '.$wpdb->links.' SET link_updated=NOW() WHERE link_id=%d', $link_id ))) {
+			if ( false === $wpdb->query( $wpdb->prepare('UPDATE '.$wpdb->links.' SET link_updated=NOW() WHERE link_id=%d', intval($link_id) ))) {
 				if ( $wp_error )
 					return new WP_Error( 'db_update_error', __( 'Could not update link in the database' ), $wpdb->last_error );
 				else
@@ -1063,7 +1081,9 @@ if (! class_exists('EG_Delicious_Admin')) {
 									'suggested_category'=> array($link->link_category),
 									'link_cat_names'    => $this->wp_link_categories[$link->link_category]
 								);
-							$this->linksdb_index[$href] = $link->link_name;
+							$this->linksdb_index[$href] = array(
+											'title' => $link->link_name,
+											'date'  => $link->link_updated);
 						}
 						$previous_link_id = $link->link_id;
 					} // end Foreach WP link
@@ -1115,7 +1135,9 @@ if (! class_exists('EG_Delicious_Admin')) {
 					// Try to calculate categories from tags or bundles
 					$this->links_db[$href]['suggested_category'] = $this->suggested_categories(	$link['TAG'],
 										$bundles_list, $this->links_db[$href]['link_category']);
-					$this->linksdb_index[$href] = $link['DESCRIPTION'];
+					$this->linksdb_index[$href] = array(
+								'title' => $link['DESCRIPTION'],
+								'date'  => $delicious_link_datetime);
 				} // End foreach delicious link
 
 				// Clean links with no action to do
@@ -1133,7 +1155,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				}
 				else {
 					// Sort the index
-					asort($this->linksdb_index);
+					// asort($this->linksdb_index);
 
 					// Save the result
 					$fd = @fopen($this->file_linksdb, 'w');
@@ -1151,6 +1173,34 @@ if (! class_exists('EG_Delicious_Admin')) {
 			} /* End synchro ok */
 
 		} // End of links_sync_build_list
+
+		function sort_by_title_asc($a, $b) {
+			if ($a['title'] == $b['title'])
+				return 0;
+			else
+				return ($a['title'] < $b['title']) ? -1 : 1;
+		} // End of sort_by_title_asc
+
+		function sort_by_title_desc($a, $b) {
+			if ($a['title'] == $b['title'])
+				return 0;
+			else
+				return ($a['title'] > $b['title']) ? -1 : 1;
+		} // End of sort_by_title_desc
+
+		function sort_by_date_asc($a, $b) {
+			if ($a['date'] == $b['date'])
+				return 0;
+			else
+				return ($a['date'] < $b['date']) ? -1 : 1;
+		} // End of sort_by_date_asc
+
+		function sort_by_date_desc($a, $b) {
+			if ($a['date'] == $b['date'])
+				return 0;
+			else
+				return ($a['date'] > $b['date']) ? -1 : 1;
+		} // End of sort_by_date_desc
 
 		/**
 		 * links_sync_display_list
@@ -1184,23 +1234,45 @@ if (! class_exists('EG_Delicious_Admin')) {
 					)
 				);
 			}
-			echo '<form id="egdel_filter" action="" method="GET">'.
-				 '<input type="hidden" name="page" value="egdel_links_sync" />'.
-			     '<div class="tablenav">';
+
+			$order_by = 'title';
+			if ( isset($_GET['egdel_sync_order_by']) &&
+				($_GET['egdel_sync_order_by'] == 'title' || $_GET['egdel_sync_order_by'] == 'date'))
+				$order_by = $_GET['egdel_sync_order_by'];
+
+			if ($order_by == 'title') $order = 'ASC';
+			else $order = 'DESC';
+			if ( isset($_GET['egdel_sync_order']) &&
+				($_GET['egdel_sync_order'] == 'ASC' || $_GET['egdel_sync_order'] == 'DESC'))
+				$order = $_GET['egdel_sync_order'];
+
+			$form_url = admin_url('link-manager.php');
+			echo '<form id="egdel_filter" action="'.$form_url.'" method="GET">'.
+				'<input type="hidden" name="page" value="egdel_links_sync" />'.
+				'<div class="tablenav">';
 			if ( $page_links )	echo '<div class="tablenav-pages">'.$page_links.'<br/>&nbsp;</div>';
-			echo __('Links per page: ', $this->textdomain);
-			echo $this->html_select(array( '25'  => '25',
+			echo __('Links per page: ', $this->textdomain).
+				$this->html_select(array( '25'  => '25',
 									'50'  => '50',
 									'75'  => '75',
 									'100' => '100',
 									'all' => 'All'),
 								'links_per_page',
 								$links_per_page_selector
-							);
-			echo '<input class="button" type="submit" id="egdel_sync_lpp" value="'.__('Change', $this->textdomain).'" />'.
+				).
+				'&nbsp;&nbsp;&nbsp;&nbsp;'.__('Order by: ', $this->textdomain).
+				$this->html_select(array('title' => __('Title', $this->textdomain),
+									     'date'  => __('Date', $this->textdomain)),
+								'egdel_sync_order_by',
+								$order_by).
+				$this->html_select(array('ASC' => __('Ascending', $this->textdomain),
+									     'DESC'  => __('Descending', $this->textdomain)),
+								'egdel_sync_order',
+								$order).
+				'<input class="button" type="submit" id="egdel_sync_filter" value="'.__('Change', $this->textdomain).'" />'.
 				'</div>'.
 			    '</form>'.
-				'<form method="POST" action="">'.
+				'<form method="POST" action="'.$form_url.'?page=egdel_links_sync">'.
 				wp_nonce_field('egdel_links_sync').
 				'<table class="wide widefat egdel_links_sync">'.
 			    '<thead><tr>'.
@@ -1221,20 +1293,30 @@ if (! class_exists('EG_Delicious_Admin')) {
 				echo '<tr><td colspan="9">'.__('No links to display',$this->textdomain).'</td></tr>';
 			}
 			else {
+
+				if ($order_by == 'title') {
+					if ($order == 'ASC') uasort($this->linksdb_index, array(&$this, 'sort_by_title_asc'));
+					else  uasort($this->linksdb_index, array(&$this, 'sort_by_title_desc'));
+				}
+				else {
+					if ($order == 'ASC')  uasort($this->linksdb_index, array(&$this, 'sort_by_date_asc'));
+					else  uasort($this->linksdb_index, array(&$this, 'sort_by_date_desc'));
+				}
+
 				// Divide page list into pages
 				$pages_list  = array_chunk($this->linksdb_index , $links_per_page, true);
 				$page_number = min($page_number, sizeof($pages_list));
 				$index = ($page_number-1)*$links_per_page + 1;
 				$current_page = $pages_list[$page_number-1];
 
-				foreach ($current_page as $href => $name) {
+				foreach ($current_page as $href => $last_update) {
 
 					$attrs = $this->links_db[$href];
 					$class_row = ($class_row == ''?'class="alternate"':'');
 					// $class_row = ($attrs['suggested_category'] == EG_DELICIOUS_NOSYNC_ID?'class="error"':$class_row);
 					echo '<input type="hidden" name="egdel_list['.$index.']" id="egdel_list['.$index.']" value="'.$href.'" />'.
 						'<tr '.$class_row.'>'.
-						'<td>'.$index.'. <a href="'.$href.'" target="_blank">'.htmlspecialchars($name).'</a></td>'.
+						'<td>'.$index.'. <a href="'.$href.'" target="_blank">'.htmlspecialchars($attrs['link_name']).'</a></td>'.
 						'<td>'.(sizeof($attrs['tags'])==0?'&nbsp;':implode(',<br />',$attrs['tags'])).'</td>'.
 						'<td>'.($attrs['bundles']==''?'&nbsp;':implode(',<br />',$attrs['bundles'])).'</td>'.
 						'<td>'.($attrs['link_updated']==0?'&nbsp;':date_i18n($this->datetime_format, $attrs['link_updated'] )).'</td>'.
@@ -1792,7 +1874,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 				} // post exist
 			}
 		} // End of delete_post
-		
+
 		/**
 		 * backup_delicious_manual
 		 *
@@ -1882,12 +1964,12 @@ if (! class_exists('EG_Delicious_Admin')) {
 			$this->error_code = EG_DELICIOUS_ERROR_NONE;
 
 			$submit = FALSE;
-			if (isset($_POST['egdel_backup_manual']) 
+			if (isset($_POST['egdel_backup_manual'])
 				/* && strcmp($_POST['egdel_backup_manual'],__('Start Manual backup', $this->textdomain))===0 */) {
 				$submit = 'manual';
 			}
 
-			if (isset($_POST['egdel_backup_delete']) 
+			if (isset($_POST['egdel_backup_delete'])
 				/* && strcmp($_POST['egdel_backup_delete'], __('Delete', $this->textdomain))===0 */ ) {
 				$submit = 'delete';
 			}
@@ -2008,7 +2090,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 					'<tr><td colspan="2">'.__($this->ERROR_MESSAGES[EG_DELICIOUS_ERROR_CONFIG], $this->textdomain).'</td></tr>';
 				}
 			}
-			
+
 			if ($status) {
 				echo '<tr><td>'.__('Checking Delicious connection', $this->textdomain).' ... </td><td>';
 				$this->last_delicious_update = $this->delicious_data->get_data('update');
@@ -2050,7 +2132,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function backup_display_page($backup_path, $backup_url) {
 
 			// Check if all is ok from WordPress and Delicious side
-			$config_status = $this->backup_check_status($backup_path, & $backup_list);
+			$config_status = $this->backup_check_status($backup_path, $backup_list);
 
 			echo '<form method="POST" action="" >'.
 				wp_nonce_field('egdel_backup');
@@ -2128,7 +2210,7 @@ if (! class_exists('EG_Delicious_Admin')) {
 		function backup_delicious_download() {
 
 			// Check if we press the right button
-			if (isset($_POST['egdel_backup_download']) 
+			if (isset($_POST['egdel_backup_download'])
 				/* && strcmp($_POST['egdel_backup_download'], __('Download', $this->textdomain)) === 0 */) {
 
 				// Check security

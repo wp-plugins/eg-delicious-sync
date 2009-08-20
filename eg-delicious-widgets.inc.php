@@ -287,10 +287,12 @@ if (!class_exists('EG_Delicious_BlogRoll_Widget')) {
 			$fields = array(
 						'presentation'     => array( 'type'	=> 'comment',  'label' => 'General options'),
 						'title'            => array( 'type'	=> 'ftext',    'label' => 'Title'),
+						'end_title'	       => array( 'type' => 'separator'),
+						'colu'  		   => array( 'type'	=> 'comment',  'label' => 'Columns'),
 						'columns'          => array( 'type' => 'select',   'label' => 'Columns',
 							        'list' => array( '1' => 1, '2' => 2, '3' => 3)),
-						'column_min'       => array( 'type' => 'numeric',  'label' => 'Minimum number of links'),
-						'end_pres'	       => array( 'type' => 'separator'),
+						'column_min'       => array( 'type' => 'numeric',  'label' => 'Minimum number of links per column'),
+						'end_col'	       => array( 'type' => 'separator'),
 						'categories'       => array( 'type'	=> 'comment',  'label' => 'Categories options'),
 						'category'         => array( 'type'	=> 'checkbox', 'label' => 'Categories to display:',
 							'list'		   => $categories),
@@ -328,7 +330,7 @@ if (!class_exists('EG_Delicious_BlogRoll_Widget')) {
 			
 			$output = '';
 			if ($show_all != '' && $show_all != 0) {
-				$bookmarks[$bookmark_number]->link_name         = __('All favorites',$this->textdomain);
+				$bookmarks[$bookmark_number]->link_name         = __('List of the links',$this->textdomain);
 				$bookmarks[$bookmark_number]->link_url          = get_permalink($show_all);
 				$bookmarks[$bookmark_number]->link_description  = '';
 			}

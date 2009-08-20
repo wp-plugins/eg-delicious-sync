@@ -37,12 +37,40 @@ msgstr ""
 msgid "Error while getting WordPress links categories."
 msgstr ""
 
-#: eg-delicious-admin.inc.php:91
+#: eg-delicious-admin.inc.php:
 msgid "You cannot access to the page. You haven't the \"Manage links\" capability. Please contact the blog administrator."
 msgstr ""
 
-#: eg-delicious-admin.inc.php:93
+#: eg-delicious-admin.inc.php:
+msgid "Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
 msgid "Error while querying Delicious."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
+msgid "Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
+msgid "No tag downloaded from Delicious. Switch to bundle mode."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
+msgid "No bundle downloaded from Delicious. Switch to tag mode."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot publish post in Delicious."
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot create backup path. Backup failed"
+msgstr ""
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot delete post in Delicious"
 msgstr ""
 
 #: eg-delicious-admin.inc.php:176
@@ -415,8 +443,8 @@ msgid "Columns"
 msgstr ""
 
 #: eg-delicious-widgets.inc.php:
-msgid "Minimum number of links"
-msgstr ""
+msgid "Minimum number of links per column"
+msgstr "Nombre minimum de liens par colonne"
 
 #: eg-delicious-widgets.inc.php:
 msgid "Categories options"
@@ -489,6 +517,10 @@ msgstr ""
 #: eg-delicious-widgets.inc.php:
 msgid "Show widget on pages"
 msgstr ""
+
+#: eg-delicious-widgets.inc.php:
+msgid "List of the links"
+msgstr "Voir tous les liens"
 
 #: eg-widgets200.inc.php:
 #: eg-widgets100.inc.php:
@@ -606,7 +638,7 @@ msgid "The following parameters allow you to add to Delicious, the posts publish
 msgstr ""
 
 #: eg-delicious-admin.inc.php
-msgid "Delicious Backup"
+msgid "EG-Delicious Backup"
 msgstr ""
 
 #: eg-delicious-admin.inc.php
