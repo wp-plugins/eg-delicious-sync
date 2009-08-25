@@ -2,7 +2,7 @@
 
 if (!class_exists('EG_Delicious')) {
 	
-	class EG_Delicious extends EG_Plugin_106 {
+	class EG_Delicious extends EG_Plugin_107 {
 
 		function init() {
 			parent::init();
@@ -39,8 +39,8 @@ $eg_delicious_public = new EG_Delicious('EG-Delicious',
 									EG_DELICIOUS_COREFILE,
 									EG_DELICIOUS_OPTIONS_ENTRY);
 $eg_delicious_public->set_textdomain(EG_DELICIOUS_TEXTDOMAIN);
-$eg_delicious_public->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
-$eg_delicious_public->set_wp_versions('2.6', FALSE, FALSE, FALSE);
+// $eg_delicious_public->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
+$eg_delicious_public->set_wp_versions('2.6', FALSE, '2.7', FALSE);
 $eg_delicious_public->set_php_version('4.3');
 $eg_delicious_public->set_stylesheets('eg-delicious.css', FALSE) ;
 $eg_delicious_public->load();

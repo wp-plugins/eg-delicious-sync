@@ -3,7 +3,7 @@
 Plugin Name: EG-Plugin
 Plugin URI:
 Description: Framework for plugin development
-Version: 1.0.6
+Version: 1.0.7
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,7 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Plugin_106')) {
+if (!class_exists('EG_Plugin_107')) {
 
 	/**
 	  * Class EG_Plugin
@@ -34,18 +34,13 @@ if (!class_exists('EG_Plugin_106')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_106 {
+	Class EG_Plugin_107 {
 
 		var $plugin_name;
 		var $plugin_version;
 		var $plugin_path;
 		var $plugin_url;
 		var $plugin_corefile;
-		var $plugin_lang_path;
-
-		var $plugin_author_name;
-		var $plugin_author_url;
-		var $plugin_author_email;
 
 		var $stylesheet;
 		var $admin_stylesheet;
@@ -55,12 +50,13 @@ if (!class_exists('EG_Plugin_106')) {
 		var $default_options;
 
 		var $cache_expiration = 0;
-		var $cache_group      = '';
 		var $cache_path       = '';
-		var $use_cache        = 0;
+		var $cache_group      = '';
+		var $use_cache		  = FALSE;
+		var $cache            = array();
 		
 		var $tinyMCE_button;
-		var $textdomain      = '';
+		var $textdomain = '';
 
 		var $wp_version_min = '2.5';
 		var $wp_version_max;
@@ -80,9 +76,9 @@ if (!class_exists('EG_Plugin_106')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_106($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_107($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
-			register_shutdown_function(array(&$this, "__destruct"));
+			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
 		}
 
@@ -113,20 +109,13 @@ if (!class_exists('EG_Plugin_106')) {
 			if ( !defined('WP_PLUGIN_DIR') )
 			    define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
-			// Sanitize windows path (with backslashes)
-			$wp_plugin_dir = str_replace('\\', '/', WP_PLUGIN_DIR);
-			$abspath       = str_replace('\\', '/', ABSPATH);
-
 			/* Define the plugin path */
-			$plugin_base_path		= basename( dirname($core_file) );
-			$this->plugin_path 		= trailingslashit($wp_plugin_dir.'/'.$plugin_base_path);
-			$this->plugin_url  		= trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
-			$this->plugin_corefile  = $this->plugin_path.basename($core_file);
-			$this->plugin_lang_path = str_replace($abspath, '', $wp_plugin_dir).'/'.$plugin_base_path.'/lang';
-			
-			global $wp_object_cache;
-			$this->use_cache  = ( $wp_object_cache->cache_enabled === TRUE ) ? TRUE : FALSE;
-		}
+			$plugin_base_path	   = basename( dirname($core_file) );
+			$this->plugin_path 	   = trailingslashit(str_replace('\\', '/', WP_PLUGIN_DIR.'/'.$plugin_base_path));
+			$this->plugin_url  	   = trailingslashit(WP_PLUGIN_URL.'/'.$plugin_base_path);
+			$this->plugin_corefile = $this->plugin_path.basename($core_file);
+
+		} // End of __construct
 
 		/**
 		 * Class destructor
@@ -135,8 +124,8 @@ if (!class_exists('EG_Plugin_106')) {
 		 * @return boolean true
 		 */
 		function __destruct() {
-			// Nothing for the moment
-		}
+			if ($this->use_cache) $this->cache_save();
+		} // End of __destruct
 
 		function load() {
 
@@ -154,6 +143,10 @@ if (!class_exists('EG_Plugin_106')) {
 					register_activation_hook( $this->plugin_corefile, array(&$this, 'install_upgrade') );
 				}
 
+				if ( function_exists('register_deactivation_hook') ) {
+					register_deactivation_hook( $this->plugin_corefile, array(&$this, 'desactivation') );
+				}
+
 				add_action('admin_menu',   array(&$this, 'admin_menu')    );
 				add_action('admin_init',   array( &$this, 'admin_init')   );
 				add_action('admin_header', array( &$this, 'admin_head')   );
@@ -163,30 +156,11 @@ if (!class_exists('EG_Plugin_106')) {
 				add_action('wp_head',   array( &$this, 'head')  );
 				add_action('wp_footer', array( &$this, 'footer'));
 			}
-		}
+		} // End of load
 
 		function wp_logout() {
 			// Nothing here.
-		}
-
-		/**
-		 * set_owner
-		 *
-		 * Set owner parameters
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param	string	$author_name	Name of the plugin author
-		 * @param	string	$author_url	Url of site or blog
-		 * @param	string	$author_email	email of the author
-		 *
-		 * @return none
-		 */
-		function set_owner($author_name='', $author_url='', $author_email='') {
-			$this->plugin_author_name  = $author_name;
-			$this->plugin_author_url   = $author_url;
-			$this->plugin_author_email = $author_email;
-		}
+		} // End of wp_logout
 
 		/**
 		 * set_stylesheet
@@ -202,7 +176,7 @@ if (!class_exists('EG_Plugin_106')) {
 		function set_stylesheets($stylesheet, $admin_stylesheet=FALSE) {
 			$this->stylesheet       = $stylesheet;
 			$this->admin_stylesheet = $admin_stylesheet;
-		}
+		} // End of set_stylesheets
 
 		/**
 		 * set_textdomain
@@ -216,21 +190,7 @@ if (!class_exists('EG_Plugin_106')) {
 		 */
 		function set_textdomain($textdomain='') {
 			$this->textdomain = $textdomain;
-		}
-
-		/**
-		 * get_textdomain
-		 *
-		 *
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param none
-		 * @return string $textdomain
-		 */
-		function get_textdomain() {
-			return ($this->textdomain);
-		}
+		} // End of set_textdomain
 
 		/**
 		 * set_wp_versions
@@ -250,7 +210,7 @@ if (!class_exists('EG_Plugin_106')) {
 			$this->wp_version_max	= $wp_version_max;
 			$this->wpmu_version_min	= $wpmu_version_min;
 			$this->wpmu_version_max	= $wpmu_version_max;
-		}
+		} // End of set_wp_versions
 
 		/**
 		 * set_php_version
@@ -266,7 +226,7 @@ if (!class_exists('EG_Plugin_106')) {
 			$this->php_version_min = $version_min;
 			$this->php_options     = $options_list;
 			$this->php_extensions  = $extensions_list;
-		}
+		} // End of set_php_version
 
 		/**
 		 * add_tinymce_button
@@ -281,7 +241,7 @@ if (!class_exists('EG_Plugin_106')) {
 		function add_tinymce_button($button_name, $tinymce_plugin_path) {
 			$this->tinyMCE_button[]->name                                = $button_name;
 			$this->tinyMCE_button[sizeof($this->tinyMCE_button)-1]->path = $tinymce_plugin_path;
-		}
+		} // End of add_tinymce_button
 
 		/**
 		 * add_page
@@ -310,23 +270,50 @@ if (!class_exists('EG_Plugin_106')) {
 				$this->option_page_url = $page_url;
 				
 			return ($index);
-		}
+		} // End of add_page
 
 		/**
-		 * activate_cache
+		 * enable_cache
 		 *
-		 * Active cache and set the expiration duration
+		 * Active cache 
 		 *
 		 * @package EG-Plugins
 		 *
-		 * @param	int	$expiration	Expiration duration (in second)
+		 * @param none
 		 * @return none
 		 */
-		function activate_cache($expiration = 3600, $cache_group='', $cache_path='tmp') {
-			$this->cache_expiration = $expiration;
-			$this->cache_group      = ($cache_group != '' ? $cache_group : $this->plugin_name);
-			$this->cache_path       = $this->plugin_path . trailingslashit($cache_path);
-		}
+		function enable_cache($cache_path='tmp', $cache_expiration=900, $cache_group='' ) {
+
+			$this->use_cache        = TRUE;	
+			$this->cache_expiration = $cache_expiration;
+			$this->cache_group      = $cache_group;
+			$this->cache_path       = trailingslashit($this->plugin_path . $cache_path);
+			
+			global $wpmu_version, $blog_id;
+			if (isset($wpmu_version) && isset($blog_id) ) {
+				$this->cache_path .= $blog_id.'/';
+				
+				if (! is_dir($this->cache_path)) {
+					@mkdir($this->cache_path);
+				}
+				$this->use_cache = is_dir($this->cache_path);
+			} // End of is WPMU?
+		} // End of enable_cache
+
+		/**
+		 * disable_cache
+		 *
+		 * Active cache 
+		 *
+		 * @package EG-Plugins
+		 *
+		 * @param none
+		 * @return none
+		 */
+		function disable_cache() {
+			$this->use_cache = FALSE;
+			$this->cache     = array();
+		} // End of disable_cache
 
 		/**
 		 * admin_init
@@ -349,7 +336,7 @@ if (!class_exists('EG_Plugin_106')) {
 				add_filter('mce_external_plugins', array(&$this, 'add_tinymce_plugin' ), 5);
 				add_filter('mce_buttons',          array(&$this, 'register_button' ),    5);
 			}
-		}
+		} // End of admin_init
 
 		/**
 		 * widgets_init
@@ -383,7 +370,9 @@ if (!class_exists('EG_Plugin_106')) {
 			if (function_exists('load_plugin_textdomain') && $this->textdomain != '') {
 				if (version_compare($wp_version, '2.6', '<')) {
 					// for WP < 2.6
-					load_plugin_textdomain( $this->textdomain, $this->plugin_lang_path);
+					$abspath = str_replace('\\', '/', ABSPATH);
+					$plugin_lang_path = trailingslashit(str_replace($abspath, '', $this->plugin_path)).'lang';
+					load_plugin_textdomain( $this->textdomain, $plugin_lang_path);
 				} else {
 					// for WP >= 2.6
 					load_plugin_textdomain( $this->textdomain, FALSE , basename(dirname($this->plugin_corefile)).'/lang');
@@ -392,7 +381,7 @@ if (!class_exists('EG_Plugin_106')) {
 			// $this->widgets_init();
 
 			$this->include_stylesheets();
-		}
+		} // End of init
 
 		/**
 		 * plugins_loaded
@@ -410,7 +399,7 @@ if (!class_exists('EG_Plugin_106')) {
 
 			/* --- Get Plugin options --- */
 			if (! $this->options) $this->options = get_option($this->options_entry);
-		}
+		} // End of plugins_loaded
 
 		/**
 		 * include_stylesheets
@@ -447,7 +436,7 @@ if (!class_exists('EG_Plugin_106')) {
 					}
 				}
 			} /* else is_admin */
-		} /* End of include_stylesheets */
+		} // End of include_stylesheets
 
 		/**
 		 * Implement Head action
@@ -464,7 +453,7 @@ if (!class_exists('EG_Plugin_106')) {
 			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
 				wp_print_styles($this->plugin_name.'_stylesheet');
 			}
-		}
+		} // End of head
 
 		/**
 		 * admin_head
@@ -479,7 +468,7 @@ if (!class_exists('EG_Plugin_106')) {
 			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
 				wp_print_styles($this->plugin_name.'_admin_stylesheet');
 			}
-		}
+		} // End of admin_head
 
 		/**
 		 * Implement Footer action
@@ -490,7 +479,7 @@ if (!class_exists('EG_Plugin_106')) {
 		 */
 		function footer() {
 			// Nothing here
-		}
+		} // End of footer
 
 		/**
 		 * admin_footer
@@ -504,7 +493,7 @@ if (!class_exists('EG_Plugin_106')) {
 		function admin_footer() {
 
 			// Nothing here
-		}
+		} // End of admin_footer
 
 		/**
 		 * Filter_plugin_actions_27_and_after
@@ -522,7 +511,7 @@ if (!class_exists('EG_Plugin_106')) {
 			array_unshift( $links, $settings_link );
 
 			return $links;
-		}
+		} // End of filter_plugin_actions_27_and_after
 
 		/**
 		 * Filter_plugin_actions_27_and_after
@@ -545,7 +534,7 @@ if (!class_exists('EG_Plugin_106')) {
 				$links = array_merge( array($settings_link), $links);
 			}
 			return $links;
-		}
+		} // End of filter_plugin_actions_before_27
 
 		/**
 		 * register_button()
@@ -653,6 +642,11 @@ if (!class_exists('EG_Plugin_106')) {
 
 		} // End of install_upgrade
 
+		function desactivation() {
+			$this->cache_clear();
+
+		} // End of desactivation
+		
 		/**
 		  * display_requirements_msg
 		  *
@@ -932,11 +926,12 @@ if (!class_exists('EG_Plugin_106')) {
 		 *
 		 * @package EG-Plugin
 		 *
-		 * @param	string	$name		name of cache file
-		 * @return 	string				file name
+		 * @param	string	$key	name of cache file
+		 * @return 	string			file name
 		 */
-		function get_cache_file($name) {
-			return $this->cache_path.'cache_'.$name.'.txt';
+		function get_cache_file($key) {
+			return ($this->cache_path.($this->cache_group==''?'':md5($this->cache_group).'_').md5($key).'.txt');
+			// return ($this->cache_path.($this->cache_group==''?'':$this->cache_group.'_').$key.'.txt');
 		} // End of get_cache_file
 
 		/**
@@ -944,30 +939,33 @@ if (!class_exists('EG_Plugin_106')) {
 		 *
 		 * @package EG-Plugin
 		 *
-		 * @param	string	$name		name of data to cache
+		 * @param	string	$key		name of data to cache
 		 * @return 	array				cached data
 		 */
-		function cache_get($name) {
+		function cache_get($key, $cache_expiration=FALSE) {
 
-			// if WP cache is activated, use it
+			$data = FALSE;
 			if ($this->use_cache) {
-				return wp_cache_get($name, $this->cache_group);
-			}
-			else {
-				$data = FALSE;
-				// WP cache not activated, use home made cache
-				$cache_file = $this->get_cache_file($name);
-				if ( file_exists($cache_file)) {
-					if ((filemtime($cache_file) + $this->cache_expiration) <= time()) {
-						$this->cache_del($name);
-						return (FALSE);
-					}
-					else {
-						$data = unserialize(base64_decode(@ file_get_contents($cache_file)));
-					}
-				}
-				return ($data);
-			}
+			
+				if (isset($this->cache[$key])) 
+					$data = $this->cache[$key];
+				else {
+					if ($cache_expiration === FALSE) 
+						$cache_expiration= $this->cache_expiration;
+
+					// WP cache not activated, use home made cache
+					$cache_file = $this->get_cache_file($key);
+					if ( file_exists($cache_file) ) {
+						if ($cache_expiration!= 0 && (filemtime($cache_file) + $cache_expiration) <= time())
+							$this->cache_del($key);
+						else {
+							$data = unserialize(base64_decode(@ file_get_contents($cache_file)));
+							$this->cache[$key] = $data;
+						}
+					} 
+				} // Enf of get cache on disk
+			} // End of use_cache
+			return ($data);			
 		} // End of cache_get
 
 		/**
@@ -975,53 +973,89 @@ if (!class_exists('EG_Plugin_106')) {
 		 *
 		 * @package EG-Plugin
 		 *
-		 * @param	string	$name		name of data to cache
-		 * @param	mixed	$data		data to cache
+		 * @param	string	$key	name of data to cache
+		 * @param	mixed	$data	data to cache
 		 *
 		 * @return 	none
 		 */
-		function cache_set($name, $data) {
+		function cache_set($key, $data) {
 
-			// if WP cache is activated, use it
 			if ($this->use_cache) {
-				wp_cache_set($name, $data, $this->cache_group, $this->cache_expiration);
-			}
-			else {
-				// WP cache not activated, use home made cache
-				$cache_file = $this->get_cache_file($name);
-				$string = base64_encode(serialize($data));
-				$fd = @fopen($cache_file, 'w');
-				if ( false !== $fd ) {
-					fputs($fd, $string);
-				}
-				@fclose($fd);
-			}
+				$this->cache[$key] = $data;
+			} // End of use_cache
 		} // End of cache_set
 
-				/**
+		/**
 		 * cache_del
 		 *
 		 * @package EG-Plugin
 		 *
-		 * @param	string	$name		name of data to un-cache
+		 * @param	string	$key	name of data to un-cache
 		 *
 		 * @return 	none
 		 */
-		function cache_del($name) {
+		function cache_del($key) {
 
 			// if WP cache is activated, use it
-			if ($this->use_cache)
-				wp_cache_delete($name, $this->cache_group);
-			else {
+			if ($this->use_cache) {
 				// WP cache not activated, use home made cache
-				$cache_file = $this->get_cache_file($name);
+				unset($this->cache[$key]);
+				$cache_file = $this->get_cache_file($key);
 				if (file_exists($cache_file)) {
-					@unlink($cache_file);
+					$value = unlink($cache_file);
+				}
+			} // End of use_cache
+		} // End of cache_del
+
+		/**
+		 * cache_save
+		 *
+		 * @package EG-Plugin
+		 *
+		 * @param	none
+		 * @return 	none
+		 */
+		function cache_save() {
+
+			if ($this->use_cache) {
+				foreach ($this->cache as $key => $data) {
+					$cache_file = $this->get_cache_file($key);
+					$string = base64_encode(serialize($data));
+					$fd = @fopen($cache_file, 'w');
+					if ( false !== $fd ) {
+						fputs($fd, $string);
+					}
+					@fclose($fd);
+				} // End of foreach
+			} // End of if use_cache
+		} // End of cache_save
+		
+		/**
+		 * cache_save
+		 *
+		 * @package EG-Plugin
+		 *
+		 * @param	none
+		 * @return 	none
+		 */
+		function cache_clear() {
+			// Clear memory cache
+			foreach ($this->cache as $key => $data) {
+				unset($this->cache[$key]);
+			}
+			unset($this->cache);
+			
+			// Clear disk cache
+			if (is_dir($this->cache_path)) {
+				if ($dh = opendir($this->cache_path)) {
+					while (($file = readdir($dh)) !== false) {
+						if ($file != '..' && $file != '.') 
+							unlink($this->cache_path.$file);
+					}
+					closedir($dh);
 				}
 			}
-		} // End of cache_del
-		
-		
+		} // End of cache_clear
 	} /* End of class */
 } /* End of class_exists */
 

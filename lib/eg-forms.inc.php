@@ -3,7 +3,7 @@
 Plugin Name: EG-Forms
 Plugin URI:
 Description: Class to build admin forms
-Version: 1.0.4
+Version: 1.0.5
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -26,9 +26,9 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (!class_exists('EG_Forms_104')) {
+if (!class_exists('EG_Forms_105')) {
 
-	Class EG_Forms_104 {
+	Class EG_Forms_105 {
 
 		var $sections = array();
 		var $fields   = array();
@@ -62,7 +62,7 @@ if (!class_exists('EG_Forms_104')) {
 		 * @param	string	$author_address	author email or URL (must include mailto: or http:
 		 * @return 	none
 		 */
-		function EG_Forms_104($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
+		function EG_Forms_105($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level=FALSE) {
 			register_shutdown_function(array(&$this, "__destruct"));
 			$this->__construct($title, $header, $footer, $textdomain, $url, $id_icon, $security_key, $author_address, $access_level);
 		}
@@ -305,18 +305,16 @@ if (!class_exists('EG_Forms_104')) {
 			$is_submitted = FALSE;
 			foreach ($this->buttons as $button) {
 				if ($button->type == 'submit') {
-					if (isset($_POST[$button->name]) && $_POST[$button->name] = __($button->value, $this->textdomain)) {
+					if (isset($_POST[$button->name]) && $_POST[$button->name] == __($button->value, $this->textdomain)) {
 						$is_submitted = $button->callback;
 					break;
 					}
 				}
 			}
 
+			$new_options = FALSE;
 			// Security ok and submit button hit
-			if ($is_submitted === FALSE) {
-				$new_options = $options;
-			}
-			else {
+			if ($is_submitted !== FALSE) {
 
 				if ( !wp_verify_nonce($_POST['_wpnonce'], $this->security_key) ) {
 					echo '<div class="wrap">';

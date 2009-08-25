@@ -279,7 +279,7 @@ if (!class_exists('EG_Delicious_BlogRoll_Widget')) {
 			$this->WP_Widget('egdel_blogroll', 'EG-Delicious Blogroll', $widget_ops);
 
 			if (! isset($categories)) {
-				$temp_cat = get_terms('link_category', array('hierarchical' => 0));
+				$temp_cat = get_terms('link_category', array('hierarchical' => 0, 'hide_empty' => 0));
 				foreach ($temp_cat as $cat) {
 					$categories[$cat->term_id] = $cat->name;
 				}

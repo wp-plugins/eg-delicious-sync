@@ -10,7 +10,7 @@
   */
 function eg_delicious_debug_info($msg) {
 	$debug_info = debug_backtrace();
-	$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - ';
+	$output = date('d-M-Y H:i:s').' - '.$debug_info[1]['function'].' - '.$debug_info[2]['function'].' - ';
 	echo $output.$msg.'<br />';
 } // End of eg_delicious_debug_info
 
@@ -34,19 +34,11 @@ if (! class_exists('EG_Delicious_Core')) {
 	 */
 	Class EG_Delicious_Core {
 
-		// public static $password_secret_key = 'EG-Delicious';
-
-		var $cache_path;
-		var $use_cache;
-
 		var $username;
 		var $password;
 
 		var $error_code;
 		var $error_msg;
-
-		var $cache_group      = EG_DELICIOUS_CACHE_GROUP;
-		var $cache_expiration = 900;
 
 		var $parsed_data;
 
@@ -97,10 +89,10 @@ if (! class_exists('EG_Delicious_Core')) {
 		  * @return object
 		  *
 		  */
-		function EG_Delicious_Core($path, $username, $password, $is_singleton=FALSE) {
+		function EG_Delicious_Core($username, $password, $is_singleton=FALSE) {
 
 			register_shutdown_function(array(&$this, "__destruct"));
-			$this->__construct($path, $username, $password, $is_singleton);
+			$this->__construct($username, $password, $is_singleton);
 		} // End of EG_Delicious_Core
 
 		/**
@@ -114,12 +106,9 @@ if (! class_exists('EG_Delicious_Core')) {
 		  * @param	boolean	$is_singleton	Security flag (singleton pattern design)
 		  * @return object
 		  */
-		function __construct($path, $username, $password, $is_singleton=FALSE) {
+		function __construct($username, $password, $is_singleton=FALSE) {
 			$is_singleton || die('Cannot instantiate '.get_class($this).' class directly!\n');
 
-			global $wp_object_cache;
-			$this->use_cache  = ( $wp_object_cache->cache_enabled === TRUE ) ? TRUE : FALSE;
-			$this->cache_path = $path;
 			$this->username   = $username;
 			$this->password   = $password;
 		} // End of __construct
@@ -148,124 +137,30 @@ if (! class_exists('EG_Delicious_Core')) {
 		 * @param	string	$password		Delicious password
 		 * @return 	none
 		 */
-		function &get_instance($path, $username, $password) {
+		function &get_instance($username, $password) {
 			static $eg_delicious_instance;
 
 			if (!is_object($eg_delicious_instance))
-				$eg_delicious_instance = new EG_Delicious_Core($path, $username, $password, TRUE);
+				$eg_delicious_instance = new EG_Delicious_Core($username, $password, TRUE);
 
 			return $eg_delicious_instance;
 		} /* End of get_instance */
 
 		/**
-		 * get_cache_file
+		 * set_user
 		 *
-		 * Build cache file name
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param	string	$query		query id
-		 * @return 	string				file name
-		 */
-		function get_cache_file($string) {
-			// return trailingslashit($this->cache_path).md5($string, EG_DELICIOUS_SECRET_KEY);
-			return trailingslashit($this->cache_path).'cache_'.$string.'.txt';
-		} // End of get_cache_file
-
-		/**
-		 * cache_get
+		 * Set username and password
 		 *
 		 * @package EG-Delicious
 		 *
-		 * @param	string	$query		query id
-		 * @return 	array				cached data
-		 */
-		function cache_get($query) {
-
-			// if WP cache is activated, use it
-			if ($this->use_cache) {
-				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Use existing cache mecanism');
-				return wp_cache_get($query, $this->cache_group);
-			}
-			else {
-				// WP cache not activated, use home made cache
-				$cache_file = $this->get_cache_file($query);
-				if (! file_exists($cache_file)) {
-					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('File doesn\'t exists');
-					return (FALSE);
-				}
-				else {
-					$now = time();
-					if ((filemtime($cache_file) + $this->cache_expiration) <= $now) {
-						if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Cache expired.');
-						$this->cache_del($query);
-						return (FALSE);
-					}
-					else {
-						if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Getting data from Cache');
-						$data = unserialize(base64_decode(@ file_get_contents($cache_file)));
-						return $data;
-					}
-				}
-			}
-		} // End of cache_get
-
-		/**
-		 * cache_set
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param	string	$query		query id
-		 * @param	mixed	$data		data to cache
-		 *
+		 * @param	string	$username		Delicious username
+		 * @param	string	$password		Delicious password
 		 * @return 	none
 		 */
-		function cache_set($query, $data) {
-
-			// if WP cache is activated, use it
-			if ($this->use_cache) {
-				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Use existing cache mecanism');
-				wp_cache_set($query, $data, $this->cache_group, $this->cache_expiration);
-			}
-			else {
-				// WP cache not activated, use home made cache
-				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Use home made cache mecanism');
-				$cache_file = $this->get_cache_file($query);
-				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('cache file name is '.$cache_file);
-				$string = base64_encode(serialize($data));
-				$fd = @fopen($cache_file, 'w');
-				if ( false !== $fd ) {
-					fputs($fd, $string);
-				}
-				else {
-					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Write cache error '.$cache_file);
-				}
-				@fclose($fd);
-			}
-		} // End of cache_set
-
-		/**
-		 * cache_del
-		 *
-		 * @package EG-Delicious
-		 *
-		 * @param	string	$query		query id
-		 *
-		 * @return 	none
-		 */
-		function cache_del($query) {
-
-			// if WP cache is activated, use it
-			if ($this->use_cache)
-				wp_cache_delete($query, $this->cache_group);
-			else {
-				// WP cache not activated, use home made cache
-				$cache_file = $this->get_cache_file($query);
-				if (file_exists($cache_file)) {
-					@unlink($cache_file);
-				}
-			}
-		} // End of cache_del
+		function set_user($username, $password) {
+			$this->username   = $username;
+			$this->password   = $password;
+		}
 
 		/**
 		 * http_request
@@ -283,11 +178,12 @@ if (! class_exists('EG_Delicious_Core')) {
 			if (version_compare($wp_version, '2.8', '>=')) {
 				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('WP 2.8. Use wp_remote_request');
 				$response = wp_remote_request($query, array('sslverify' => false));
-				if (! is_wp_error($response)) {
+				if (! is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
 					$result   = wp_remote_retrieve_body($response);
 				}
 				else {
-					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Error message: '.htmlentities($response->get_error_message()));
+					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Error message: '.
+								htmlentities(wp_remote_retrieve_response_message($response)));
 					$result = FALSE;
 				}
 			}
@@ -331,22 +227,15 @@ if (! class_exists('EG_Delicious_Core')) {
 				$this->error_code = EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY;
 			}
 			else {
-				// Get data from cache if exists
-				$this->parsed_data = $this->cache_get($query);
-
-				// Data exists ?
-				if ($this->parsed_data === FALSE) {
-					// No => Query Delicious
-
-					// In debug mode, we use internal file, to avoid sending query to Delicious
-					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('No Data on cache, querying Delicious');
 					if (EG_DELICIOUS_USE_LOCAL_DATA)
-						$query_string = trailingslashit($this->cache_path).'debug/'.$query.'.txt';
+						$query_string = trailingslashit($this->plugin_path).'tmp/debug/'.$query.'.txt';
 					else {
 						// Building query
 						$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
 						$query_string = str_replace('{password}', $this->password, $query_string);
 					}
+					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('URL: '.$query_string);
+
 					// Read the file
 					$xml_string = FALSE;
 					$xml_string = $this->http_request($query_string);
@@ -361,7 +250,7 @@ if (! class_exists('EG_Delicious_Core')) {
 						$parsing_result = call_user_func(array(&$this, $this->DELICIOUS_QUERY[$query]['parser']), $xml_string);
 
 						if ($parsing_result === FALSE) {
-							$this->cache_del($query);
+							// $this->cache_del($query);
 							$this->error_code = EG_DELICIOUS_CORE_ERROR_PARSING;
 						}
 						else {
@@ -375,11 +264,10 @@ if (! class_exists('EG_Delicious_Core')) {
 									// $this->error_code = EG_DELICIOUS_CORE_ERROR_NO_DATA;
 								}
 							}
-							$this->cache_set($query, $this->parsed_data);
 						} // End of no error while parsing
 					} // End of no error while reading
 
-				} // End of no data in cache
+				// } // End of no data in cache
 			} // End of if QUERY exists
 
 			if ($this->error_code == EG_DELICIOUS_CORE_ERROR_NONE) {
