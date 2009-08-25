@@ -1,0 +1,31 @@
+
+.widget_delicious_tagrolls li,
+.widget_delicious_badge li {
+	list-style-type: none;
+	padding-left: 2em;
+	margin-left: -0.5em;
+}
+
+.widget_delicious_tagrolls li.icon-m,
+.widget_delicious_badge li.icon-m {
+	background: #FAFAFA url(img/delicious-medium.gif) no-repeat left;
+}
+
+.widget_delicious_tagrolls li.icon-s,
+.widget_delicious_badge li.icon-s {
+	background: #FAFAFA url(img/delicious-small.gif) no-repeat left;
+}
+
+.widget_delicious_tagrolls li.showadd,
+.widget_delicious_badge li.showadd {
+	background: #FAFAFA url(img/add.gif) no-repeat left;
+}
+
+div.blogroll-block ul.blogroll-col {
+	float: left;
+	margin: 0.45%;
+	padding: 0.45%;
+	width: 48%;
+}
+
+div.blogroll-block:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
