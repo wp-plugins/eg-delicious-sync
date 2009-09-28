@@ -36,7 +36,7 @@ define('EG_DELICIOUS_CACHE_GROUP',	 'eg-delicious');
 define('EG_DELICIOUS_DEBUG_MODE',	FALSE);
 
 // Keep this value to FALSE. For developer only.
-define('EG_DELICIOUS_USE_LOCAL_DATA', TRUE);
+define('EG_DELICIOUS_USE_LOCAL_DATA', FALSE);
 
 if (! class_exists('EG_Plugin_111')) {
 	require('lib/eg-plugin.inc.php');
