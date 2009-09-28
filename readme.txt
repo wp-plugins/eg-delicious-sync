@@ -4,7 +4,7 @@ Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
 Tested up to: 2.8.4
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -168,6 +168,9 @@ The second way is recommended to ensure that your customization won't be lost du
 8. Delicious Backup screen
 
 == Changelog ==
+= Version 1.1.6 - Sept 29th, 2009 =
+
+* Bug fix: Bad constant settings
 
 = Version 1.1.5 - Sept 29th, 2009 =
 
