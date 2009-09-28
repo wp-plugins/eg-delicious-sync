@@ -173,15 +173,22 @@ if (! class_exists('EG_Delicious_Core')) {
 		 */
 		function http_request($query) {
 			global $wp_version;
+			global $wp_header_to_desc;
 
 			$result = FALSE;
 			if (version_compare($wp_version, '2.8', '>=')) {
 				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('WP 2.8. Use wp_remote_request');
 				$response = wp_remote_request($query, array('sslverify' => false));
-				if (! is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
+				$request_error_code = wp_remote_retrieve_response_code($response);
+				if (! is_wp_error($response) &&  $request_error_code == 200) {
 					$result   = wp_remote_retrieve_body($response);
 				}
 				else {
+					if (isset($wp_header_to_desc[$request_error_code])) 
+						$this->error_msg = 'Http error code : '.$wp_header_to_desc[absint($request_error_code)];
+					else
+						$this->error_msg = 'Http error code : unknown';
+
 					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Error message: '.
 								htmlentities(wp_remote_retrieve_response_message($response)));
 					$result = FALSE;
@@ -196,7 +203,10 @@ if (! class_exists('EG_Delicious_Core')) {
 				curl_setopt($ch, CURLOPT_HEADER, 		 FALSE); 
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 				$result = curl_exec($ch);
-				if (curl_errno($ch)) $result = FALSE;
+				if (curl_errno($ch)) {
+					$result = FALSE;
+					$this->error_msg = curl_error($ch);
+				}
 				curl_close($ch);
 			}
 			if ($result === FALSE) {
@@ -207,6 +217,36 @@ if (! class_exists('EG_Delicious_Core')) {
 			return ($result);
 		} // End of http_request
 
+		
+		/**
+		 * Build_query
+		 *
+		 * @package EG-Delicious
+		 *
+		 * @param	string	$query		query id
+		 * @param	array   $params		query parameters. Default value = FALSE
+		 *
+		 * @return 	string				sanitized query
+		 */
+		function build_query($query, $params=FALSE) {
+
+			if (EG_DELICIOUS_USE_LOCAL_DATA)
+				// $query_string = trailingslashit($this->plugin_path).'tmp/debug/'.$query.'.txt';
+				$query_string = 'http://localhost/wp284/wp-content/plugins/eg-delicious-sync/tmp/debug/'.$query.'.txt';
+			else {
+				// Building query
+				$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
+				$query_string = str_replace('{password}', $this->password, $query_string);
+			}
+			$param_string = '';
+			if ($params !== FALSE) {
+				foreach ($params as $key => $value) {
+					$param_string .= ($param_string==''?'?':'&').$key.'='.$value;
+				}
+			}
+			return (sanitize_url($query_string.$param_string));
+		} // End of build_query
+		
 		/**
 		 * get_data
 		 *
@@ -216,7 +256,7 @@ if (! class_exists('EG_Delicious_Core')) {
 		 *
 		 * @return 	array				data collected
 		 */
-		function get_data($query) {
+		function get_data($query, $params=FALSE) {
 
 			$this->error_code = EG_DELICIOUS_CORE_ERROR_NONE;
 
@@ -227,19 +267,13 @@ if (! class_exists('EG_Delicious_Core')) {
 				$this->error_code = EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY;
 			}
 			else {
-					if (EG_DELICIOUS_USE_LOCAL_DATA)
-						$query_string = trailingslashit($this->plugin_path).'tmp/debug/'.$query.'.txt';
-					else {
-						// Building query
-						$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
-						$query_string = str_replace('{password}', $this->password, $query_string);
-					}
+					$query_string = $this->build_query($query, $params);
 					if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('URL: '.$query_string);
 
 					// Read the file
 					$xml_string = FALSE;
 					$xml_string = $this->http_request($query_string);
-
+// file_put_contents('E:\htdocs\wp284\wp-content\plugins\eg-delicious-sync\tmp\debug\\'.$query.'.txt', $xml_string);
 					if (! isset($xml_string)     || $xml_string === FALSE ||
 					    ! is_string($xml_string) || $xml_string == '') {
 						$this->error_code = EG_DELICIOUS_CORE_ERROR_READING;
@@ -280,7 +314,7 @@ if (! class_exists('EG_Delicious_Core')) {
 		} // End of get_data
 
 		/**
-		 * get_data
+		 * push_data
 		 *
 		 * @package EG-Delicious
 		 *
@@ -299,26 +333,25 @@ if (! class_exists('EG_Delicious_Core')) {
 				$this->error_code = EG_DELICIOUS_CORE_ERROR_UNKNOWN_QUERY;
 			}
 			else {
-				$query_string = str_replace('{username}', $this->username, $this->DELICIOUS_QUERY[$query]['url']);
-				$query_string = str_replace('{password}', $this->password, $query_string);
-
-				$param_string = '';
-				if ($params !== FALSE) {
-					foreach ($params as $key => $value) {
-						$param_string .= ($param_string==''?'?':'&').$key.'='.$value;
-					}
-				}
-				$query_string = sanitize_url($query_string.$param_string);
+				$query_string = $this->build_query($query, $params);
 
 				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Query: '.$query_string);
 				// Read the file
 				$xml_string = FALSE;
 				$xml_string = $this->http_request($query_string);
-				if ($xml_string === FALSE || strstr($xml_string, '<result code="done"') === FALSE) {
+				if ($xml_string === FALSE) {
 					$this->error_code = EG_DELICIOUS_CORE_ERROR_PUSH;
 				}
-				if (EG_DELICIOUS_DEBUG_MODE) eg_delicious_debug_info('Error code: '.$this->error_code);
-			}
+				else {
+					if (strstr($xml_string, '<result code="done"') === FALSE) {
+						$this->error_code = EG_DELICIOUS_CORE_ERROR_PUSH;
+						ereg('result code="([^"]+)', $xml_string, $results);
+						$this->error_msg  = __('Delicious message: ', $this->textdomain).$results[1];
+					}
+				}
+				if (EG_DELICIOUS_DEBUG_MODE) 
+					eg_delicious_debug_info('Error code: '.$this->error_code);
+			} // End of Query exists
 			return ($this->error_code == EG_DELICIOUS_CORE_ERROR_NONE);
 		} // End of push_data
 

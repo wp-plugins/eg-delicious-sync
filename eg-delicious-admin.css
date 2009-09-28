@@ -30,3 +30,15 @@ div.backup_delicious span.path {
 div.backup_delicious table.backup_list tr.total td {
 	font-weight: bold;
 }
+
+table.egdel_links_sync tr.alternate td {
+	background-color: #CCC;
+}
+
+table.egdel_links_sync tr.sync td {
+	background-color: #FFCCCC;
+}
+
+table.egdel_links_sync tr.alternate-sync td {
+	background-color: #FF9999;
+}

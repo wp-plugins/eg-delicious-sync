@@ -394,7 +394,7 @@ if (!class_exists('EG_Forms_105')) {
 								($group?'</label>':'');
 						} else {
 							$string .= ($group?'<label for="'.$option_name.'">'.__($field->label, $this->textdomain).'</label>':'').
-								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'"/ value="'.$default_values[$option_name].'" '.$field->status.'/> ';
+								'<input type="'.$field->type.'" class="'.$field->size.'-text" name="'.$option_name.'" id="'.$option_name.'" value="'.$default_values[$option_name].'" '.$field->status.'/> ';
 						}
 					break;
 
@@ -513,7 +513,8 @@ if (!class_exists('EG_Forms_105')) {
 					'</th><td>'.
 					($group->header==''?'':'<p>'.__($group->header, $this->textdomain).'</p>').
 					$this->display_field($option_name, FALSE, $default_values).
-					($group->footer==''?'':'<p>'.__($group->footer, $this->textdomain).'</p>');
+					($group->footer==''?'':'<p>'.__($group->footer, $this->textdomain).'</p>').
+					'</td></tr>';
 			} else {
 				// Several field for this group
 				echo '<tr valign="top"><th scope="row">'.__($group->title, $this->textdomain).'</th><td>'.

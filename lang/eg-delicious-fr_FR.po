@@ -803,7 +803,7 @@ msgstr "Ajouter dans Delicious, les articles que vous publiez dans WordPress?"
 
 #: eg-delicious-admin.inc.php
 msgid "Classification"
-msgstr "Classement/Organisatio"
+msgstr "Classement/Organisation"
 
 #: eg-delicious-admin.inc.php
 msgid "When publish post, use:"

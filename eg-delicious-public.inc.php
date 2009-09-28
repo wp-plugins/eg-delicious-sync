@@ -2,15 +2,7 @@
 
 if (!class_exists('EG_Delicious')) {
 	
-	class EG_Delicious extends EG_Plugin_107 {
-
-		function init() {
-			parent::init();
-			
-			$this->plugin_temp        = $this->plugin_path.'tmp/';
-			$this->file_linksdb       = $this->plugin_temp.'synchronize_links.txt';
-			$this->file_linksdb_index = $this->plugin_temp.'synchronize_links_index.txt';
-		} // End of init
+	class EG_Delicious extends EG_Plugin_111 {
 	
 		function wp_logout($user_login) {
 			if ($this->options !== FALSE) {
@@ -25,8 +17,9 @@ if (!class_exists('EG_Delicious')) {
 				
 					update_option($this->options_entry, $this->options);
 				
-					if (file_exists($this->file_linksdb)) @unlink($this->file_linksdb);
-					if (file_exists($this->file_linksdb_index)) @unlink($this->file_linksdb_index);
+					$this->cache_delete('links_db');
+					$this->cache_delete('linksdb_index');
+				
 				} // End of test user
 			} // End of test options and status
 		} // End of wp_logout
@@ -34,14 +27,15 @@ if (!class_exists('EG_Delicious')) {
 	} // End of class EG_Delicious
 
 } // End of class_exists
-$eg_delicious_public = new EG_Delicious('EG-Delicious',
-									EG_DELICIOUS_VERSION ,
-									EG_DELICIOUS_COREFILE,
-									EG_DELICIOUS_OPTIONS_ENTRY);
+$eg_delicious_public = new EG_Delicious('EG-Delicious', EG_DELICIOUS_VERSION, EG_DELICIOUS_COREFILE, EG_DELICIOUS_OPTIONS_ENTRY);
 $eg_delicious_public->set_textdomain(EG_DELICIOUS_TEXTDOMAIN);
-// $eg_delicious_public->set_owner('Emmanuel GEORJON', 'http://www.emmanuelgeorjon.com/', 'blog@georjon.eu');
 $eg_delicious_public->set_wp_versions('2.6', FALSE, '2.7', FALSE);
-$eg_delicious_public->set_php_version('4.3');
+if (function_exists('wp_remote_request'))
+	$eg_delicious_public->set_php_version('4.3', FALSE, 'curl');
+else
+	$eg_delicious_public->set_php_version('4.3', 'allow_url_fopen');
+
+$eg_delicious_public->cache_init('tmp', 900, 'eg_delicious');
 $eg_delicious_public->set_stylesheets('eg-delicious.css', FALSE) ;
 $eg_delicious_public->load();
 

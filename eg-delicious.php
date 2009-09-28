@@ -3,10 +3,11 @@
 Plugin Name: EG-Delicious
 Plugin URI: http://www.emmanuelgeorjon.com/en/eg-delicious-sync-1791
 Description: Manage Delicious links (Import into WordPress database)
-Version: 1.1.0
+Version: 1.1.5
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
+
 /*
     Copyright 2009 Emmanuel GEORJON  (email : blog@georjon.eu)
 
@@ -26,18 +27,18 @@ Author URI: http://www.emmanuelgeorjon.com/
 */
 
 define('EG_DELICIOUS_COREFILE', 	 __FILE__);
-define('EG_DELICIOUS_VERSION', 	  	 '1.1.0');
+define('EG_DELICIOUS_VERSION', 	  	 '1.1.5');
 define('EG_DELICIOUS_OPTIONS_ENTRY', 'EG-Delicious-Options');
 define('EG_DELICIOUS_TEXTDOMAIN', 	 'eg-delicious');
 define('EG_DELICIOUS_CACHE_GROUP',	 'eg-delicious');
 
 // Change this value to TRUE if you want to get details
-define('EG_DELICIOUS_DEBUG_MODE',	  FALSE);
+define('EG_DELICIOUS_DEBUG_MODE',	FALSE);
 
 // Keep this value to FALSE. For developer only.
-define('EG_DELICIOUS_USE_LOCAL_DATA', FALSE);
+define('EG_DELICIOUS_USE_LOCAL_DATA', TRUE);
 
-if (! class_exists('EG_Plugin_107')) {
+if (! class_exists('EG_Plugin_111')) {
 	require('lib/eg-plugin.inc.php');
 }
 
