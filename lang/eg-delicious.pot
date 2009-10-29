@@ -808,3 +808,100 @@ msgstr ""
 #: eg-delicious-admin.inc.php
 msgid "Cannot delete post in Delicious."
 msgstr ""
+
+
+#: eg-delicious-admin.inc.php
+msgid "Scheduled synchronization"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Activation"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Not activated"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Hourly"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Daily"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Hourly schedules"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Enter the following parameters if you choose \"Hourly\" frequency"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Run synchronization every"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "hours"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Daily schedules"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Enter the following parameters if you choose \"Daily\" frequency"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid " days"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Schedule hour:"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Start full synchronization"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Start incremental synchronization"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get tags from Delicious"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get bundles from Delicious"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get posts from Delicious"
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "A synchronization is started. You cannot modify options now. Please wait, and retry later."
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "No tag and no bundle downloaded. You can't perform the configuration."
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Tags list and bundles list changed since the last synchronization. Please check configuration settings."
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Bundles list changed since the last synchronization. Please check configuration settings."
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "Tags list changed since the last synchronization. Please check configuration settings."
+msgstr ""
+
+#: eg-delicious-admin.inc.php
+msgid "You cannot access to the page. You haven't the \"Manage links\" capability. Please contact the blog administrator."
+msgstr ""

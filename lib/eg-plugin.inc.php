@@ -1,10 +1,9 @@
 <?php
-
 /*
-Plugin Name: EG-Plugin-inc
+Plugin Name: EG-Plugin
 Plugin URI:
-Description: Framework for plugin development
-Version: 1.1.1
+Description: Class for WordPress plugins
+Version: 1.1.2
 Author: Emmanuel GEORJON
 Author URI: http://www.emmanuelgeorjon.com/
 */
@@ -27,10 +26,7 @@ Author URI: http://www.emmanuelgeorjon.com/
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-if (! defined('EG_PLUGIN_CACHE_OPTIONS_ENTRY'))
-	define('EG_PLUGIN_CACHE_OPTIONS_ENTRY', 'EG-Plugin-Cache-options');
-
-if (!class_exists('EG_Plugin_111')) {
+if (!class_exists('EG_Plugin_112')) {
 
 	/**
 	  * Class EG_Plugin
@@ -38,7 +34,7 @@ if (!class_exists('EG_Plugin_111')) {
 	  * Provide some functions to create a WordPress plugin
 	  *
 	 */
-	Class EG_Plugin_111 {
+	Class EG_Plugin_112{
 
 		var $plugin_name;
 		var $plugin_version;
@@ -53,16 +49,10 @@ if (!class_exists('EG_Plugin_111')) {
 		var $options;
 		var $default_options;
 
-		var $cache_default_expire = 900;
-		var $cache_path           = '';
-		var $cache_default_flag   = '';
-		var $cache                = array();
-		var $cache_enabled        = FALSE;
-
 		var $tinyMCE_button;
 		var $textdomain = '';
 
-		var $wp_version_min = '2.5';
+		var $wp_version_min = '2.6.5';
 		var $wp_version_max;
 		var $wpmu_version_min;
 		var $wpmu_version_max = '2.7';
@@ -85,7 +75,7 @@ if (!class_exists('EG_Plugin_111')) {
 		  * @return object
 		  *
 		  */
-		function EG_Plugin_110($name, $version, $core_file, $options_entry, $default_options=FALSE) {
+		function EG_Plugin_112($name, $version, $core_file, $options_entry, $default_options=FALSE) {
 
 			register_shutdown_function(array(&$this, '__destruct'));
 			$this->__construct($name, $version, $core_file, $options_entry, $default_options);
@@ -133,7 +123,7 @@ if (!class_exists('EG_Plugin_111')) {
 		 * @return boolean true
 		 */
 		function __destruct() {
-			if ($this->use_cache) $this->cache_save();
+			// Nothing
 		} // End of __destruct
 
 		/**
@@ -191,7 +181,7 @@ if (!class_exists('EG_Plugin_111')) {
 		 * @param	string	$admin_stylesheet	stylesheet for the admin side
 		 * @return none
 		 */
-		function set_stylesheets($stylesheet, $admin_stylesheet=FALSE) {
+		function set_stylesheets($stylesheet=FALSE, $admin_stylesheet=FALSE) {
 			$this->stylesheet       = $stylesheet;
 			$this->admin_stylesheet = $admin_stylesheet;
 		} // End of set_stylesheets
@@ -346,21 +336,6 @@ if (!class_exists('EG_Plugin_111')) {
 		} // End of admin_init
 
 		/**
-		 * widgets_init
-		 *
-		 *
-		 * Declare and register widgets here
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param	none
-		 * @return	none
-		 */
-		// function widgets_init() {
-			// empty for this class
-		// }
-
-		/**
 		 * init
 		 *
 		 * Perform init
@@ -385,8 +360,6 @@ if (!class_exists('EG_Plugin_111')) {
 					load_plugin_textdomain( $this->textdomain, FALSE , basename(dirname($this->plugin_corefile)).'/lang');
 				}
 			}
-			// $this->widgets_init();
-
 			$this->include_stylesheets();
 		} // End of init
 
@@ -473,6 +446,8 @@ if (!class_exists('EG_Plugin_111')) {
 		 * @return none
 		 */
 		function admin_head() {
+			global $wp_version;
+
 			if (version_compare($wp_version, '2.6.5', '<') && function_exists('wp_print_styles')) {
 				wp_print_styles($this->plugin_name.'_admin_stylesheet');
 			}
@@ -612,11 +587,11 @@ if (!class_exists('EG_Plugin_111')) {
 		 */
 		function install_upgrade() {
 
-			if (! $this->options) 
+			if (! $this->options)
 				$this->options = get_option($this->options_entry);
 
 			if ($this->options === FALSE) {
-			
+
 				$previous_options = FALSE;
 				// Create option from the defaults
 				if ($this->default_options !== FALSE) {
@@ -626,7 +601,7 @@ if (!class_exists('EG_Plugin_111')) {
 				add_option($this->options_entry, $this->options);
 			} // End of options empty (first install)
 			else {
-		
+
 				$previous_options = $this->options;
 				$current_version = (isset($this->options['version'])? $this->options['version']: '0.0.0');
 
@@ -654,12 +629,12 @@ if (!class_exists('EG_Plugin_111')) {
 		} // End of install_upgrade
 
 		function desactivation() {
-			// $this->cache_clear();
+			// Nothing
 
 		} // End of desactivation
 
 		/**
-		  * display_requirements_msg
+		  * get_requirements_msg
 		  *
 		  * Build requirements string
 		  *
@@ -899,7 +874,7 @@ if (!class_exists('EG_Plugin_111')) {
 									array(&$this, $page->display_callback));
 
 					$this->hooks['display'][$page->display_callback][] = $hook;
-									
+
 					if ($page->load_callback !== FALSE) {
 						add_action('load-'.$hook, array(&$this, $page->load_callback));
 						$this->hooks['load'][$page->load_callback][] = $hook;
@@ -943,281 +918,6 @@ if (!class_exists('EG_Plugin_111')) {
 			}
 		} // End of display_message
 
-		/**
-		 * cache_init
-		 *
-		 * Active cache
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function cache_init($path='', $expire=900, $flag='' ) {
-
-			if ( file_exists(WP_CONTENT_DIR . '/object-cache.php') )
-				$this->cache_enabled = 'WP';
-			elseif (function_exists('get_transient'))
-				$this->cache_enabled = 'transient';
-			elseif ($path!='' && $expire!=0 && $flag!='') {
-				$this->cache_enabled = 'EG';
-				
-				$this->cache_path     = trailingslashit($this->plugin_path . $path);
-				$this->default_expire = $expire;
-				$this->default_flag   = $flag;
-
-				$this->cache_options = get_option(EG_PLUGIN_CACHE_OPTIONS_ENTRY);
-				if ($this->cache_options === FALSE) {
-					$this->cache_options = array();
-					add_option(EG_PLUGIN_CACHE_OPTIONS_ENTRY, $this->cache_optons);
-				}
-				if (! is_dir($this->cache_path)) {
-					@mkdir($this->cache_path);
-				}
-				global $wpmu_version, $blog_id;
-				if (isset($wpmu_version) && isset($blog_id) ) {
-					$this->cache_path .= $blog_id.'/';
-
-					if (! is_dir($this->cache_path)) {
-						@mkdir($this->cache_path);
-					}
-				} // End of is WPMU?				
-				$this->cache_enabled = is_dir($this->cache_path);
-			}
-		} // End of enable_cache
-
-		/**
-		 * cache_close
-		 *
-		 * Active cache
-		 *
-		 * @package EG-Plugins
-		 *
-		 * @param none
-		 * @return none
-		 */
-		function cache_close() {
-			$this->cache_enabled = FALSE;
-			$this->cache         = array();
-			
-			
-		} // End of disable_cache
-		
-		/**
-		 * get_cache_file
-		 *
-		 * Build cache file name
-		 *
-		 * @package EG-Plugin
-		 *
-		 * @param	string	$key	name of cache file
-		 * @return 	string			file name
-		 */
-		function get_cache_file($key, $flag) {
-			return ($this->cache_path.($this->cache_group==''?'':md5($flag).'_').md5($key).'.txt');
-			// return ($this->cache_path.($this->cache_group==''?'':$flag.'_').$key.'.txt');
-		} // End of get_cache_file
-
-		/**
-		 * cache_get
-		 *
-		 * @package EG-Plugin
-		 *
-		 * @param	string	$key		name of data to cache
-		 * @return 	array				cached data
-		 */
-		function cache_get($key, $flag='default') {
-		
-			$data = FALSE;
-			if  ($this->cache_enabled !== FALSE) {
-			
-				if ($flag == 'default') 
-					$flag = $this->cache_default_flag;
-				
-				if ($expire == 0)
-					$expire = $this->cache_default_expire;
-
-				switch ($this->cache_enabled) {
-					case 'WP':
-						$data = wp_cache_get($key, $flag);
-					break;
-					
-					case 'transient':
-						$data = get_transient($key);
-					break;
-					
-					case 'EG':
-						if (isset($this->cache[$key])) {
-							if ($this->cache[$key]['timeout'] < time())
-								$data = $this->cache[$key]['data'];
-						}
-						else {
-							$timeout = $this->cache_options[$flag][$key]['timeout'];
-							$cache_file = $this->get_cache_file($key, $flag);
-							if (isset($timeout) && $timeout < time() && file_exists($cache_file)) {
-								$data = unserialize(base64_decode(@ file_get_contents($cache_file)));
-								$this->cache[$key] = array( 'data' => $data, 'flag' => $flag, 'timeout' => $timeout);
-							}
-							else {
-								$this->cache_delete($key, $flag);
-							}
-						}
-					break;
-				} // End of switch
-			} // End of cache_enabled
-
-			return ($data);
-		} // End of cache_get
-
-		/**
-		 * cache_set
-		 *
-		 * @package EG-Plugin
-		 *
-		 * @param	string	$key	name of data to cache
-		 * @param	mixed	$data	data to cache
-		 *
-		 * @return 	none
-		 */
-		function cache_set($key, $data, $flag = 'default', $expire = FALSE) {
-
-			if  ($this->cache_enabled) {
-			
-				if ($flag == 'default') 
-					$flag = $this->cache_default_flag;
-				
-				if ($expire === FALSE)
-					$expire = $this->cache_default_expire;
-			
-				switch ($this->cache_enabled) {
-					case 'WP':
-						wp_cache_set($key, $data, $flag, $expire);
-					break;
-					
-					case 'transient':
-						set_transient($key, $data, $expire);
-					break;
-					
-					case 'EG':
-						$this->cache[$key] = array (
-							'data'     => $data,
-							'flag'     => $flag,
-							'timeout'  => time() + $expire);
-					break;
-				} // End of switch
-			} // End of cache_enabled
-		} // End of cache_set
-
-		/**
-		 * cache_delete
-		 *
-		 * @package EG-Plugin
-		 *
-		 * @param	string	$key	name of data to un-cache
-		 *
-		 * @return 	none
-		 */
-		function cache_delete($key, $flag = 'default') {
-
-			if ($this->cache_enabled) {
-
-				if ($flag == 'default') 
-					$flag = $this->cache_default_flag;
-
-				switch ($this->cache_enabled) {
-					case 'WP':
-						wp_cache_delete($key, $flag);
-					break;
-					
-					case 'transient':
-						delete_transient($key);
-						delete_option('_transient_timeout_'.$key);
-					break;
-					
-					case 'EG':
-						unset($this->cache[$key]);
-						$cache_file = $this->get_cache_file($key, $flag);
-						if (file_exists($cache_file)) {
-							@unlink($cache_file);
-						}
-						if (isset($this->cache_options[$flag][$key]))
-							unset($this->cache_options[$flag][$key]);
-							
-						if (sizeof($this->cache_options[$flag]) == 0)
-							unset($this->cache_options[$flag]);
-							
-						update_option(EG_PLUGIN_CACHE_OPTIONS_ENTRY, $this->cache_options);
-					break;
-				} // End of switch
-			} // End of use_cache
-		} // End of cache_del
-
-		/**
-		 * cache_save
-		 *
-		 * @package EG-Plugin
-		 *
-		 * @param	none
-		 * @return 	none
-		 */
-		function cache_save() {
-
-			if ($this->cache_enabled == 'EG') {
-				foreach ($this->cache as $key => $entry) {
-
-					$cache_file = $this->get_cache_file($key, $entry['flag']);
-					$string = base64_encode(serialize($entry['data']));
-					$fd = @fopen($cache_file, 'w');
-					if ( false !== $fd ) {
-						fputs($fd, $string);
-					}
-					@fclose($fd);
-					$this->cache_options[$entry['flag']][$key]['timeout'] =  $entry['timeout'];
-				} // End of foreach
-				update_option(EG_PLUGIN_CACHE_OPTIONS_ENTRY, $this->cache_options);
-			} // End of if use_cache
-		} // End of cache_save
-
-		/**
-		 * cache_flush
-		 *
-		 * @package EG-Plugin
-		 *
-		 * @param	none
-		 * @return 	none
-		 */
-		function cache_flush() {
-		
-			switch ($this->cache_enabled) {
-				
-				case 'WP':
-					wp_cache_flush();
-				break;
-				
-				case 'transient':
-					
-				break;
-			
-				case 'EG':
-					// Clear memory cache
-					foreach ($this->cache as $key => $data) {
-						unset($this->cache[$key]);
-					}
-					unset($this->cache);
-
-					// Clear disk cache
-					if (is_dir($this->cache_path)) {
-						if ($dh = opendir($this->cache_path)) {
-							while (($file = readdir($dh)) !== false) {
-								if ($file != '..' && $file != '.')
-									unlink($this->cache_path.$file);
-							}
-							closedir($dh);
-						}
-					}
-				break;
-			} // End of switch
-		} // End of cache_clear
 
 		/**
 		 * display_debug_info

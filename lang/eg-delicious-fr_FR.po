@@ -1001,3 +1001,91 @@ msgstr "Utilisateur non configur&eacute;"
 msgid "Cannot delete post in Delicious."
 msgstr "Impossible d'effacer le lien dans Delicious"
 
+#: eg-delicious-admin.inc.php
+msgid "Scheduled synchronization"
+msgstr "Synchronisation planifi&eacute;e"
+
+#: eg-delicious-admin.inc.php
+msgid "Not activated"
+msgstr "Non activ&eacute;e"
+
+#: eg-delicious-admin.inc.php
+msgid "Hourly"
+msgstr "Toutes les heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Daily"
+msgstr "Quotidiennement"
+
+#: eg-delicious-admin.inc.php
+msgid "Hourly schedules"
+msgstr "Synchronisations par heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Enter the following parameters if you choose \"Hourly\" frequency"
+msgstr "Choisissez l'option suivante, si vous avez choisi une synchronisation toutes les heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Run synchronization every "
+msgstr "Lancer la synchronisation toute les "
+
+#: eg-delicious-admin.inc.php
+msgid "hours"
+msgstr "heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Daily schedules"
+msgstr "Synchronisations quotidiennes"
+
+#: eg-delicious-admin.inc.php
+msgid "Enter the following parameters if you choose \"Daily\" frequency"
+msgstr "Saisir les param&egrave;tres suivants si vous avez choisi une synchronisation quotidienne"
+
+#: eg-delicious-admin.inc.php
+msgid " days"
+msgstr " jours"
+
+#: eg-delicious-admin.inc.php
+msgid "Schedule hour: "
+msgstr "Heure planifi&eacute;e "
+
+#: eg-delicious-admin.inc.php
+msgid "Start full synchronization"
+msgstr "D&eacute;marrer une synchronisation compl&egrave;te"
+
+#: eg-delicious-admin.inc.php
+msgid "Start incremental synchronization"
+msgstr "D&eacute;marrer une synchronisation incr&eacute;mentale"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get tags from Delicious"
+msgstr "Impossible de r&eacute;cup&eacute;rer les tags de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get bundles from Delicious"
+msgstr "Impossible de r&eacute;cup&eacute;rer les bundles de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get posts from Delicious"
+msgstr "Impossible de r&eacute;cup&eacute;rer les liens de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "A synchronization is started. You cannot modify options now. Please wait, and retry later."
+msgstr "Une synchronisation est en cours. Vous ne pouvez pas modifier les options. Merci d'attendre et de r&eacute;-essayer ult&eacute;rieurement."
+
+#: eg-delicious-admin.inc.php
+msgid "No tag and no bundle downloaded. You can't perform the configuration."
+msgstr "Aucun tag, ni bundle n'a &eacute;t&eacute; t&eacute;l&eacute;charg&eacute;. Vous ne pouvez effectuer la configuration."
+
+#: eg-delicious-admin.inc.php
+msgid "Tags list and bundles list changed since the last synchronization. Please check configuration settings."
+msgstr "Les listes des tags et des bundles a &eacute;t&eacute; modifi&eacute; depuis la derni&egrave;re synchronisation. Merci de v&eacute;rifier la configuration du plugin."
+
+#: eg-delicious-admin.inc.php
+msgid "Bundles list changed since the last synchronization. Please check configuration settings."
+msgstr "La liste des bundles a chang&eacute; depuis la derni&egrave;re synchronisation. Merci de v&eacute;rifier la configuration du plugin."
+
+#: eg-delicious-admin.inc.php
+msgid "Tags list changed since the last synchronization. Please check configuration settings."
+msgstr "La liste des tags a chang&eacute; depuis la derni&egrave;re synchronisation. Merci de v&eacute;rifier la configuration du plugin."
+

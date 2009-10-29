@@ -3,8 +3,8 @@ Contributors: Emmanuel Georjon
 Donate link: http://www.emmanuelgeorjon.com/
 Tags: delicious, bookmark, del.icio.us, backup, synchronization
 Requires at least: 2.6.0
-Tested up to: 2.8.4
-Stable tag: 1.1.6
+Tested up to: 2.8.5
+Stable tag: 1.2.0
 
 **EG-Delicious-Sync** backups the Delicious links into WordPress links database, and gives you many Delicious features.
 
@@ -36,6 +36,7 @@ Other features:
 * Widgets to display the Delicious Network Badge, and the Delicious tags,
 * A full backup (without synchronization) of the Delicious database,
 * You can also automaticaly add your WordPress posts in Delicious, when you publish them. With this feature, you can see your post popularity in Delicious (how many people bookmark your posts).
+* Ability to schedule links synchronization (hourly or daily frequency)
 
 == Installation ==
 
@@ -50,7 +51,10 @@ Other features:
 	* PHP 4.3
 	* PHP curl module installed option (activated in most of PHP platforms)
 
+The next release of the plugin will run only with WordPress 2.7 and higher.
+	
 = Installation =
+
 * The plugin is available for download on the WordPress repository,
 * Once downloaded, uncompress the file eg-delicious-wp-sync.zip,
 * Copy or upload the uncompressed files in the directory wp-content/plugins in your WordPress platform
@@ -91,6 +95,7 @@ This feature synchronizes the lists of tags of Delicious and WordPress.
 1. When you set all parameters, click on **Save changes** to launch the synchronization.
 
 = Posts publication = 
+
 This feature automatically add in Delicious, the post you publish in WordPress.
 
 1. The feature can be activated in the menu **Settings/EG-Delicious**
@@ -165,9 +170,20 @@ The second way is recommended to ensure that your customization won't be lost du
 5. Sample of a links synchronization session,
 6. Sample of tags synchronization,
 7. Options to automatically add your WordPress published posts to Delicious
+8. Options to schedule synchronization
 8. Delicious Backup screen
 
 == Changelog ==
+
+= Version 1.2.0 - Oct 29th, 2009 =
+
+* New: Ability to schedule links synchronization,
+* Change: cache mecanism rewritten (a lot of bug fixes),
+* Change: error notification system rewritten (again a lot of bug fixes),
+* Bug fix: space deleted in the post description (publish post feature),
+* Bug fix: in synchronisation page, filter settings was not kept when click on Update button,
+* Bug fix: blank options page after new installation.
+
 = Version 1.1.6 - Sept 29th, 2009 =
 
 * Bug fix: Bad constant settings

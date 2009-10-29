@@ -42,3 +42,29 @@ table.egdel_links_sync tr.sync td {
 table.egdel_links_sync tr.alternate-sync td {
 	background-color: #FF9999;
 }
+
+div.eg_message {
+	-moz-border-radius-bottomleft:3px;
+	-moz-border-radius-bottomright:3px;
+	-moz-border-radius-topleft:3px;
+	-moz-border-radius-topright:3px;
+	border-style:solid;
+	border-width:1px;
+	margin:5px 15px 2px;
+	padding:0 0.5em;
+}
+
+div.eg_error_1 {
+	background-color:#CCFFCC;
+	border-color:#00CC00;
+}
+
+div.eg_error_2 {
+	background-color:#FFFFCC;
+	border-color:#FF9900;
+}
+
+div.eg_error_3 {
+	background-color:#FFEBE8;
+	border-color:#CC0000;
+}
