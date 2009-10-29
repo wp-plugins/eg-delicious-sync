@@ -1,0 +1,1091 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eg-delicious-core.inc.php:37
+#: eg-delicious-admin.inc.php:88
+msgid "No error."
+msgstr "Pas d'erreur."
+
+#: eg-delicious-core.inc.php:38
+msgid "Unknown query."
+msgstr "Requ&ecirc;te inconnue."
+
+#: eg-delicious-core.inc.php:39
+#: eg-delicious-admin.inc.php:93
+msgid "Error while querying Delicious."
+msgstr "Erreur de requ&ecirc;te &agrave; Delicious."
+
+#: eg-delicious-core.inc.php:40
+msgid "No data available from Delicious"
+msgstr "Aucune information disponible"
+
+#: eg-delicious-core.inc.php:41
+msgid "Parse error"
+msgstr "Erreur pendant l'analyse"
+
+#: eg-delicious-admin.inc.php:89
+msgid "Error while requesting WordPress links."
+msgstr "Erreur de requ&ecirc;te &agrave; WordPress."
+
+#: eg-delicious-admin.inc.php:90
+msgid "Error while getting WordPress links categories."
+msgstr "Erreur de requ&ecirc;te &agrave; WordPress."
+
+#: eg-delicious-admin.inc.php:91
+msgid "You cannot access to the page. You haven't the \"Manage links\" capability. Please contact the blog administrator."
+msgstr "Vous ne pouvez acc&eacute;der &agrave; cette page. Vous n'avez pas les droits \"Gestion des liens\". Veuillez contacter votre administrateur."
+
+#: eg-delicious-admin.inc.php:91
+msgid "Plugin not configured! Please go to <strong>Settings / EG-Delicious</strong> page to enter required parameters."
+msgstr "Plugin non configur&eacute;! Utilisez le menu <strong>Param&egrave;tres / EG-Delicious</strong> pour saisir les param&egrave;tres n&eacute;cessaires."
+
+#: eg-delicious-admin.inc.php:
+msgid "No tag downloaded from Delicious. Switch to bundle mode."
+msgstr "Pas de tag trouv&eacute; dans Delicious. Passage en mode bundle."
+
+#: eg-delicious-admin.inc.php:
+msgid "No bundle downloaded from Delicious. Switch to tag mode."
+msgstr "Pas de bundle trouv&eacute; dans Delicious. Passage en mode tag."
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot publish post in Delicious."
+msgstr "Impossible de publier l'article dans Delicious."
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot create backup path. Backup failed"
+msgstr "Impossible de cr&eacute;er le r&eacute;pertoire de sauvegarde. La sauvegarde a &eacute;chou&eacute;"
+
+#: eg-delicious-admin.inc.php:
+msgid "Cannot delete post in Delicious"
+msgstr "Impossible d'effacer l'article dans Delicious"
+
+#: eg-delicious-admin.inc.php:163
+msgid "Delicious account"
+msgstr "Compte Delicious"
+
+#: eg-delicious-admin.inc.php:164
+msgid "Username"
+msgstr "Nom de l'utilisateur"
+
+#: eg-delicious-admin.inc.php:167
+msgid "Password"
+msgstr "Mot de passe"
+
+#: eg-delicious-admin.inc.php:189
+msgid "WordPress Links"
+msgstr "Liens WordPress"
+
+#: eg-delicious-admin.inc.php:190
+msgid "Manage date"
+msgstr "Gestion des dates"
+
+#: eg-delicious-admin.inc.php:190
+msgid "WordPress doesn't set the \"update date\" when you create or edit a link. Do you want to change the date of links when you create or edit them?"
+msgstr "WordPress ne met pas le champ \"date de mise &agrave; jour\" lors de l'&eacute;dition ou la cr&eacute;ation d'un lien. Souhaitez-vous mettre &agrave; jour ce champ lors des &eacute;editions ou la cr&eacute;ation des liens?"
+
+#: eg-delicious-admin.inc.php:193
+msgid "Links synchronisation"
+msgstr "Synchronisation des liens"
+
+#: eg-delicious-admin.inc.php:195
+msgid "WordPress links"
+msgstr "Liens WordPress"
+
+#: eg-delicious-admin.inc.php:195
+msgid "When a link exists in WordPress, and does NOT exist in Delicious, do you want to:"
+msgstr "Lorsqu'un lien existe dans WordPress, mais n'existe pas dans Delicious, souhaitez-vous:"
+
+#: eg-delicious-admin.inc.php:196
+msgid "Delete WordPress link"
+msgstr "Effacer le lien WordPress"
+
+#: eg-delicious-admin.inc.php:196
+msgid "Leave as-is"
+msgstr "Laisser le lien tel qu'il est"
+
+#: eg-delicious-admin.inc.php:197
+msgid "Update"
+msgstr "Mise &agrave; jour"
+
+#: eg-delicious-admin.inc.php:197
+msgid "When a link exist in WordPress AND Delicious databases, do you want: "
+msgstr "Lorsqu'un lien existe &agrave; la fois dans WordPress et Delicious, souhaitez-vous: "
+
+#: eg-delicious-admin.inc.php:198
+msgid "Always update the WordPress links,"
+msgstr "Toujours mettre &agrave; les liens WordPress,"
+
+#: eg-delicious-admin.inc.php:198
+msgid "Never update WordPress links"
+msgstr "Ne jamais mettre &agrave; jour les liens de WordPress"
+
+#: eg-delicious-admin.inc.php:198
+msgid "Leave the plugin decide"
+msgstr "Laisser d&eacute;cider le plugin du sens de synchronisation"
+
+#: eg-delicious-admin.inc.php:200
+msgid "Default parameters"
+msgstr "Param&egrave;tre par d&eacute;faut"
+
+#: eg-delicious-admin.inc.php:200
+msgid "Parameters to use when creating links in WordPress"
+msgstr "Param&egrave;tres &agrave; utiliser lors de la cr&eacute;ation des liens dans WordPress"
+
+#: eg-delicious-admin.inc.php:201
+msgid "Link target: "
+msgstr "Champ \"Target\": "
+
+#: eg-delicious-admin.inc.php:202
+msgid "Link visible: "
+msgstr "Visibilit&eacute; du lien: "
+
+#: eg-delicious-admin.inc.php:202
+msgid "Yes"
+msgstr "Oui"
+
+#: eg-delicious-admin.inc.php:202
+msgid "No"
+msgstr "Non"
+
+#: eg-delicious-admin.inc.php:204
+msgid "Categories synchronization"
+msgstr "Synchronisation des cat&eacute;gories"
+
+#: eg-delicious-admin.inc.php:206
+msgid "Replace or update"
+msgstr "Remplacer ou mettre &agrave; jour"
+
+#: eg-delicious-admin.inc.php:206
+msgid "When a WordPress link is updated:"
+msgstr "Lorsqu'un lien WordPress est mis &agrave; jour:"
+
+#: eg-delicious-admin.inc.php:207
+msgid "Replace the existing categories by those coming from Delicious,"
+msgstr "Remplacer les cat&eacute;gories existantes, par ceux de Delicious,"
+
+#: eg-delicious-admin.inc.php:207
+msgid "Add categories coming from Delicious."
+msgstr "Ajouter les cat&eacute;gories de Delicious."
+
+#: eg-delicious-admin.inc.php:207
+msgid "Keep the WordPress categories"
+msgstr "Conserver les cat&eacute;gories de WordPress"
+
+#: eg-delicious-admin.inc.php:209
+#: eg-delicious-admin.inc.php:210
+msgid "Allow multiple categories"
+msgstr "Permettre plusieurs cat&eacute;gories par lien"
+
+#: eg-delicious-admin.inc.php:209
+msgid "During category synchronisation:"
+msgstr "Pendant la synchronisation des cat&eacute;gories:"
+
+#: eg-delicious-admin.inc.php:209
+msgid "If you choose \"Add categories\" in the previous question, some links will have several categories, evenif you choose \"Allow only one category\"."
+msgstr "Si vous choisissez \"Ajouter les cat&eacute;gories de Delicious\" dans la question pr&eacute;c&eacute;dente, certains liens auront plusieurs cat&eacute;gories, m&egrave;me si vous choisissez \"Ne permettre qu'une seule cat&eacute;gorie\"."
+
+#: eg-delicious-admin.inc.php:210
+msgid "Allow only one category per WordPress link,"
+msgstr "Ne permettre qu'une seule cat&eacute;gorie par lien WordPress,"
+
+#: eg-delicious-admin.inc.php:210
+msgid "Allow several categories per WordPress link."
+msgstr "Permettre plusieurs cat&eacute;gories par lien WordPress."
+
+#: eg-delicious-admin.inc.php:212
+msgid "Alignment key"
+msgstr "Cl&eacute; d'alignement"
+
+#: eg-delicious-admin.inc.php:212
+msgid "Do you want to synchronize the WordPress link categories with"
+msgstr "Souhaitez-vous synchroniser les cat&eacute;gories des liens WordPress avec"
+
+#: eg-delicious-admin.inc.php:212
+msgid "Click on <strong>Save changes</strong> button to change the following alignment table"
+msgstr "Cliquer sur le bouton \"Sauvegarder les changements\" pour changer la table suivante"
+
+#: eg-delicious-admin.inc.php:218
+msgid "WordPress Categories"
+msgstr "Cat&eacute;gories de WordPress"
+
+#: eg-delicious-admin.inc.php:222
+msgid "Tags / Categories assignments"
+msgstr "Assignation Tags / Cat&eacute;gories"
+
+#: eg-delicious-admin.inc.php:230
+msgid "Bundles / Categories assignments"
+msgstr "Assignation Bundles / Cat&eacute;gories"
+
+#: eg-delicious-admin.inc.php:235
+msgid "Other assignments"
+msgstr "Autres assignations"
+
+#: eg-delicious-admin.inc.php:236
+msgid "Other item: "
+msgstr "Autre &eacute;l&eacute;ment: "
+
+#: eg-delicious-admin.inc.php:237
+msgid "Not classified link: "
+msgstr "Lien non class&eacute;: "
+
+#: eg-delicious-admin.inc.php:239
+msgid "Uninstall options"
+msgstr "Options de d&eacute;sinstallation"
+
+#: eg-delicious-admin.inc.php:239
+msgid "Be careful: these actions cannot be cancelled. All plugins options will be deleted while plugin uninstallation."
+msgstr "Attention: ces actions ne peuvent &egrave; annul&eacute;es. Toutes les options du plugin seront effac&eacute;es pendant la d&eacute;esinstallation du plugin."
+
+#: eg-delicious-admin.inc.php:240
+msgid "Options"
+msgstr "Options"
+
+#: eg-delicious-admin.inc.php:240
+msgid "Delete options during uninstallation"
+msgstr "Effacer les options pendant la d&eacute;sinstallation"
+
+#: eg-delicious-admin.inc.php:244
+msgid "Save changes"
+msgstr "Sauvegarder les changements"
+
+#: eg-delicious-admin.inc.php:262
+msgid "EG-Delicious Options"
+msgstr "Options de EG-Delicious"
+
+#: eg-delicious-admin.inc.php:272
+msgid "A synchronization is started by %1s, since %2s.<br />You cannot modify options now.<br />Please wait, and retry later."
+msgstr "La synchronisation est d&eacute;marr&eacute;e, par %1s, depuis %2s.<br />Vous ne pouvez pas modifier les options.<br />Veuillez attendre et essayer ult&eacute;rieurement."
+
+#: eg-delicious-admin.inc.php:432
+msgid "Could not update link in the database"
+msgstr "Impossible de mettre &agrave; jour la base de donn&eacute;es"
+
+#: eg-delicious-admin.inc.php:660
+msgid "Cannot collect last Delicious update date."
+msgstr "Impossible de r&eacute;cup&eacute;rer la date de derni&egrave;re mise &agrave; de Delicious."
+
+#: eg-delicious-admin.inc.php:667
+msgid "No synchronization was done yet."
+msgstr "Aucune synchronisation effectu&eacute;e jusqu'&agrave; pr&eacute;sent."
+
+#: eg-delicious-admin.inc.php:669
+msgid "Last synchronization date: "
+msgstr "Date de derni&egrave;re synchronisation: "
+
+#: eg-delicious-admin.inc.php:674
+msgid "Last Delicious update: "
+msgstr "Date de derni&egrave;re mise &agrave; jour de Delicious: "
+
+#: eg-delicious-admin.inc.php:675
+msgid "Last WordPress update: "
+msgstr "Derni&egrave;re mise &agrave; jour de WordPress: "
+
+#: eg-delicious-admin.inc.php:681
+msgid "Start synchronization"
+msgstr "D&eacute;marrer la synchronisation"
+
+#: eg-delicious-admin.inc.php:699
+msgid "A synchronization is currently started by %s, please wait, and retry later."
+msgstr "Une synchronisation est actuellement d&eacute;marr&eacute;e, par %s, Veuillez attendre et r&eacute;essyer plus tard."
+
+#: eg-delicious-admin.inc.php:706
+#: eg-delicious-admin.inc.php:718
+msgid "Synchronization on-going, started on %s"
+msgstr "Synchronisation en cours, d&eacute;marr&eacute;e le %s"
+
+#: eg-delicious-admin.inc.php:709
+msgid "Do you want to continue this session, or restart a new one?"
+msgstr "Souhaitez vous continuer la session en cours, ou en red&eacute;marrer une nouvelle?"
+
+#: eg-delicious-admin.inc.php:710
+msgid "Continue the current session"
+msgstr "Continuer la session courante"
+
+#: eg-delicious-admin.inc.php:711
+msgid "Start a new session"
+msgstr "D&eacute;marrer une nouvelle session"
+
+#: eg-delicious-admin.inc.php:712
+msgid "Stop the session"
+msgstr "Stopper la session"
+
+#: eg-delicious-admin.inc.php:723
+msgid "Update changes"
+msgstr "Sauvegarder les changements"
+
+#: eg-delicious-admin.inc.php:724
+msgid "Stop synchronization"
+msgstr "Arr&ecirc;ter la synchronisation"
+
+#: eg-delicious-admin.inc.php:742
+msgid "There is no link to synchronize. <br />Synchronization session is ended successfully.<br/>You can see the result of the synchronisation by <a href=\"%s\">browsing links</a>"
+msgstr "Il n'y a plus de liens &agrave; synchroniser.<br />La session de synchronisation s'est termin&eacute;e avec succ&egrave;s.<br />Vous pouvez consulter le r&eacute;sultat de la synchronisation en parcourant <a href=\"%s\">la liste des liens</a>"
+
+#: eg-delicious-admin.inc.php:760
+msgid "Synchronisation failed"
+msgstr "La synchronisation a &eacute;chou&eacute;"
+
+#: eg-delicious-admin.inc.php:761
+msgid "Click <a href=\"%1s\">here</a> if you want to start a new session"
+msgstr "Cliquer <a href=\"%1s\">ici</a> si vous souhairez d&eacute;marrer une nouvelle session"
+
+#: eg-delicious-admin.inc.php:784
+msgid "Error "
+msgstr "Erreur "
+
+#: eg-delicious-admin.inc.php:802
+msgid "BlogRoll synchronization"
+msgstr "Synchronisation des liens Delicious"
+
+#: eg-delicious-admin.inc.php:17
+msgid "Unbundled tag"
+msgstr "Tags sans bundle"
+
+#: eg-delicious-admin.inc.php:969
+msgid "Add to WP"
+msgstr "Ajouter &agrave WP"
+
+#: eg-delicious-admin.inc.php:970
+msgid "Update WP"
+msgstr "M.a.j WP"
+
+#: eg-delicious-admin.inc.php:971
+msgid "Delete from WP"
+msgstr "Effacer de WP"
+
+#: eg-delicious-admin.inc.php:1014
+msgid "Cannot get Delicious posts"
+msgstr "Impossible de r&eacute;cup&eacute;rer les liens Delicious"
+
+#: eg-delicious-admin.inc.php:176
+#: eg-delicious-admin.inc.php:1021
+msgid "Cannot get Delicious tags"
+msgstr "Impossible de r&eacute;cup&eacute;rer les tags Delicious"
+
+#: eg-delicious-admin.inc.php:183
+#: eg-delicious-admin.inc.php:1028
+msgid "Cannot get Delicious bundles"
+msgstr "Impossible de r&eacute;cup&eacute;rer les bundles Delicious"
+
+#: eg-delicious-admin.inc.php:1214
+msgid "Links per page: "
+msgstr "Nombre de liens par page: "
+
+#: eg-delicious-admin.inc.php:1223
+msgid "Change"
+msgstr "Changer"
+
+#: eg-delicious-admin.inc.php:1233
+msgid "Link"
+msgstr "Lien"
+
+#: eg-delicious-admin.inc.php:1234
+msgid "Delicious"
+msgstr "Delicious"
+
+#: eg-delicious-admin.inc.php:1235
+msgid "Action"
+msgstr "Op&eacute;ration"
+
+#: eg-delicious-admin.inc.php:1236
+msgid "WordPress"
+msgstr "WordPress"
+
+#: eg-delicious-admin.inc.php:1238
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Tags"
+msgstr "Tags"
+
+#: eg-delicious-admin.inc.php:1239
+msgid "Bundles"
+msgstr "Bundles"
+
+#: eg-delicious-admin.inc.php:1240
+msgid "Last<br />Update"
+msgstr "Derni&egrave;re<br />mise &agrave; jour"
+
+#: eg-delicious-admin.inc.php:1241
+msgid "Current<br />category"
+msgstr "Cat&eacute;gorie<br />courante"
+
+#: eg-delicious-admin.inc.php:1242
+msgid "Suggested<br/>category"
+msgstr "Cat&eacute;gorie<br />sugg&eacute;r&eacute;e"
+
+#: eg-delicious-admin.inc.php:1246
+msgid "No links to display"
+msgstr "Pas de lien &agrave; afficher"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Enhanced blogroll for EG-Delicious"
+msgstr "Blogroll avanc&eacute;e pour EG-Delicious"
+
+#: eg-delicious-widgets.inc.php:
+msgid "General options"
+msgstr "Options g&eacute;n&eacute;rales"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Title"
+msgstr "Titre"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Columns"
+msgstr "Colonnes"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Minimum number of links per column"
+msgstr "Nombre minimum de liens par colonne"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories options"
+msgstr "Options de cat&eacute;gories"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Categories to display:"
+msgstr "Cat&eacute;gories &agrave; afficher:"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Group links by category"
+msgstr "Regrouper les liens par cat&eacute;gorie"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Links options"
+msgstr "Options pour les liens"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Page/Post ID to see all links"
+msgstr "ID de la page ou de l'article affichant tous les liens"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Show description"
+msgstr "Afficher la description"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Hide Invisible"
+msgstr "Cacher les liens invisibles"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order by"
+msgstr "Trier par"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Name"
+msgstr "Nom"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Rating"
+msgstr "Note"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Random"
+msgstr "Al&eacute;atoire"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Order"
+msgstr "Ordre"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Ascending"
+msgstr "Ascendant"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Descending"
+msgstr "Descendant"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Number of links to display"
+msgstr "Nombre de liens &agrave; afficher"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Blogroll"
+msgstr "Blogroll"
+
+#: eg-delicious-widgets.inc.php:
+msgid "Bookmarks"
+msgstr "Favoris"
+
+#: eg-delicious-widgets.inc.php:
+msgid "List of the links"
+msgstr "Voir tous les liens"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "All"
+msgstr "Toutes"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Home"
+msgstr "Page d'accueil"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Categories"
+msgstr "Cat&eacute;gories"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Posts"
+msgstr "Articles"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget on pages"
+msgstr "Afficher le widget sur les pages"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, for"
+msgstr "Afficher le widget pour"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Show widget, when"
+msgstr "Afficher le widget pour"
+
+#: eg-widgets200.inc.php:
+#: eg-widgets100.inc.php:
+msgid "Hide widget, when"
+msgstr "Cacher le widget pour"
+
+#: eg-delicious-admin.inc.php:
+msgid "Tags synchronization"
+msgstr "Synchonisation des tags"
+
+#: eg-delicious-admin.inc.php:
+msgid "Synchronization mode"
+msgstr "Mode de synchronization"
+
+#: eg-delicious-admin.inc.php:
+msgid "replace"
+msgstr "Remplacement"
+
+#: eg-delicious-admin.inc.php:
+msgid "Replace the WordPress tags by those coming from Delicious,"
+msgstr "Remplace la totalit&eacute; des tags de WordPress par ceux de Delicious"
+
+#: eg-delicious-admin.inc.php:
+msgid "update"
+msgstr "Mise &agrave; jour"
+
+#: eg-delicious-admin.inc.php:
+msgid "Update the WordPress tags with those coming from Delicious."
+msgstr "Mise &agrave; jour des tags de WordPress avec ceux provenant de Delicious"
+
+#: eg-delicious-admin.inc.php:
+msgid "All tags existing in Delicious and NOT in WordPress will be added in the WordPress database."
+msgstr "Tous les tags existant dans Delicious, et n'existant PAS dans WordPress seront ajout&eacute;s &agrave; WordPress."
+
+#: eg-delicious-admin.inc.php:
+msgid "All tags existing in WordPress and NOT in Delicious will be deleted, and all tags existing in Delicious and NOT in WordPress will be added."
+msgstr "Tous les tags existant dans WordPress, mais n'existant pas dans Delicious seront effac&eacute;s de WordPress, et tous les tags existant dans Delicious, mais n'existant pas dans WordPress, seront ajout&eacute;s &agrave; WordPress."
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Delicious username"
+msgstr "Nom d'utilisateur de Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Quantity"
+msgstr "Quantit&eacute;"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Font parameters"
+msgstr "Police de caracteres"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Smallest size"
+msgstr "Taille minimale"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Largest size"
+msgstr "Taille maximale"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "alphabetical"
+msgstr "alphab&eacute;tique"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Frequency"
+msgstr "Popularit&eacute;"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Flat"
+msgstr "Applati"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "List (UL/LI)"
+msgstr "Liste (UL/LI)"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show"
+msgstr "Affichage"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show Delicious name"
+msgstr "Afficher le nom Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show \"Add me to your network\""
+msgstr "Afficher \"Ajoutez moi &agrave; votre r&eacute;seau\""
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show Tags count"
+msgstr "Afficher le nombre d'utilisation"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Delicious TagRolls"
+msgstr "TagRolls Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "<strong>RSS Error</strong>: %s"
+msgstr "<strong>Erreur RSS</strong>: %s"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "An error has occurred; the feed is probably down. Try again later."
+msgstr "Une erreur est survenue; Le flux est certainement indisponible. Essayez un peu plus tard."
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I am <a href=\"%1s\">%2s</a> on <a href=\"%3s\">Delicious</a>"
+msgstr "Je suis <a href=\"%1s\">%2s</a> sur <a href=\"%3s\">Delicious</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "<a href=\"%s\">Add me to your network</a>"
+msgstr "<a href=\"%s\">Ajoutez moi &agrave; votre r&eacute;seau</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "RSS feeds to display Delicious Tags"
+msgstr "Fils RSS permettant l'affichage des tags Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "EG-Delicious TagRolls"
+msgstr "TagRolls EG-Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Display Delicious Network badge"
+msgstr "Affiche une r&eacute;sum&eacute; de votre compte Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "EG-Delicious Network badge"
+msgstr "Network Badge EG-Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "None"
+msgstr "Aucun"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Small"
+msgstr "Petit"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Medium"
+msgstr "Moyen"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show bookmark count"
+msgstr "Afficher le nombre de favoris"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show network count"
+msgstr "Afficher le nombre de personnes figurant dans votre r&eacute;seau"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Show fan count"
+msgstr "Afficher le nombre de fans"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "Delicious Network Badge"
+msgstr "Network Badge Delicious"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I have <strong>%1s</strong> <a href=\"%2s\">bookmarks</a>"
+msgstr "J'ai <strong>%1s</strong> <a href=\"%2s\">favoris</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I have <strong>%1s</strong> people in <a href=\"%2s\">my network</a>"
+msgstr "J'ai <strong>%1s</strong> personnes dans <a href=\"%2s\">mon r&eacute;seau</a>"
+
+#: eg-delicious-widgets.inc.php:
+#: eg-delicious-widgets_pre_28.inc.php:
+msgid "I have <strong>%1s</strong> fan"
+msgstr "J'ai <strong>%1s</strong> fan"
+
+#: eg-delicious-admin.inc.php:
+msgid "Synchronisation mode: <strong>%s</strong>."
+msgstr "Mode de synchronisation: <strong>%s</strong>."
+
+#: eg-delicious-admin.inc.php:
+msgid "You can modify this mode, by <a href=\"%s\">editing options</a>"
+msgstr "Vous pouvez modifier ce mode, en utilisant la page <a href=\"%s\">des options</a>"
+
+#: eg-delicious-admin.inc.php:
+msgid "Count"
+msgstr "Nombre<br />d'utilisation"
+
+#: eg-delicious-admin.inc.php:
+msgid "No tags to display"
+msgstr "Aucun tag"
+
+#: eg-delicious-admin.inc.php:
+msgid "Description"
+msgstr "Description"
+
+#: eg-delicious-admin.inc.php:
+msgid "Delicious <strong>Tags</strong> or <strong>Bundles</strong> changed since last options settings. A check is recommended."
+msgstr "Les <strong>Tags</strong> ou les <strong>Bundles</strong> de Delicious ont chang&eacute; depuis la derni&egrave;re configuration. Une v&eacute;rification est recommand&eacute;e."
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious and WordPress tags are synchronized."
+msgstr "Delicious et WordPress sont synchronis&eacute;s"
+
+#: eg-delicious-admin.inc.php
+msgid "Tags added to WordPress:"
+msgstr "Tags ajout&eacute;s &agrave; WordPress:"
+
+#: eg-delicious-admin.inc.php
+msgid "Tags deleted from WordPress:"
+msgstr "Tags effac&eacute;s de WordPress:"
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious and WordPress tags are synchronized. Goto page <a href=\"%1s\">Manage tags</a> to see results."
+msgstr "Les tags de Delicious et de WordPress sont maintenant synchronis&eacute;s. Aller &agrave; la page de <a href=\"%1s\">gestion des tags</a> pour visualiser le r&eacute;sultat"
+
+#: eg-delicious-admin.inc.php
+msgid "Publish posts"
+msgstr "Publication des articles"
+
+#: eg-delicious-admin.inc.php
+msgid "Activation"
+msgstr "Activation"
+
+#: eg-delicious-admin.inc.php
+msgid "Add posts to Delicious when publish them in Wordpress?"
+msgstr "Ajouter dans Delicious, les articles que vous publiez dans WordPress?"
+
+#: eg-delicious-admin.inc.php
+msgid "Classification"
+msgstr "Classement/Organisation"
+
+#: eg-delicious-admin.inc.php
+msgid "When publish post, use:"
+msgstr "Lorsque vous publiez un article, souhaitez-vous utiliser:"
+
+#: eg-delicious-admin.inc.php
+msgid "or use specific values:"
+msgstr "ou utiliser les valeurs suivantes:"
+
+#: eg-delicious-admin.inc.php
+msgid "(Give a list of comma-separated values)"
+msgstr "(Entrez une liste de valeurs s&eacute;par&eacute;es par une virgule)"
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious parameters"
+msgstr "Param&egrave;tres de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Do you want to share the post in Delicious?"
+msgstr "Souhaitez-vous que le lien soit partag&eacute; dans Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "The following parameters allow you to add to Delicious, the posts published in WordPress. You can use this feature to follow the popularity of your posts, for example."
+msgstr "Les param&egrave;tres suivants permettent l'ajout dans Delicious, des articles publi&eacute;s dans WordPress. Vous pouvez utiliser cette fonctionnalit&eacute;, pour suivre la popularit&eacute; de vos articles dans Delicious, par exemple."
+
+#: eg-delicious-admin.inc.php
+msgid "EG-Delicious Backup"
+msgstr "Sauvegarde Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Downloading Delicious data"
+msgstr "T&eacute;l&eacute;charger les donn&eacute;es sauvegard&eacute;es"
+
+#: eg-delicious-admin.inc.php
+msgid "Generating backup file"
+msgstr "G&eacute;n&eacute;ration du fichier de backup"
+
+#: eg-delicious-admin.inc.php
+msgid "Saving backup file"
+msgstr "Sauvegarde du fichier g&eacute;n&eacute;r&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup failed"
+msgstr "La sauvegarde a &eacute;chou&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup ended successfully"
+msgstr "La sauvegarde est compl&egrave;te"
+
+#: eg-delicious-admin.inc.php
+msgid "Click on <a href=\"%s\">this link</a> to return to backup configuration panel."
+msgstr "Cliquer sur <a href=\"%s\">ce lien</a> pour retourner &agrave; la page de gestion des sauvegardes."
+
+#: eg-delicious-admin.inc.php
+msgid "Start Manual backup"
+msgstr "D&eacute;marrer la sauvegarde manuelle"
+
+#: eg-delicious-admin.inc.php
+msgid "Delete"
+msgstr "Effacer"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking configuration"
+msgstr "V&eacute;rification de la configuration"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking backup folder"
+msgstr "V&eacute;rification du r&eacute;pertoire de sauvegarde"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path exists"
+msgstr "Le r&eacute;pertoire de sauvegarde existe"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path doesn't exist, try to create it"
+msgstr "Le r&eacute;pertoire de sauvegarde n'existe pas. Tentative de cr&eacute;ation"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking backup folder again ... "
+msgstr "Nouvelle v&eacute;rification du r&eacute;pertoire ... "
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path doesn't exist, and cannot create it!"
+msgstr "Le r&eacute;pertoire de sauvegarde n'existe pas, et ne peut être cr&eacute;&eacute;e!"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup path created successfully"
+msgstr "R&eacute;pertoire de sauvegarde cr&eacute;&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Checking if backup folder is writeable ... "
+msgstr "V&eacute;rification des droits du r&eacute;pertoire de sauvegarde ... "
+
+#: eg-delicious-admin.inc.php
+msgid "Path is writable!"
+msgstr "Le r&eacute;pertoire est accessible en &eacute;riture!"
+
+#: eg-delicious-admin.inc.php
+msgid "Backup file is not writeable."
+msgstr "Le r&eacute;pertoire n'est pas accessible en &eacute;criture"
+
+#: eg-delicious-admin.inc.php
+msgid "Please change the security access of the directory before using this page."
+msgstr "Veuillez changer les droits d'acc&egrave;s &agrave; ce r&eacute;pertoire avant de continuer."
+
+#: eg-delicious-admin.inc.php
+msgid "Collecting backup files"
+msgstr "Enum&eacute;ration des fichier de sauvegarde"
+
+#: eg-delicious-admin.inc.php
+msgid "done (%s collected)."
+msgstr "fait (%s trouv&eacute;s)."
+
+#: eg-delicious-admin.inc.php
+msgid "Checking Delicious connection"
+msgstr "V&eacute;rification de la connexion &agrave; Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Connection failed."
+msgstr "La connexion a &eacute;chou&eacute;."
+
+#: eg-delicious-admin.inc.php
+msgid "Connection done."
+msgstr "Connexion effectu&eacute;e."
+
+#: eg-delicious-admin.inc.php
+msgid "The last backup is earlier than the last Delicious database change."
+msgstr "La derni&egrave;re sauvegarde est plus rescente que la derni&egrave;re mise &agrave; jour de Delicious."
+
+#: eg-delicious-admin.inc.php
+msgid "Delicious database evolved since the last backup."
+msgstr "La base de Delicious a &eacute;volu&eacute; depuis la derni&egrave;re sauvegarde."
+
+#: eg-delicious-admin.inc.php
+msgid "Backup recommended."
+msgstr "Sauvegarde recommand&eacute;e."
+
+#: eg-delicious-admin.inc.php
+msgid "Backup not required."
+msgstr "Sauvegarde inutile."
+
+#: eg-delicious-admin.inc.php
+msgid "Manual backup"
+msgstr "Sauvegarde manuelle"
+
+#: eg-delicious-admin.inc.php
+msgid "Click on"
+msgstr "Cliquer sur"
+
+#: eg-delicious-admin.inc.php
+msgid "to start the backup immediately."
+msgstr "pour d&eacute;marrer la sauvegarde imm&eacute;diatement."
+
+#: eg-delicious-admin.inc.php
+msgid "No."
+msgstr "Num."
+
+#: eg-delicious-admin.inc.php
+msgid "Select"
+msgstr "S&eacute;lection"
+
+#: eg-delicious-admin.inc.php
+msgid "File"
+msgstr "Fichier"
+
+#: eg-delicious-admin.inc.php
+msgid "Date/Time"
+msgstr "Date/Heure"
+
+#: eg-delicious-admin.inc.php
+msgid "Size"
+msgstr "Taille"
+
+#: eg-delicious-admin.inc.php
+msgid "No backup file found. No backup performed before."
+msgstr "Aucun fichier n'a &eacute;t&eacute; trouv&eacute;. Aucune sauvegarde n'a &eacute;t&eacute; r&eacute;alis&eacute;e jusqu'&agrave; pr&eacute;sent."
+
+#: eg-delicious-admin.inc.php
+msgid "Total"
+msgstr "Total"
+
+#: eg-delicious-admin.inc.php
+msgid "Download"
+msgstr "T&eacute;l&eacute;charger"
+
+#: eg-delicious-admin.inc.php
+msgid "User defined."
+msgstr "Utilisateur configur&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "User not defined."
+msgstr "Utilisateur non configur&eacute;"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot delete post in Delicious."
+msgstr "Impossible d'effacer le lien dans Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Scheduled synchronization"
+msgstr "Synchronisation planifi&eacute;e"
+
+#: eg-delicious-admin.inc.php
+msgid "Not activated"
+msgstr "Non activ&eacute;e"
+
+#: eg-delicious-admin.inc.php
+msgid "Hourly"
+msgstr "Toutes les heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Daily"
+msgstr "Quotidiennement"
+
+#: eg-delicious-admin.inc.php
+msgid "Hourly schedules"
+msgstr "Synchronisations par heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Enter the following parameters if you choose \"Hourly\" frequency"
+msgstr "Choisissez l'option suivante, si vous avez choisi une synchronisation toutes les heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Run synchronization every "
+msgstr "Lancer la synchronisation toute les "
+
+#: eg-delicious-admin.inc.php
+msgid "hours"
+msgstr "heures"
+
+#: eg-delicious-admin.inc.php
+msgid "Daily schedules"
+msgstr "Synchronisations quotidiennes"
+
+#: eg-delicious-admin.inc.php
+msgid "Enter the following parameters if you choose \"Daily\" frequency"
+msgstr "Saisir les param&egrave;tres suivants si vous avez choisi une synchronisation quotidienne"
+
+#: eg-delicious-admin.inc.php
+msgid " days"
+msgstr " jours"
+
+#: eg-delicious-admin.inc.php
+msgid "Schedule hour: "
+msgstr "Heure planifi&eacute;e "
+
+#: eg-delicious-admin.inc.php
+msgid "Start full synchronization"
+msgstr "D&eacute;marrer une synchronisation compl&egrave;te"
+
+#: eg-delicious-admin.inc.php
+msgid "Start incremental synchronization"
+msgstr "D&eacute;marrer une synchronisation incr&eacute;mentale"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get tags from Delicious"
+msgstr "Impossible de r&eacute;cup&eacute;rer les tags de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get bundles from Delicious"
+msgstr "Impossible de r&eacute;cup&eacute;rer les bundles de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "Cannot get posts from Delicious"
+msgstr "Impossible de r&eacute;cup&eacute;rer les liens de Delicious"
+
+#: eg-delicious-admin.inc.php
+msgid "A synchronization is started. You cannot modify options now. Please wait, and retry later."
+msgstr "Une synchronisation est en cours. Vous ne pouvez pas modifier les options. Merci d'attendre et de r&eacute;-essayer ult&eacute;rieurement."
+
+#: eg-delicious-admin.inc.php
+msgid "No tag and no bundle downloaded. You can't perform the configuration."
+msgstr "Aucun tag, ni bundle n'a &eacute;t&eacute; t&eacute;l&eacute;charg&eacute;. Vous ne pouvez effectuer la configuration."
+
+#: eg-delicious-admin.inc.php
+msgid "Tags list and bundles list changed since the last synchronization. Please check configuration settings."
+msgstr "Les listes des tags et des bundles a &eacute;t&eacute; modifi&eacute; depuis la derni&egrave;re synchronisation. Merci de v&eacute;rifier la configuration du plugin."
+
+#: eg-delicious-admin.inc.php
+msgid "Bundles list changed since the last synchronization. Please check configuration settings."
+msgstr "La liste des bundles a chang&eacute; depuis la derni&egrave;re synchronisation. Merci de v&eacute;rifier la configuration du plugin."
+
+#: eg-delicious-admin.inc.php
+msgid "Tags list changed since the last synchronization. Please check configuration settings."
+msgstr "La liste des tags a chang&eacute; depuis la derni&egrave;re synchronisation. Merci de v&eacute;rifier la configuration du plugin."
+

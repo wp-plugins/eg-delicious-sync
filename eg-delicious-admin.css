@@ -1,0 +1,70 @@
+
+table.egdel_links_sync th {
+	text-align: center;
+	background: #ccc none ;
+}
+
+div.backup_delicious h3 {
+	margin-top: 3em;
+}
+
+div.backup_delicious span.green {
+	font-weight: bold;
+	color: green;
+}
+
+div.backup_delicious span.orange {
+	font-weight: bold;
+	color: orange;
+}
+
+div.backup_delicious span.red {
+	font-weight: bold;
+	color: red;
+}
+
+div.backup_delicious span.path {
+	font-weight: bold;
+}
+
+div.backup_delicious table.backup_list tr.total td {
+	font-weight: bold;
+}
+
+table.egdel_links_sync tr.alternate td {
+	background-color: #CCC;
+}
+
+table.egdel_links_sync tr.sync td {
+	background-color: #FFCCCC;
+}
+
+table.egdel_links_sync tr.alternate-sync td {
+	background-color: #FF9999;
+}
+
+div.eg_message {
+	-moz-border-radius-bottomleft:3px;
+	-moz-border-radius-bottomright:3px;
+	-moz-border-radius-topleft:3px;
+	-moz-border-radius-topright:3px;
+	border-style:solid;
+	border-width:1px;
+	margin:5px 15px 2px;
+	padding:0 0.5em;
+}
+
+div.eg_error_1 {
+	background-color:#CCFFCC;
+	border-color:#00CC00;
+}
+
+div.eg_error_2 {
+	background-color:#FFFFCC;
+	border-color:#FF9900;
+}
+
+div.eg_error_3 {
+	background-color:#FFEBE8;
+	border-color:#CC0000;
+}
